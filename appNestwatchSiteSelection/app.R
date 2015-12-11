@@ -1,12 +1,5 @@
 library(shiny)
-
-# 1. Select Region
-
-# 2. Load CSV file
-
-# 3. Select radius of analysis
-
-# 4. 
+library(shinydashboard)
 
 # User interface
 
@@ -55,8 +48,24 @@ ui <- fluidPage(
       # Graphical summary:
       mainPanel(
         tabsetPanel(
-          tabPanel('Map Viewer', leafletOutput('map'),
-                   ),
+          tabPanel('Map Viewer',
+                   fluidRow(leafletOutput('map')),
+                   hr(),
+                   fluidRow(
+                     column(3,
+                            checkboxInput('impervious','Show Impervious',FALSE))
+#                    
+#                     box(width = NULL, status = 'warning',
+#                         uiOutput = 'layersSelect'
+#                         checkboxGroupInput('mapCheckGroup',
+#                           label = h3('Map layers'),
+#                             choices = c(
+#                               'Impervious' = 1,
+#                               'Existing sites' = 2,
+#                               'Potential sites' = 3
+#                               ), selected = 2)))
+#                    ),
+                   ))
           tabPanel('Summary Plots',plotOutput('plot')),
           tabPanel('Data Table', tableOutput('table'))
           )))
