@@ -15,9 +15,38 @@ shinyServer(function(input, output) {
 #       mutate(siteType = 'potential', imp = 'FILL')
 #     rbind(existingSites, potentialSites)
 #   })
-  existingPoints <- eventReactive(input$existingSites, ignoreNULL = TRUE)
+#   regionPoints <- read.csv('data/regionCenterPoints.csv')
+  
+#   points <- eventReactive(input$existingSites, {
+#     cbind(input$Long,input$Lat)
+#     }, ignoreNULL = TRUE)
   
   output$map <- renderLeaflet({
-    leaflet()
-  })
+    leaflet %>%
+#       addTiles() %>%
+#       #addProviderTiles('CartoDB.Positron') %>%
+#       setView(-77.1, 38.9, zoom = 4)
+    })
+  
+#   observe({
+#     proxy <- leafletProxy('map')
+#     
+#     if(input$existingSites) {
+#       leafletProxy('map') %>%
+#         addCircleMarkers(radius = 6,
+#                          color = 'navy',
+#                          stroke = F,
+#                          fillOpacity = 0.8)
+#     }
+#     })
+#   
+# #   observe({
+#     leafletProxy('map') %>%
+#       addCircleMarkers(existingPoints,
+#        radius = 6,
+#        color = 'navy',
+#        stroke = F,
+#        fillOpacity = 0.8)
+#   })
+  
 })
