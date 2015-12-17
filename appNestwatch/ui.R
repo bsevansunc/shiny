@@ -46,14 +46,31 @@ shinyUI(fluidPage(
 mainPanel(
   tabsetPanel(
     tabPanel('Map Viewer',
-             fluidRow(leafletOutput('map')),
+             fluidRow(column(9,leafletOutput('map')),
+                      column(3, 
+#                              checkboxGroupInput('mapLayers',
+#                                      h4('Show Layers:'),
+#                                      c('Existing Sites' = 'existing',
+#                                     'Potential Sites' = 'potential',
+#                                     'Impervious Surface' = 'imp'))
+                             fluidRow(h3(strong('Show Layers:')), hr(),
+                                         checkboxInput('show','Existing Sites2', FALSE),
+                                         checkboxInput('showPotential','Potential Sites', FALSE),
+                                         checkboxInput('showImp','Impervious Surface', FALSE))
+#                                                 h4('Show Layers:'),
+#                                                 c('Existing Sites' = 'existing',
+#                                                   'Potential Sites' = 'potential',
+#                                                   'Impervious Surface' = 'imp'))
+                        )),
              p(), hr(),
              fluidRow(
                column(3,downloadButton('downloadXYData','Download LatLong')),
                column(3,downloadButton('downloadKML','Download KML')),
                column(3,downloadButton('downloadKMZ','Download KMZ'))
              )
-  )
+    ),
+    tabPanel('Summary Plots',plotOutput('plot')),
+    tabPanel('Data Table', tableOutput('table'))
 )
 )
 )))
