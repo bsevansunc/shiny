@@ -53,7 +53,8 @@ output$map <- renderLeaflet({
                            group = 'start',
                            radius = 6, fillOpacity = 0.8, color = 'black', 
                            stroke = FALSE, popup = ~site) %>%
-      addRasterImage(imperviousAgg, opacity = 0.8)
+      addRasterImage(imperviousAgg, opacity = 0.8, group = 'Impervious Surface') %>%
+        addLayersControl(overlayGroups = c('Impervious Surface'))
       
     } else {
   
@@ -65,7 +66,8 @@ output$map <- renderLeaflet({
                            group = 'existing',
                            radius = 6, fillOpacity = 0.8, color = 'navy', 
                            stroke = FALSE, popup = ~site) %>%
-        addLayersControl(overlayGroups = c('Existing Sites'))
+        addRasterImage(imperviousAgg, opacity = 0.8, group = 'Impervious Surface') %>%
+        addLayersControl(overlayGroups = c('Existing Sites', 'Impervious Surface'))
       
     } else {
       
@@ -77,7 +79,8 @@ output$map <- renderLeaflet({
                          group = 'potential',
                          radius = 6, fillOpacity = 0.8, color = 'red', 
                          stroke = FALSE, popup = ~site) %>%
-        addLayersControl(overlayGroups = c('Potential Sites'))
+        addRasterImage(imperviousAgg, opacity = 0.8, group = 'Impervious Surface') %>%
+        addLayersControl(overlayGroups = c('Potential Sites', 'Impervious Surface'))
       
     } else {
  
@@ -94,7 +97,8 @@ output$map <- renderLeaflet({
                            group = 'Potential Sites',
                            radius = 6, fillOpacity = 0.8, color = 'red', 
                            stroke = FALSE, popup = ~site) %>%
-          addLayersControl(overlayGroups = c('Existing Sites', 'Potential Sites'))
+          addRasterImage(imperviousAgg, opacity = 0.8, group = 'Impervious Surface') %>%
+          addLayersControl(overlayGroups = c('Existing Sites', 'Potential Sites', 'Impervious Surface'))
     }}}}
 })
 
