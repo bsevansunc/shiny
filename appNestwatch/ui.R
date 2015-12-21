@@ -46,7 +46,7 @@ shinyUI(fluidPage(
 mainPanel(
   tabsetPanel(
     tabPanel('Map Viewer',
-             fluidRow(column(12,leafletOutput("map"))),
+             fluidRow(column(12,leafletOutput("map", height = 640))),
                       # column(3, 
 #                              checkboxGroupInput('mapLayers',
 #                                      h4('Show Layers:'),

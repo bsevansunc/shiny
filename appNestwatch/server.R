@@ -53,7 +53,7 @@ output$map <- renderLeaflet({
                            group = 'start',
                            radius = 6, fillOpacity = 0.8, color = 'black', 
                            stroke = FALSE, popup = ~site) %>%
-      addRasterImage(imperviousAgg, opacity = 0.5)
+      addRasterImage(imperviousAgg, opacity = 0.8)
       
     } else {
   
