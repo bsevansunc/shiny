@@ -1,6 +1,11 @@
 library(markdown)
 
-spp = c('AMRO', 'BCCH', 'BRTH', 'CARW', 'GRCA', 'HOWR', 'NOCA','NOMO','SOSP', 'UNCH')
+# Choices: 
+
+timeOfDay <- format(seq(ISOdate(2000, 1, 1), ISOdate(2000,1,2), 
+                        by = 'min'), '%H:%M') %>% unique %>% sort
+
+spp <- c('AMRO', 'BCCH', 'BRTH', 'CARW', 'GRCA', 'HOWR', 'NOCA','NOMO','SOSP', 'UNCH')
 
 shinyApp(
   ui = navbarPage("Neighborhood Nestwatch technician data submission interface",
@@ -28,28 +33,26 @@ shinyApp(
                   h4(strong('2. Banding effort')),
                   fluidRow(
                     column(6, selectizeInput('startNetTime', 'Nets opened:', 
-                                             choices = format(seq(ISOdate(2000, 1, 1), 
-                                                                  ISOdate(2000,1,2), by = 'min'), '%H:%M') %>%
-                                               unique %>% sort, selected = '07:00', multiple = F)), 
+                                             choices = timeOfDay,
+                                             selected = '07:00', multiple = F)), 
                     column(6, selectizeInput('endNetTime', 'Nets closed:', 
-                                             choices = format(seq(ISOdate(2000, 1, 1), 
-                                                                  ISOdate(2000,1,2), by = 'min'), '%H:%M') %>%
-                                               unique %>% sort, selected = '11:30', multiple = F))),
+                                             choices = timeOfDay, 
+                                             selected = '11:30', multiple = F))),
                   fluidRow(
                     column(6, selectizeInput('netCount', 'Number of nets:',
-                                             choices = seq(0, 12, by = 0.5), selected = 3.5, multiple = F)),
+                                             choices = seq(0, 12, by = 0.5), 
+                                             selected = 3.5, multiple = F)),
                     column(6, selectizeInput('netHours', 'Net hours:',
-                                          choices = seq(0, 24, by = 0.01), selected = 15.75, multiple = F))),
+                                          choices = seq(0, 24, by = 0.01), 
+                                          selected = 15.75, multiple = F))),
                   h4(strong('3. Resight effort')),
                   fluidRow(
                     column(6, selectizeInput('startRsTime', 'Started resight:', 
-                                             choices = format(seq(ISOdate(2000, 1, 1), 
-                                                                  ISOdate(2000,1,2), by = 'min'), '%H:%M') %>%
-                                               unique %>% sort, selected = '11:30', multiple = F)), 
+                                             choices = timeOfDay,
+                                             selected = '11:30', multiple = F)), 
                     column(6, selectizeInput('endRsTime', 'Ended resight:', 
-                                             choices = format(seq(ISOdate(2000, 1, 1), 
-                                                                  ISOdate(2000,1,2), by = 'min'), '%H:%M') %>%
-                                               unique %>% sort, selected = '12:30', multiple = F))),
+                                             choices = timeOfDay,
+                                             selected = '12:30', multiple = F))),
                   fluidRow(
                     column(6, textInput('distance', 'Distance travelled (path distance in meters):'))),
                     br(),
@@ -68,9 +71,8 @@ shinyApp(
              sidebarLayout(
                sidebarPanel(
                  fluidRow(column(3, selectizeInput('bandTime', 'Time:', 
-                                          choices = format(seq(ISOdate(2000, 1, 1), 
-                                                               ISOdate(2000,1,2), by = 'min'), '%H:%M') %>%
-                                            unique %>% sort, selected = '07:30', multiple = F)),
+                                                   choices = timeOfDay,
+                                                   selected = '07:30', multiple = F)),
                           column(3, textInput('bander', 'Bander initials:'))),
                  fluidRow(column(3, selectizeInput('species', 'Species:',
                                                    choices = spp, selected = 'AMRO', multiple = F))),
