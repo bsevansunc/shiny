@@ -1,5 +1,7 @@
 library(markdown)
 
+spp = c('AMRO', 'BCCH', 'BRTH', 'CARW', 'GRCA', 'HOWR', 'NOCA','NOMO','SOSP', 'UNCH')
+
 shinyApp(
   ui = navbarPage("Neighborhood Nestwatch technician data submission interface",
     tabPanel('1. Visit data:',
@@ -63,11 +65,26 @@ shinyApp(
               position = 'right')
              ),
     tabPanel('2. Banding data',
-             pageWithSidebar(headerPanel("Adding entries to table"),
-                             sidebarPanel(textInput("text1", "Column 1"),
-                                          textInput("text2", "Column 2"),
-                                          actionButton("update", "Update Table")),
-                             mainPanel(tableOutput("table1")))),
+             sidebarLayout(
+               sidebarPanel(
+                 fluidRow(column(3, selectizeInput('bandTime', 'Time:', 
+                                          choices = format(seq(ISOdate(2000, 1, 1), 
+                                                               ISOdate(2000,1,2), by = 'min'), '%H:%M') %>%
+                                            unique %>% sort, selected = '07:30', multiple = F)),
+                          column(3, textInput('bander', 'Bander initials:'))),
+                 fluidRow(column(3, selectizeInput('species', 'Species:',
+                                                   choices = spp, selected = 'AMRO', multiple = F))),
+                 actionButton('update', 'Submit banding data'),
+                 width = 9),
+               mainPanel(
+                 fluidRow(column(2, ''),
+                          column(10, fluidRow(h2(strong('Banding data'))))),
+                 br(),
+                 fluidRow(column(2, ''),
+                          column(10, p('test'))),
+                 width = 3),
+               position = 'right'
+             )),
     tabPanel('3. Resight data'),
     tabPanel('4. Point count data'),
     tabPanel('5. Nest data'),
