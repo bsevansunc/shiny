@@ -9,7 +9,9 @@ library(stringr)
 library(shinyBS)
 library(R.utils)
 library(rdrop2)
-library(googlesheets)
+# library(googlesheets)
+library(DT)
+library(shinyjs)
 
 aouCodes <- read.csv('speciesAouCodes.csv')
 
@@ -44,6 +46,8 @@ saveVisitData <- function(visitData) {
   drop_upload(filePath, dest = 'visitData')
 }
 
+# Save encounter data via Dropbox:
+
 
 saveEncounterData <- function(encounterData) {
   data <- encounterData
@@ -65,7 +69,143 @@ saveEncounterData <- function(encounterData) {
 #   gs_add_row(sheet, input = visitData)
 # }
 
+# Helper Functions modified from http://ipub.com/shiny-crud-app/:
 
+# This method casts from the inputs to a one-row data.frame. We use it, for instance, when the user creates a new record by typing in values into the inputs, and then clicks "Submit":
+
+castData <- function(data) {
+  datar <- data.frame(site = data["site"],
+                      date = data["date"],
+                      bandTime = as.character(data["bandTime"]),
+                      bander = data["bander"],
+                      encounterType = data["encounterType"],
+                      species = data["species"],
+                      bandNumber = as.integer(data["bandNumber"]),
+                      colorCombo  = data["colorCombo"],
+                      age = data["age"],
+                      sex = data["sex"],
+                      breedingCond = data["breedingCond"],
+                      fat = data["fat"],
+                      mass = data["mass"],
+                      wing = data["wing"],
+                      tail = data["tail"],
+                      tarsus = data["tarsus"],
+                      featherID = data["featherID"],
+                      notes = data["notes"],
+                      stringsAsFactors = FALSE)
+  
+  rownames(datar) <- data["id"]
+  return (datar)
+}
+
+
+# This creates an empty record, to be used e.g. to fill the inputs with the default values when the user clicks the "New" button:
+
+createDefaultRecord <- function() {
+  mydefault <- castData(list(id = "0", site = '', date = '', bandTime = '', 
+                             bander = '', encounterType = '',
+                             species = '', bandNumber = '', colorCombo  = '',
+                             age = '', sex = '', breedingCond = '', fat = '', 
+                             mass = '', wing = '', tail = '', tarsus = '',
+                             featherID = '', notes = ''))
+  return (mydefault)
+}
+
+# And this method takes the data as selected in the DataTable, and updates the inputs with the respective values:
+
+updateInputs <- function(data, session) {
+  updateTextInput(session, "id", value = unname(rownames(data)))
+  updateTextInput(session, "site", value = unname(data['site']))
+  updateTextInput(session, "date", value = unname(data['date']))
+  updateTextInput(session, "bandTime", value = unname(data["bandTime"]))
+  updateTextInput(session, "bander", value = unname(data["bander"]))
+  updateTextInput(session, "encounterType", value = unname(data["encounterType"]))
+  updateTextInput(session, "species", value = unname(data["species"]))
+  updateTextInput(session, "bandNumber", value = unname(data["bandNumber"]))
+  updateTextInput(session, "colorCombo", value = unname(data["colorCombo"]))
+  updateTextInput(session, "age", value = unname(data["age"]))
+  updateTextInput(session, "sex", value = unname(data["sex"]))
+  updateTextInput(session, "breedingCond", value = unname(data["breedingCond"]))
+  updateTextInput(session, "fat", value = unname(data["fat"]))
+  updateTextInput(session, "mass", value = unname(data["mass"]))
+  updateTextInput(session, "wing", value = unname(data["wing"]))
+  updateTextInput(session, "tail", value = unname(data["tail"]))
+  updateTextInput(session, "tarsus", value = unname(data["tarsus"]))
+  updateTextInput(session, "featherID", value = unname(data["featherID"]))
+  updateTextInput(session, "notes", value = unname(data["notes"]))
+}
+
+# This function finds the next ID of a new record. In mysql, this could be done by an incremental index, automatically. But here, we do it manually, ourselves:
+
+getNextId <- function() {
+  if (exists("responses")) {
+    max(as.integer(rownames(responses))) + 1
+  } else {
+    return (1)
+  }
+}
+
+# Create data
+
+createData <- function(data) {
+  
+  data <- castData(data)
+  rownames(data) <- getNextId()
+  if (exists("responses")) {
+    responses <<- rbind(responses, data)
+  } else {
+    responses <<- data
+  }
+}
+
+# Read
+
+readData <- function() {
+  if (exists("responses")) {
+    responses
+  }
+}
+
+# Update
+
+updateData <- function(data) {
+  data <- castData(data)
+  responses[row.names(responses) == row.names(data), ] <<- data
+}
+
+
+# Delete
+
+deleteData <- function(data) {
+  responses <<- responses[row.names(responses) != unname(data["id"]), ]
+}
+
+# The only thing that might not be straight forward is the GetTableMetadata function. We'll use it as a starting point for further development, as described below. For now, it's just a method that defines the names of the columns in our table:
+
+getTableMetadata <- function() {
+  fields <- c(id = "Id",
+              site = 'Site',
+              date = 'Date',
+              bandTime = 'Time',
+              bander = 'Observer',
+              encounterType = 'Encounter type',
+              species = 'SPP',
+              bandNumber = 'Band number',
+              colorCombo  = 'Color combo',
+              age = 'Age',
+              sex = 'Sex',
+              breedingCond = 'CP/BP',
+              fat = 'Fat',
+              mass = 'Mass',
+              wing = 'Wing',
+              tail = 'Tail',
+              tarsus = 'Tarsus',
+              featherID = 'Feather ID',
+              notes = 'Notes')
+  
+  result <- list(fields = fields)
+  return (result)
+}
 
 #-----------------------------------------------------------------------------------*
 # ---- CHOICES ----
@@ -192,6 +332,8 @@ ttBandNotes <- 'Any other observations to report on this bird? Provide it here!'
 textVisit <- p(strong('Start by entering your visit data.'), 'These data only need to be entered once for each site visit. After entering data into a field, press enter and tab to the next field. When you finish entering the data for each of the fields, make sure to double-check all of your entries for accuracy then press the', em('Submit visit data'),  'button.', strong('Do not enter banding, resight, point count, nest, or habitat survey data prior to completing and submitting this form!'))
 
 textBanding <- p(strong('AFTER entering visit data you are ready to enter your encounter records.'), ' This page is divided into three sections: ', strong('1) Encounter record:'), ' Enter one record for each individual. If you do not have data for a given field, leave that field blank. After entering all available data press the ', em('Add record'),'button. ', strong('2) Encounter query:'), ' If you are unsure of the band number of a resighted bird use this query form to find the identity of the resighted bird.', strong('3) Quality control and data submission:'), ' The table at the bottom of this page will be updated with the encounter records provided. After entering all of the records from your visit, compare table values with your paper record. If you find mistakes, delete the record from the table and submit a new record. Once you are confident with the quality of the data provided, press the ', em('Submit encounter data'), 'button.')
+
+textQuery <- p('Query the table below to search for the band number associated with a given resight. While only 5 rows of data are shown, the table includes the initial record (band encounter) across all Neighborhood Nestwatch banding records and regional hubs. You can adjust the number of rows viewed using the "Show __ entries" drop-down button. You can sort the data table by column by clicking the column header. For example, to sort the data table by date, you would click on the "Date" column header. Query fields are at the bottom of each column. Use these fields to subset the data table. Data may be subset using partial matching. For example, typing "bu" in the Color combo field will match blue color bands on either leg or position. Likewise, typing "bu/bu" will query all records in which either leg has a blue over blue color band combo. You can use the search tool on the upper-right to query all fields simultaneously. Query fields are not case-sensitive.')
 
 #-----------------------------------------------------------------------------------*
 # ---- APP ----
@@ -358,8 +500,12 @@ shinyApp(
                               column(2, textInput('featherID', label = 'Feather ID:')),
                               column(10, textInput('notes', label = 'Notes:'))),
                             br(),
-                            actionButton('update', 'Add record', 
-                                         class = "btn-primary"),
+                            fluidRow(
+                              column(4, actionButton('newRecord', 'New record'),
+                                     class = 'btn-primary'),
+                              column(4, actionButton('submitRecord', 'Submit record', 
+                                                     class = "btn-primary"))
+                            ),
                             width = 6, position = 'right'),
                # ---- Encounter text ----------------------------------------------------
                mainPanel(
@@ -373,8 +519,8 @@ shinyApp(
              hr(),
              # ---- Query records -------------------------------------------------------
              h3(strong('Query records:')),
-             p('Query the table below to search for the band number associated with a given resight. While only 5 rows of data are shown, the table includes the initial record (band encounter) across all Neighborhood Nestwatch banding records and regional hubs. You can adjust the number of rows viewed using the "Show __ entries" drop-down button. You can sort the data table by column by clicking the column header. For example, to sort the data table by date, you would click on the "Date" column header. Query fields are at the bottom of each column. Use these fields to subset the data table. Data may be subset using partial matching. For example, typing "bu" in the Color combo field will match blue color bands on either leg or position. Likewise, typing "bu/bu" will query all records in which either leg has a blue over blue color band combo. You can use the search tool on the upper-right to query all fields simultaneously. Query fields are not case-sensitive.'),
-             dataTableOutput('encounterTable'),
+             textQuery,
+             fluidRow(column(11, DT::dataTableOutput('encounterTable'))),
              hr(),
              # ---- QC and submission ---------------------------------------------------
              h3(strong('Quality Control and submission of encounter records:')),
@@ -384,15 +530,21 @@ shinyApp(
                  numericInput(inputId = "rowSelection", 
                               label = "Select row to be deleted",
                               min = 1, max = 100, value = ""),
-                 actionButton(inputId = "deleteButton", label = "Delete", 
+                 actionButton(inputId = "deleteRecord", label = "Delete", 
                                     icon = icon("minus")),
                  br(), br(),
                  h4(strong('Submit records')),
-                 downloadButton(outputId = 'submitBandingData', 
+                 downloadButton(outputId = 'submitEncounterData', 
                               label = 'Submit encounter data',
                               class = "btn-primary"),
                  position = 'right', width = 2),
-             mainPanel(tableOutput('bandTable'), width = 10, position  = 'left')
+             mainPanel(
+               shinyjs::useShinyjs(),
+               DT::dataTableOutput("responses", width = 300),
+               tags$hr(),
+               shinyjs::disabled(textInput("id", "Id", "0")),
+               #tableOutput('bandTable'), 
+                       width = 10, position  = 'left')
              )
     ),
     #-------------------------------------------------------------------------------*
@@ -414,13 +566,6 @@ shinyApp(
       #-----------------------------------------------------------------------------*
       # ---- SERVER: OUTPUT VISIT DATA ----
       #-----------------------------------------------------------------------------*
-#       formData <- reactive({
-#         data <- sapply(fields, function(x) input[[x]])
-#         data
-#       })
-#       
-      # saveVisitData <- 
-      
       
       # Link fields to input:
       visitData <- reactive({
@@ -436,54 +581,97 @@ shinyApp(
       #-----------------------------------------------------------------------------*
       # ---- SERVER: QUERY BANDING RECORDS ----
       #-----------------------------------------------------------------------------*
-      output$encounterTable = renderDataTable(encounters, {
-        options = list(lengthMenu = c(5, 10, 15, 20),
-                       pageLength = 5)
-      })
+      output$encounterTable = DT::renderDataTable(
+        datatable(encounters, filter = 'bottom'))
+
       #-----------------------------------------------------------------------------*
       # ---- SERVER: BANDING DATA SUBMISSION ----
       #-----------------------------------------------------------------------------*
-      values <- reactiveValues()
-      # Blank data frame:
-      values$df <- data.frame(Site = numeric(0), Date = numeric(0),
-                              Time = numeric(0), Observer = numeric(0), 
-                              Encounter = numeric(0),SPP = numeric(0), 
-                              BandNumber = numeric(0), ColorCombo = numeric(0),
-                              Age = numeric(0), Sex = numeric(0), CP_BP = numeric(0),
-                              Fat = numeric(0), Mass = numeric(0), Wing = numeric(0),
-                              Tail = numeric(0), Tarsus = numeric(0), 
-                              FeatherID = numeric(0), Notes = numeric(0))
-      # Add entries:
-      newEntry <- observe({
-        if(input$update > 0) {
-          isolate(values$df[nrow(values$df) + 1,] <- 
-                    c(input$site, as.character(input$date),
-                               input$bandTime, input$bander, input$encounterType,
-                               input$species, input$bandNumber, input$colorCombo,
-                               input$age, input$sex, input$breedingCond, input$fat,
-                               input$mass, input$wing, input$tail, input$tarsus,
-                               input$featherID, input$notes
-                               ))
+      # input fields are treated as a group
+      formData <- reactive({
+        sapply(names(getTableMetadata()$fields), function(x) input[[x]])
+      })
+      
+      # Click "Submit" button -> save data
+      
+      observeEvent(input$submitRecord, {
+        if (input$id != "0") {
+          updateData(formData())
+        } else {
+          createData(formData())
+          updateInputs(createDefaultRecord(), session)
         }
+      }, priority = 1)
+      
+      # Press "Delete" button -> delete from data
+      observeEvent(input$delete, {
+        DeleteData(formData())
+        updateInputs(createDefaultRecord(), session)
       })
-      # Remove entries:
-      deleteEntry <- observe({
-        cat("deleteEntry\n")
-        if(input$deleteButton > 0) {
-          if(is.na(isolate(input$rowSelection))){
-            values$df <- isolate(values$df[-nrow(values$df), ])
-          } else {
-            values$df <- isolate(values$df[-input$rowSelection, ])
-          }
+      
+      # Select row in table -> show details in inputs
+      observeEvent(input$responses_rows_selected, {
+        if (length(input$responses_rows_selected) > 0) {
+          data <- readData()[input$responses_rows_selected, ]
+          updateInputs(data, session)
         }
+        
       })
-      # Make table:
-      output$bandTable <- renderTable({values$df})
-      observe({
-        session$sendCustomMessage(type = 'testmessage',
-                                  message = list(a = 1, b = 'text',
-                                                 controller = input$controller))
-      })
+      
+      shinyjs::disable("id")
+      
+      # display table
+      output$responses <- DT::renderDataTable({
+        #update after submit is clicked
+        input$submit
+        #update after delete is clicked
+        input$delete
+        readData()
+      }, server = FALSE, selection = "single",
+      colnames = unname(getTableMetadata()$fields)[-1]
+      )    
+      
+#       values <- reactiveValues()
+#       # Blank data frame:
+#       values$df <- data.frame(Site = numeric(0), Date = numeric(0),
+#                               Time = numeric(0), Observer = numeric(0), 
+#                               Encounter = numeric(0),SPP = numeric(0), 
+#                               BandNumber = numeric(0), ColorCombo = numeric(0),
+#                               Age = numeric(0), Sex = numeric(0), CP_BP = numeric(0),
+#                               Fat = numeric(0), Mass = numeric(0), Wing = numeric(0),
+#                               Tail = numeric(0), Tarsus = numeric(0), 
+#                               FeatherID = numeric(0), Notes = numeric(0))
+#       # Add entries:
+#       newEntry <- observe({
+#         if(input$update > 0) {
+#           isolate(values$df[nrow(values$df) + 1,] <- 
+#                     c(input$site, as.character(input$date),
+#                                input$bandTime, input$bander, input$encounterType,
+#                                input$species, input$bandNumber, input$colorCombo,
+#                                input$age, input$sex, input$breedingCond, input$fat,
+#                                input$mass, input$wing, input$tail, input$tarsus,
+#                                input$featherID, input$notes
+#                                ))
+#         }
+#       })
+#       # Remove entries:
+#       deleteEntry <- observe({
+#         cat("deleteEntry\n")
+#         if(input$deleteButton > 0) {
+#           if(is.na(isolate(input$rowSelection))){
+#             values$df <- isolate(values$df[-nrow(values$df), ])
+#           } else {
+#             values$df <- isolate(values$df[-input$rowSelection, ])
+#           }
+#         }
+#       })
+#       # Make table:
+#       output$bandTable <- renderTable({values$df})
+#       observe({
+#         session$sendCustomMessage(type = 'testmessage',
+#                                   message = list(a = 1, b = 'text',
+#                                                  controller = input$controller))
+      # })
       #-----------------------------------------------------------------------------*
       # ---- SERVER: DATA DOWNLOAD ----
       #-----------------------------------------------------------------------------*
