@@ -1,6 +1,6 @@
-#-----------------------------------------------------------------------------------*
+#---------------------------------------------------------------------------------*
 # ---- SET-UP ----
-#===================================================================================*
+#=================================================================================*
 
 library(markdown)
 library(shiny)
@@ -29,9 +29,9 @@ visitFields <- c('hub', 'site', 'date', 'observer', 'startNetTime', 'endNetTime'
                  'nocaUnbanded', 'nomoUnbanded', 'sospUnbanded',
                  'tutiUnbanded', 'unchUnbanded', 'encounteredBird','notes')
 
-#-----------------------------------------------------------------------------------*
+#---------------------------------------------------------------------------------*
 # ---- FUNCTIONS ----
-#-----------------------------------------------------------------------------------*
+#---------------------------------------------------------------------------------*
 
 # Save visit data via Dropbox:
 
@@ -47,7 +47,6 @@ saveVisitData <- function(visitData) {
 }
 
 # Save encounter data via Dropbox:
-
 
 saveEncounterData <- function(encounterData) {
   data <- encounterData
@@ -74,8 +73,8 @@ saveEncounterData <- function(encounterData) {
 # This method casts from the inputs to a one-row data.frame. We use it, for instance, when the user creates a new record by typing in values into the inputs, and then clicks "Submit":
 
 castData <- function(data) {
-  datar <- data.frame(site = data["site"],
-                      date = data["date"],
+  datar <- data.frame(site = as.character(data["site"]),
+                      date = as.character(data["date"]),
                       bandTime = as.character(data["bandTime"]),
                       bander = data["bander"],
                       encounterType = data["encounterType"],
@@ -91,23 +90,35 @@ castData <- function(data) {
                       tail = data["tail"],
                       tarsus = data["tarsus"],
                       featherID = data["featherID"],
-                      notes = data["notes"],
+                      notes = as.character(data["notes"]),
                       stringsAsFactors = FALSE)
   
   rownames(datar) <- data["id"]
   return (datar)
 }
 
-
 # This creates an empty record, to be used e.g. to fill the inputs with the default values when the user clicks the "New" button:
 
 createDefaultRecord <- function() {
-  mydefault <- castData(list(id = "0", site = '', date = '', bandTime = '', 
-                             bander = '', encounterType = '',
-                             species = '', bandNumber = '', colorCombo  = '',
-                             age = '', sex = '', breedingCond = '', fat = '', 
-                             mass = '', wing = '', tail = '', tarsus = '',
-                             featherID = '', notes = ''))
+  mydefault <- castData(list(id = "0", 
+                             site = '',
+                             date = '',
+                             bandTime = '',
+                             bander = '',
+                             encounterType = '',
+                             species = '',
+                             bandNumber = '',
+                             colorCombo  = '',
+                             age = '',
+                             sex = '',
+                             breedingCond = '',
+                             fat = '',
+                             mass = '',
+                             wing = '',
+                             tail = '',
+                             tarsus = '',
+                             featherID = '',
+                             notes = ''))
   return (mydefault)
 }
 
@@ -115,8 +126,8 @@ createDefaultRecord <- function() {
 
 updateInputs <- function(data, session) {
   updateTextInput(session, "id", value = unname(rownames(data)))
-  updateTextInput(session, "site", value = unname(data['site']))
   updateTextInput(session, "date", value = unname(data['date']))
+  updateTextInput(session, "site", value = unname(data['site']))
   updateTextInput(session, "bandTime", value = unname(data["bandTime"]))
   updateTextInput(session, "bander", value = unname(data["bander"]))
   updateTextInput(session, "encounterType", value = unname(data["encounterType"]))
@@ -184,8 +195,8 @@ deleteData <- function(data) {
 
 getTableMetadata <- function() {
   fields <- c(id = "Id",
-              site = 'Site',
-              date = 'Date',
+              site = "Site",
+              date = "Date",
               bandTime = 'Time',
               bander = 'Observer',
               encounterType = 'Encounter type',
@@ -201,15 +212,14 @@ getTableMetadata <- function() {
               tail = 'Tail',
               tarsus = 'Tarsus',
               featherID = 'Feather ID',
-              notes = 'Notes')
-  
+              notes = "Notes")
   result <- list(fields = fields)
   return (result)
 }
 
-#-----------------------------------------------------------------------------------*
+#---------------------------------------------------------------------------------*
 # ---- CHOICES ----
-#-----------------------------------------------------------------------------------*
+#---------------------------------------------------------------------------------*
 
 # Visit choices
 
@@ -275,11 +285,11 @@ choiceBreedingCond <-  c('','CP', 'BP','CP-', 'BP-','CP+', 'BP+')
 
 choiceFat <- c('', 0, 0.5, seq(1:5))
 
-#-----------------------------------------------------------------------------------*
+#---------------------------------------------------------------------------------*
 # ---- TOOLTIPS ----
-#-----------------------------------------------------------------------------------*
+#---------------------------------------------------------------------------------*
 
-# ---- Visit tooltips: -------------------------------------------------------------
+# ---- Visit tooltips: ------------------------------------------------------------
 
 ttRegion <- p(strong('Regional Hub:'), ' Select your study region from the list.')
 
@@ -303,7 +313,7 @@ ttEncounteredBirds <- p(strong('Did you band or encounter banded birds during yo
 
 ttVisitNotes <- p(strong('Visit notes:'), ' Have anything else to say about your visit (not about individual birds)? Put it here!')
 
-# ---- Encounter tooltips: -------------------------------------------------------------
+# ---- Encounter tooltips: --------------------------------------------------------
 
 ttBandTime <- p(strong('Time:'), ' This is the time (24-hour format) in which you began processing the bird.')
 
@@ -325,312 +335,370 @@ ttFeatherID <- p(strong('Feather ID:'), ' Please provide the ID of the feather s
 
 ttBandNotes <- 'Any other observations to report on this bird? Provide it here!'
 
-#-----------------------------------------------------------------------------------*
+#---------------------------------------------------------------------------------*
 # ---- PAGE TEXT ----
-#-----------------------------------------------------------------------------------*
+#---------------------------------------------------------------------------------*
 
 textVisit <- p(strong('Start by entering your visit data.'), 'These data only need to be entered once for each site visit. After entering data into a field, press enter and tab to the next field. When you finish entering the data for each of the fields, make sure to double-check all of your entries for accuracy then press the', em('Submit visit data'),  'button.', strong('Do not enter banding, resight, point count, nest, or habitat survey data prior to completing and submitting this form!'))
 
-textBanding <- p(strong('AFTER entering visit data you are ready to enter your encounter records.'), ' This page is divided into three sections: ', strong('1) Encounter record:'), ' Enter one record for each individual. If you do not have data for a given field, leave that field blank. After entering all available data press the ', em('Add record'),'button. ', strong('2) Encounter query:'), ' If you are unsure of the band number of a resighted bird use this query form to find the identity of the resighted bird.', strong('3) Quality control and data submission:'), ' The table at the bottom of this page will be updated with the encounter records provided. After entering all of the records from your visit, compare table values with your paper record. If you find mistakes, delete the record from the table and submit a new record. Once you are confident with the quality of the data provided, press the ', em('Submit encounter data'), 'button.')
+textBanding <- p(strong('AFTER entering visit data you are ready to enter your encounter records!'), ' This page is divided into two sections: ', strong('1) Encounter record:'), ' Enter one record for each individual. If you do not have data for a given field, leave that field blank. After entering all available data press the ', em('Add record'),'button. ', strong('2) Encounter query:'), ' If you are unsure of the band number of a resighted bird use this query form to find the identity of the resighted bird.', strong('3) Quality control and data submission:'), ' The table at the bottom of this page will be updated with the encounter records provided. After entering all of the records from your visit, compare table values with your paper record. If you find mistakes, delete the record from the table and submit a new record. Once you are confident with the quality of the data provided, press the ', em('Submit encounter data'), 'button.')
 
 textQuery <- p('Query the table below to search for the band number associated with a given resight. While only 5 rows of data are shown, the table includes the initial record (band encounter) across all Neighborhood Nestwatch banding records and regional hubs. You can adjust the number of rows viewed using the "Show __ entries" drop-down button. You can sort the data table by column by clicking the column header. For example, to sort the data table by date, you would click on the "Date" column header. Query fields are at the bottom of each column. Use these fields to subset the data table. Data may be subset using partial matching. For example, typing "bu" in the Color combo field will match blue color bands on either leg or position. Likewise, typing "bu/bu" will query all records in which either leg has a blue over blue color band combo. You can use the search tool on the upper-right to query all fields simultaneously. Query fields are not case-sensitive.')
 
-#-----------------------------------------------------------------------------------*
-# ---- APP ----
-#===================================================================================*
+#---------------------------------------------------------------------------------*
+# ---- USER INTERFACE ----
+#=================================================================================*
 
-shinyApp(
-  ui = navbarPage("Neighborhood Nestwatch technician data submission interface",
-    #-------------------------------------------------------------------------------*
-    # ---- UI TAB PANEL: VISIT ----
-    #-------------------------------------------------------------------------------*
-    tabPanel('1. Visit data:',
-             sidebarLayout(
-                sidebarPanel(
-                  br(),
-                  # ---- Site and observer ------------------------------------------
-                  h4(strong('Visit')),
-                  fluidRow(
-                    column(4,
-                      selectInput('hub','Regional Hub:', choiceRegions)),
-                      column(8,
-                      selectizeInput('site', 'Site:', #'e2', '2. Multi-select', 
-                                     choices = choiceSites,
-                                     selected = NULL))),
-                  fluidRow(
-                    column(6,
-                           selectizeInput('date', label = 'Date:', 
-                                     choices = choiceDate,
-                                     selected = as.character(Sys.Date()))),
-                    column(6,
-                           textInput("observer", "Observer initials:"))),
-                  br(),
-                  # ---- Banding effort ---------------------------------------------
-                  h4(strong('Banding effort:')),
-                  fluidRow(
-                    column(6, selectizeInput('startNetTime', 'Nets opened:', 
-                                             choices = choiceTimeOfDay)),
-                    column(6, selectizeInput('endNetTime', 'Nets closed:', 
-                                             choices = choiceTimeOfDay))),
-                  fluidRow(
-                    column(6, selectizeInput('netCount', 'Number of nets:', 
-                                             choices = choiceNetCount)),
-                    column(6, selectizeInput('netHours', 'Net hours:', 
-                                             choices = choiceNetHours))),
-                  br(),
-                  # ---- Resight effort --------------------------------------------
-                  h4(strong('Resight effort:')),
-                  fluidRow(
-                    column(4, selectizeInput('startRsTime', 'Started resight:', 
-                                             choices = choiceTimeOfDay)),
-                    column(4, selectizeInput('endRsTime', 'Ended resight:', 
-                                             choices = choiceTimeOfDay)),
-                    column(4, textInput('rsPathDistance',
-                                        'Path distance traveled:'))),
-                  h5(strong('Observed, unbanded:')),
-                  fluidRow(column(1, 'AMRO'),
-                           column(2, selectizeInput(
-                             'amroUnbanded', label = NULL,
-                             choiceCount)),
-                           column(1, 'CACH'),
-                           column(2, selectizeInput(
-                             'cachUnbanded', label = NULL,
-                             choiceCount)),
-                           column(1, 'HOWR'),
-                           column(2, selectizeInput(
-                             'howrUnbanded', label = NULL,
-                             choiceCount)),
-                           column(1, 'SOSP'),
-                           column(2, selectizeInput(
-                             'sospUnbanded', label = NULL,
-                             choiceCount))),
-                  fluidRow(column(1, 'BCCH'),
-                           column(2, selectizeInput(
-                             'bcchUnbanded', label = NULL,
-                             choiceCount)),
-                           column(1, 'CARW'),
-                           column(2, selectizeInput(
-                             'carwUnbanded', label = NULL,
-                             choiceCount)),
-                           column(1, 'NOCA'),
-                           column(2, selectizeInput(
-                             'nocaUnbanded', label = NULL,
-                             choiceCount)),
-                           column(1, 'TUTI'),
-                           column(2, selectizeInput(
-                             'tutiUnbanded', label = NULL,
-                             choiceCount))),
-                  fluidRow(column(1, 'BRTH'),
-                           column(2, selectizeInput(
-                             'brthUnbanded', label = NULL,
-                             choiceCount)),
-                           column(1, 'GRCA'),
-                           column(2, selectizeInput(
-                             'grcaUnbanded', label = NULL,
-                             choiceCount)),
-                           column(1, 'NOMO'),
-                           column(2, selectizeInput(
-                             'nomoUnbanded', label = NULL,
-                             choiceCount)),
-                           column(1, 'UNCH'),
-                           column(2, selectizeInput(
-                             'unchUnbanded', label = NULL,
-                             choiceCount))),
-                  br(),
-                  h4(strong('Did you band or encounter a banded bird during your visit?')),
-                  radioButtons('encounteredBirds', label = NULL,
-                               choices = list('Yes' = 1, 'No' = 2), 
-                               selected = 1),
-                  br(),
-                  h4(strong('Visit notes:')),
-                  br(),
-                  # ---- Notes -----------------------------------------------------
-                  fluidRow(column(12, textInput('visitNotes', 
-                                                label = NULL))),
-                  br(),
-                  actionButton("submitVisitData", "Submit visit data", 
-                               class = "btn-primary"),
-                  width = 6, position = 'right'),
-              # ---- Visit text ----------------------------------------------------
-              mainPanel(
-                textVisit, hr(),
-                ttRegion, ttSite, ttVisitDate, ttVisitObserver, ttNetCount,
-                ttNetHours, ttVisitNotes, ttStartEndResightTime, ttPathDistance,
-                ttObservedUnbanded, ttEncounteredBirds, ttVisitNotes, 
-                width = 6, position = 'left'))),
-    #-------------------------------------------------------------------------------*
-    # ---- UI TAB PANEL: ENCOUNTERS ----
-    #-------------------------------------------------------------------------------*
-    tabPanel('2. Encounter data',
-             sidebarLayout(
-               # ---- Record entry -------------------------------------------------
-               sidebarPanel(h3(strong('Enter encounter record:')),
-                            br(),
-                            fluidRow(
-                              column(4, selectizeInput('bandTime', 'Time:',
-                                                       choices = choiceTimeOfDay)),
-                              column(4, textInput('bander', 'Observer initials:')),
-                              column(4, selectizeInput('encounterType', 
-                                                       'Encounter type:',
-                                                       choices = choiceEncounterType, 
-                                                       selected = 'Band'))),
-                            fluidRow(
-                              column(4, selectizeInput('species', label = 'Species:',
-                                                       choices = choiceSpecies)),
-                              column(4, textInput('bandNumber', 'Band number:')),
-                              column(4, selectizeInput('colorCombo', 
-                                                       'Color combination:',
-                                                       choices = choiceColorCombos))),
-                            br(),
-                            fluidRow(
-                              column(3, selectizeInput('age','Age:',
-                                                       choices = choiceAge)),
-                              column(3, selectizeInput('sex', label = 'Sex:',
-                                                       choices = choiceSex)),
-                              column(3, selectizeInput('breedingCond', label = 'CP/BP:',
-                                                       choices = choiceBreedingCond)),
-                              column(3, selectizeInput('fat',label = 'Fat:',
-                                                       choices = choiceFat))),
-                            fluidRow(
-                              column(3, textInput('mass',label = 'Mass (g):')),
-                              column(3, textInput('wing',label = 'Wing (mm):')),
-                              column(3, textInput('tail',label = 'Tail (mm):')),
-                              column(3, textInput('tarsus',label = 'Tarsus (mm):'))),
-                            fluidRow(
-                              column(2, textInput('featherID', label = 'Feather ID:')),
-                              column(10, textInput('notes', label = 'Notes:'))),
-                            br(),
-                            fluidRow(
-                              column(4, actionButton('newRecord', 'New record'),
-                                     class = 'btn-primary'),
-                              column(4, actionButton('submitRecord', 'Submit record', 
-                                                     class = "btn-primary"))
-                            ),
-                            width = 6, position = 'right'),
-               # ---- Encounter text ----------------------------------------------------
-               mainPanel(
-                 textBanding, 
-                 hr(),
-                 ttBandTime, ttBanderInitials, ttEncounterType,
-                 ttSpecies, ttBandNumber, ttColorCombo, ttAgeThroughFat, 
-                 ttMassThroughTarsus,
-                 ttFeatherID,
-                 width = 6, position = 'left')),
-             hr(),
-             # ---- Query records -------------------------------------------------------
-             h3(strong('Query records:')),
-             textQuery,
-             fluidRow(column(11, DT::dataTableOutput('encounterTable'))),
-             hr(),
-             # ---- QC and submission ---------------------------------------------------
-             h3(strong('Quality Control and submission of encounter records:')),
-             sidebarLayout(
-               sidebarPanel(
-                 h4(strong('Fix records')),
-                 numericInput(inputId = "rowSelection", 
-                              label = "Select row to be deleted",
-                              min = 1, max = 100, value = ""),
-                 actionButton(inputId = "deleteRecord", label = "Delete", 
-                                    icon = icon("minus")),
-                 br(), br(),
-                 h4(strong('Submit records')),
-                 downloadButton(outputId = 'submitEncounterData', 
-                              label = 'Submit encounter data',
-                              class = "btn-primary"),
-                 position = 'right', width = 2),
-             mainPanel(
+ui <- navbarPage(
+  strong("Neighborhood Nestwatch technician data submission interface"),
+  #-------------------------------------------------------------------------------*
+  # ---- UI TAB PANEL: VISIT ----
+  #-------------------------------------------------------------------------------*
+  tabPanel(strong('Visit data'),
+           sidebarLayout(
+              sidebarPanel(
+                br(),
+                # ---- Site and observer -----------------------------------------
+                h4(strong('Visit')),
+                fluidRow(
+                  column(4,
+                    selectInput('hub','Regional Hub:', choiceRegions)),
+                    column(8,
+                    selectizeInput('site', 'Site:', #'e2', '2. Multi-select', 
+                                   choices = choiceSites,
+                                   selected = NULL))),
+                fluidRow(
+                  column(6,
+                         selectizeInput('date', label = 'Date:', 
+                                   choices = choiceDate,
+                                   selected = as.character(Sys.Date()))),
+                  column(6,
+                         textInput("observer", "Observer initials:"))),
+                br(),
+                # ---- Banding effort --------------------------------------------
+                h4(strong('Banding effort:')),
+                fluidRow(
+                  column(6, selectizeInput('startNetTime', 'Nets opened:', 
+                                           choices = choiceTimeOfDay)),
+                  column(6, selectizeInput('endNetTime', 'Nets closed:', 
+                                           choices = choiceTimeOfDay))),
+                fluidRow(
+                  column(6, selectizeInput('netCount', 'Number of nets:', 
+                                           choices = choiceNetCount)),
+                  column(6, selectizeInput('netHours', 'Net hours:', 
+                                           choices = choiceNetHours))),
+                br(),
+                # ---- Resight effort --------------------------------------------
+                h4(strong('Resight effort:')),
+                fluidRow(
+                  column(4, selectizeInput('startRsTime', 'Started resight:', 
+                                           choices = choiceTimeOfDay)),
+                  column(4, selectizeInput('endRsTime', 'Ended resight:', 
+                                           choices = choiceTimeOfDay)),
+                  column(4, textInput('rsPathDistance',
+                                      'Path distance traveled:'))),
+                h5(strong('Observed, unbanded:')),
+                fluidRow(column(1, 'AMRO'),
+                         column(2, selectizeInput(
+                           'amroUnbanded', label = NULL,
+                           choiceCount)),
+                         column(1, 'CACH'),
+                         column(2, selectizeInput(
+                           'cachUnbanded', label = NULL,
+                           choiceCount)),
+                         column(1, 'HOWR'),
+                         column(2, selectizeInput(
+                           'howrUnbanded', label = NULL,
+                           choiceCount)),
+                         column(1, 'SOSP'),
+                         column(2, selectizeInput(
+                           'sospUnbanded', label = NULL,
+                           choiceCount))),
+                fluidRow(column(1, 'BCCH'),
+                         column(2, selectizeInput(
+                           'bcchUnbanded', label = NULL,
+                           choiceCount)),
+                         column(1, 'CARW'),
+                         column(2, selectizeInput(
+                           'carwUnbanded', label = NULL,
+                           choiceCount)),
+                         column(1, 'NOCA'),
+                         column(2, selectizeInput(
+                           'nocaUnbanded', label = NULL,
+                           choiceCount)),
+                         column(1, 'TUTI'),
+                         column(2, selectizeInput(
+                           'tutiUnbanded', label = NULL,
+                           choiceCount))),
+                fluidRow(column(1, 'BRTH'),
+                         column(2, selectizeInput(
+                           'brthUnbanded', label = NULL,
+                           choiceCount)),
+                         column(1, 'GRCA'),
+                         column(2, selectizeInput(
+                           'grcaUnbanded', label = NULL,
+                           choiceCount)),
+                         column(1, 'NOMO'),
+                         column(2, selectizeInput(
+                           'nomoUnbanded', label = NULL,
+                           choiceCount)),
+                         column(1, 'UNCH'),
+                         column(2, selectizeInput(
+                           'unchUnbanded', label = NULL,
+                           choiceCount))),
+                br(),
+                h4(strong('Did you band or encounter a banded bird during your visit?')),
+                radioButtons('encounteredBirds', label = NULL,
+                             choices = list('Yes' = 1, 'No' = 2), 
+                             selected = 1),
+                br(),
+                h4(strong('Visit notes:')),
+                br(),
+                # ---- Notes -----------------------------------------------------
+                fluidRow(column(12, textInput('visitNotes', 
+                                              label = NULL))),
+                br(),
+                actionButton("submitVisitData", "Submit visit data", 
+                             class = "btn-primary"),
+                width = 6, position = 'right'),
+            # ---- Visit text ----------------------------------------------------
+            mainPanel(
+              textVisit, hr(),
+              ttRegion, ttSite, ttVisitDate, ttVisitObserver, ttNetCount,
+              ttNetHours, ttVisitNotes, ttStartEndResightTime, ttPathDistance,
+              ttObservedUnbanded, ttEncounteredBirds, ttVisitNotes, 
+              width = 6, position = 'left'))),
+  #-------------------------------------------------------------------------------*
+  # ---- UI TAB PANEL: ENCOUNTERS ----
+  #-------------------------------------------------------------------------------*
+  tabPanel(strong('Encounter data'),
+           sidebarLayout(
+             # ---- Record entry -------------------------------------------------
+             sidebarPanel(
                shinyjs::useShinyjs(),
-               DT::dataTableOutput("responses", width = 300),
-               tags$hr(),
-               shinyjs::disabled(textInput("id", "Id", "0")),
-               #tableOutput('bandTable'), 
-                       width = 10, position  = 'left')
-             )
-    ),
-    #-------------------------------------------------------------------------------*
-    # ---- UI TAB PANEL: POINT COUNT ----
-    #-------------------------------------------------------------------------------*
-    tabPanel('3. Point count data'),
-    #-------------------------------------------------------------------------------*
-    # ---- UI TAB PANEL: NEST DATA ----
-    #-------------------------------------------------------------------------------*
-    tabPanel('4. Nest data'),
-    #-------------------------------------------------------------------------------*
-    # ---- UI TAB PANEL: HABITAT SURVEY ----
-    #-------------------------------------------------------------------------------*
-    tabPanel('5. Habitat survey data')),
-  #=================================================================================*
-  # ---- SERVER ----
-  #=================================================================================*
-    server = function(input, output, session) {
-      #-----------------------------------------------------------------------------*
-      # ---- SERVER: OUTPUT VISIT DATA ----
-      #-----------------------------------------------------------------------------*
-      
-      # Link fields to input:
-      visitData <- reactive({
-        data <- sapply(visitFields, function(x) input[[x]])
-        data
-      })
-      
-      # When the Submit button is clicked, save form data:
-      observeEvent(input$submitVisitData, {
-        saveVisitData(visitData())
-      })
-      
-      #-----------------------------------------------------------------------------*
-      # ---- SERVER: QUERY BANDING RECORDS ----
-      #-----------------------------------------------------------------------------*
-      output$encounterTable = DT::renderDataTable(
-        datatable(encounters, filter = 'bottom'))
+               h3(strong('Enter encounter record:')),
+               br(),
+               fluidRow(
+                 column(2, shinyjs::disabled(textInput("id", "Id", "0"))),
+                 column(3, selectizeInput('bandTime', 'Time:',
+                                          choices = choiceTimeOfDay)),
+                 column(3, textInput('bander', 'Observer initials:')),
+                 column(4, selectizeInput('encounterType', 
+                                          'Encounter type:',
+                                          choices = choiceEncounterType, 
+                                          selected = 'Band'))),
+               fluidRow(
+                 column(4, selectizeInput('species', label = 'Species:',
+                                          choices = choiceSpecies)),
+                 column(4, textInput('bandNumber', 'Band number:')),
+                 column(4, selectizeInput('colorCombo', 
+                                          'Color combination:',
+                                          choices = choiceColorCombos))),
+               br(),
+               fluidRow(
+                 column(3, selectizeInput('age','Age:',
+                                          choices = choiceAge)),
+                 column(3, selectizeInput('sex', label = 'Sex:',
+                                          choices = choiceSex)),
+                 column(3, selectizeInput('breedingCond', label = 'CP/BP:',
+                                          choices = choiceBreedingCond)),
+                 column(3, selectizeInput('fat',label = 'Fat:',
+                                          choices = choiceFat))),
+               fluidRow(
+                 column(3, textInput('mass',label = 'Mass (g):')),
+                 column(3, textInput('wing',label = 'Wing (mm):')),
+                 column(3, textInput('tail',label = 'Tail (mm):')),
+                 column(3, textInput('tarsus',label = 'Tarsus (mm):'))),
+               fluidRow(
+                 column(2, textInput('featherID', label = 'Feather ID:')),
+                 column(10, textInput('notes', label = 'Notes:'))),
+               br(),
+               actionButton('submitRecord', 'Add record to table',
+                                      class = "btn-primary"),
+                          width = 6, position = 'right'),
+             # ---- Encounter text ----------------------------------------------------
+             mainPanel(
+               textBanding, 
+               hr(),
+               ttBandTime, ttBanderInitials, ttEncounterType,
+               ttSpecies, ttBandNumber, ttColorCombo, ttAgeThroughFat, 
+               ttMassThroughTarsus,
+               ttFeatherID,
+               width = 6, position = 'left')
+             ),
+           hr(),
+           # ---- QC and submission ---------------------------------------------------
+           h3(strong('Quality Control and submission of encounter records:')),
+           br(),
+           DT::dataTableOutput("responses"),
+           br(),
+           fluidRow(column(1, ''),
+                    column(4, actionButton("delete", "Delete record", 
+                                           class = "btn-primary")),
+                    column(3, ' '),
+                    column(4, actionButton('submitEncounterData', 
+                                           'Submit encounter data',
+                                             class = "btn-primary"))
+                    ),
+           br(), br()
+           ),
+  #--------------------------------------------------------------------------------*
+  # ---- UI TAB PANEL: QUERY RECORDS ----
+  #--------------------------------------------------------------------------------*
+  tabPanel(strong('Query records'),
+           textQuery,
+           fluidRow(column(11, DT::dataTableOutput('encounterTable')))
+  ),
+  #-------------------------------------------------------------------------------*
+  # ---- UI TAB PANEL: POINT COUNT ----
+  #-------------------------------------------------------------------------------*
+  tabPanel(strong('Point count data')),
+  #-------------------------------------------------------------------------------*
+  # ---- UI TAB PANEL: NEST DATA ----
+  #-------------------------------------------------------------------------------*
+  tabPanel(strong('Nest data')),
+  #-------------------------------------------------------------------------------*
+  # ---- UI TAB PANEL: HABITAT SURVEY ----
+  #-------------------------------------------------------------------------------*
+  tabPanel(strong('Habitat survey data'))
+  )
 
-      #-----------------------------------------------------------------------------*
-      # ---- SERVER: BANDING DATA SUBMISSION ----
-      #-----------------------------------------------------------------------------*
-      # input fields are treated as a group
-      formData <- reactive({
-        sapply(names(getTableMetadata()$fields), function(x) input[[x]])
-      })
-      
-      # Click "Submit" button -> save data
-      
-      observeEvent(input$submitRecord, {
-        if (input$id != "0") {
-          updateData(formData())
-        } else {
-          createData(formData())
-          updateInputs(createDefaultRecord(), session)
-        }
-      }, priority = 1)
-      
-      # Press "Delete" button -> delete from data
-      observeEvent(input$delete, {
-        DeleteData(formData())
-        updateInputs(createDefaultRecord(), session)
-      })
-      
-      # Select row in table -> show details in inputs
-      observeEvent(input$responses_rows_selected, {
-        if (length(input$responses_rows_selected) > 0) {
-          data <- readData()[input$responses_rows_selected, ]
-          updateInputs(data, session)
-        }
-        
-      })
-      
-      shinyjs::disable("id")
-      
-      # display table
-      output$responses <- DT::renderDataTable({
-        #update after submit is clicked
-        input$submit
-        #update after delete is clicked
-        input$delete
-        readData()
-      }, server = FALSE, selection = "single",
-      colnames = unname(getTableMetadata()$fields)[-1]
-      )    
-      
+#=================================================================================*
+# ---- SERVER ----
+#=================================================================================*
+
+server <- function(input, output, session) {
+  #-------------------------------------------------------------------------------*
+  # ---- SERVER: VISIT DATA ----
+  #-------------------------------------------------------------------------------*
+  # Link fields to input:
+  visitData <- reactive({
+    data <- sapply(visitFields, function(x) input[[x]])
+    data
+  })
+  
+  # When the Submit button is clicked, save form data:
+  observeEvent(input$submitVisitData, {
+    saveVisitData(visitData())
+  })
+  
+  #-------------------------------------------------------------------------------*
+  # ---- SERVER: ENCOUNTER DATA ----
+  #-------------------------------------------------------------------------------*
+  
+  # input fields are treated as a group
+  formData <- reactive({
+    sapply(names(getTableMetadata()$fields), function(x) input[[x]])
+  })
+  
+  # Click "Submit" button -> save data
+  observeEvent(input$submitRecord, {
+    if (input$id != "0") {
+      updateData(formData())
+    } else {
+      createData(formData())
+      updateInputs(createDefaultRecord(), session)
+    }
+    updateInputs(createDefaultRecord(), session)
+  })
+  
+  # Press "Delete" button -> delete from data
+  observeEvent(input$delete, {
+    deleteData(formData())
+    updateInputs(createDefaultRecord(), session)
+  })
+  
+  # Select row in table -> show details in inputs
+  observeEvent(input$responses_rows_selected, {
+    if (length(input$responses_rows_selected) > 0) {
+      data <- readData()[input$responses_rows_selected, ]
+      updateInputs(data, session)
+    }
+  })
+  
+  shinyjs::disable("id")
+  
+  # display table
+#   output$responses <- DT::renderDataTable({
+#     #update after submit is clicked
+#     input$submitRecord
+#     #update after delete is clicked
+#     input$delete
+#     readData()
+#   }, server = FALSE, selection = "single",
+#   colnames = unname(getTableMetadata()$fields)[-1]
+#   )
+  
+  reactiveOut <- reactive({
+    input$submitRecord
+    input$delete
+    readData()
+  })
+  
+  output$responses <- DT::renderDataTable({
+    reactiveOut()
+    },
+    server = FALSE, selection = "single",
+    colnames = unname(getTableMetadata()$fields)[-1]
+    )
+  
+  # Submit encounter data from table
+  observeEvent(input$submitEncounterData, {
+    saveEncounterData(reactiveOut())
+  })
+  
+  #-------------------------------------------------------------------------------*
+  # ---- SERVER: QUERY BANDING RECORDS ----
+  #-------------------------------------------------------------------------------*
+  output$encounterTable = DT::renderDataTable(
+    datatable(encounters, filter = 'bottom'))
+
+  #-------------------------------------------------------------------------------*
+  # ---- SERVER: BANDING DATA SUBMISSION ----
+  #-------------------------------------------------------------------------------*
+#   # input fields are treated as a group
+#   formData <- reactive({
+#     sapply(names(getTableMetadata()$fields), function(x) input[[x]])
+#   })
+#   
+#   # Click "Submit" button -> save data
+#   
+#   observeEvent(input$submitRecord, {
+#     if (input$id != "0") {
+#       updateData(formData())
+#     } else {
+#       createData(formData())
+#       updateInputs(createDefaultRecord(), session)
+#     }
+#   }, priority = 1)
+#   
+#   # Press "Delete" button -> delete from data
+#   observeEvent(input$delete, {
+#     DeleteData(formData())
+#     updateInputs(createDefaultRecord(), session)
+#   })
+#   
+#   # Select row in table -> show details in inputs
+#   observeEvent(input$responses_rows_selected, {
+#     if (length(input$responses_rows_selected) > 0) {
+#       data <- readData()[input$responses_rows_selected, ]
+#       updateInputs(data, session)
+#     }
+#   })
+#   
+#   shinyjs::disable("id")
+#   
+#   # display table
+#   output$responses <- DT::renderDataTable({
+#     #update after submit is clicked
+#     input$submit
+#     #update after delete is clicked
+#     input$delete
+#     readData()
+#   }, server = FALSE, selection = "single",
+#   colnames = unname(getTableMetadata()$fields)[-1]
+#   )    
+  
 #       values <- reactiveValues()
 #       # Blank data frame:
 #       values$df <- data.frame(Site = numeric(0), Date = numeric(0),
@@ -671,12 +739,12 @@ shinyApp(
 #         session$sendCustomMessage(type = 'testmessage',
 #                                   message = list(a = 1, b = 'text',
 #                                                  controller = input$controller))
-      # })
-      #-----------------------------------------------------------------------------*
-      # ---- SERVER: DATA DOWNLOAD ----
-      #-----------------------------------------------------------------------------*
-      
-      
+  # })
+  #-------------------------------------------------------------------------------*
+  # ---- SERVER: DATA DOWNLOAD ----
+  #-------------------------------------------------------------------------------*
+  
+  
 #       output$submitBandingData <- downloadHandler(
 #         # This function returns a string which tells the client
 #         # browser what name to use when saving the file.
@@ -693,5 +761,6 @@ shinyApp(
 #                       row.names = FALSE)
 #         }
 #       )
-      }
-  )
+  }
+
+shinyApp(ui, server)
