@@ -1,7 +1,7 @@
 
 # Define fields for visit data:
 
-visitFields <- c('hub', 'site', 'date', 'observer', 'startNetTime', 'endNetTime',
+visitFields <- c('hub', 'site', 'observer', 'startNetTime', 'endNetTime',
                  'netCount', 'netHours', 'startRsTime', 'endRsTime',
                  'rsPathDistace', 'amroUnbanded', 'bcchUnbanded', 'brthUnbanded',
                  'cachUnbanded', 'carwUnbanded', 'grcaUnbanded', 'howrUnbanded',
@@ -30,8 +30,9 @@ timeOfDay <- format(seq(ISOdate(2000, 1, 1), ISOdate(2000,1,2),
 
 choiceTimeOfDay <- c('',timeOfDay)
 
-choiceSpecies <- c('', 'AMRO', 'BCCH', 'BRTH', 'CACH', 'CARW', 'GRCA', 
-                   'HOWR','NOCA','NOMO','SOSP','TUTI','UNCH')
+choiceSpecies <- c('', 'AMRO', 'BCCH', 'BRTH', 'CACH', 'CARW', 
+                   'EAPH','GRCA','HOWR','NOCA','NOMO','SOSP',
+                   'TUTI','UNCH')
 
 colorValues <- c('', 'AL', 'BU', 'BK', 'G', 'O','PK', 'PU','R', 'Y', 'W')
 
