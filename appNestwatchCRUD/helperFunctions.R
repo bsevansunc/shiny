@@ -7,12 +7,12 @@
 # Save visit data to Dropbox:
 
 saveVisitData <- function(visitData) {
-  data <- t(visitData)
+  # data <- visitData 
   # Create a unique file name
   fileName <- sprintf("%s_%s.csv", as.integer(Sys.time()), digest::digest(data))
   # Write the data to a temporary file locally
   filePath <- file.path(tempdir(), fileName)
-  write.csv(data, filePath, row.names = FALSE, quote = TRUE)
+  write.csv(visitData, filePath, row.names = FALSE, quote = TRUE)
   # Upload the file to Dropbox
   drop_upload(filePath, dest = 'visitData')
 }
@@ -38,7 +38,7 @@ saveEncounterData <- function(encounterData) {
 
 castData <- function(data) {
   datar <- data.frame(sitev = as.character(data["sitev"]),
-                      datev = as.character(data["datev"]),
+                      datev = dateOut, #as.character(data["datev"]),
                       bandTime = as.character(data["bandTime"]),
                       bander = data["bander"],
                       encounterType = data["encounterType"],
@@ -65,7 +65,7 @@ castData <- function(data) {
 createDefaultRecord <- function() {
   mydefault <- castData(list(id = "0", 
                              sitev = '',
-                             datev = '',
+                             datev = Sys.time(),
                              bandTime = '',
                              bander = '',
                              encounterType = '',
@@ -90,7 +90,7 @@ createDefaultRecord <- function() {
 updateInputs <- function(data, session) {
   updateTextInput(session, "id", value = unname(rownames(data)))
   updateTextInput(session, "sitev", value = unname(data['sitev']))
-  updateTextInput(session, "datev", value = unname(data['datev']))
+  updateTextInput(session, "datev", value = dateOut)#unname(as.character(data['datev'])))
   updateTextInput(session, "bandTime", value = unname(data["bandTime"]))
   updateTextInput(session, "bander", value = unname(data["bander"]))
   updateTextInput(session, "encounterType", value = unname(data["encounterType"]))
