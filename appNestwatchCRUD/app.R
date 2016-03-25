@@ -78,9 +78,10 @@ ui <- navbarPage(
                                    selected = NULL))),
                 fluidRow(
                   column(6,
-                         selectizeInput('date', label = 'Date:', 
-                                   choices = choiceDate,
-                                   selected = as.character(Sys.Date()))),
+                         dateInput('date',
+                                   label = 'Date: yyyy-mm-dd',
+                                   value = Sys.Date()
+                         )),
                   column(6,
                          textInput("observer", "Observer initials:"))),
                 br(),
@@ -193,9 +194,10 @@ ui <- navbarPage(
                  column(5, selectizeInput('sitev', 'Site:', 
                                 choices = choiceSites,
                                 selected = NULL)),
-                 column(5, selectizeInput('datev', label = 'Date:',
-                                          choices = choiceDate,
-                                          selected = as.character(Sys.Date())))
+                 column(5, dateInput('datev',
+                                     label = 'Date: yyyy-mm-dd',
+                                     value = Sys.Date()
+                 ))
                  ),
                fluidRow(
                  column(4, selectizeInput('bandTime', 'Time:',
@@ -228,8 +230,8 @@ ui <- navbarPage(
                  column(3, textInput('tail',label = 'Tail (mm):')),
                  column(3, textInput('tarsus',label = 'Tarsus (mm):'))),
                fluidRow(
-                 column(2, textInput('featherID', label = 'Feather ID:')),
-                 column(10, textInput('notes', label = 'Notes:'))),
+                 column(4, textInput('featherID', label = 'Feather ID:')),
+                 column(8, textInput('notes', label = 'Notes:'))),
                br(),
                fluidRow(column(1, ''),
                         column(3, actionButton("newRecord", "New record (clear fields)",
@@ -297,8 +299,9 @@ server <- function(input, output, session) {
   #-------------------------------------------------------------------------------*
   # Link fields to input:
   visitData <- reactive({
-    data <- sapply(visitFields, function(x) input[[x]])
-    data
+    dateOut <- as.character(input$date)
+    data <- t(sapply(visitFields, function(x) input[[x]]))
+    cbind(dateOut, data)
   })
   
   # When the Submit button is clicked, save form data:
@@ -320,6 +323,7 @@ server <- function(input, output, session) {
   # Click "Submit record" button to push result to table:
   
   observeEvent(input$submitRecord, {
+    dateOut <<- as.character(input$datev) # added mar 25
     if (input$id != "0") {
       updateData(formData())
     } else {
@@ -331,20 +335,22 @@ server <- function(input, output, session) {
   # Click "Delete" to remove a single record:
   
   observeEvent(input$delete, {
+    dateOut <<- as.character(input$datev) # added mar 25
     deleteData(formData())
     updateInputs(createDefaultRecord(), session)
   }, priority = 1)
   
-  
   # Press "New record" button to display empty record:
   
   observeEvent(input$newRecord, {
+    dateOut <<- as.character(input$datev) # added mar 25
     updateInputs(createDefaultRecord(), session)
   })
   
   # Select row in table to show details in inputs:
   
   observeEvent(input$responses_rows_selected, {
+    dateOut <<- as.character(input$datev) # added mar 25
     if (length(input$responses_rows_selected) > 0) {
       data <- readData()[input$responses_rows_selected, ]
       updateInputs(data, session)
@@ -356,6 +362,7 @@ server <- function(input, output, session) {
   # Inputs and submissions to temp data file:
   
   reactiveOut <- reactive({
+    dateOut <<- as.character(input$datev) # added mar 25
     input$submitRecord
     input$delete
     readData()
@@ -364,6 +371,7 @@ server <- function(input, output, session) {
   # Display output table:
   
   output$responses <- DT::renderDataTable({
+    dateOut <<- as.character(input$datev) # added mar 25
     reactiveOut()
     },
     server = FALSE, selection = "single",
