@@ -25,9 +25,11 @@ choiceDate <- c('', seq(
   as.Date(ISOdate(2030, 1, 1)), 1) %>%
     as.character)
 
-timeOfDay <- format(seq(ISOdate(2000, 1, 1), ISOdate(2000,1,2), 
+timeOfDay0 <- format(seq(ISOdate(2000, 1, 1), ISOdate(2000,1,2), 
                         by = 'min'), '%H:%M') %>% 
-  unique %>% sort %>% as.character
+  unique %>% sort
+
+timeOfDay <- timeOfDay0[301:1321]
 
 choiceTimeOfDay <- c('',timeOfDay)
 
