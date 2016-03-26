@@ -2,7 +2,7 @@
 # ---- SET-UP ----
 #=================================================================================*
 
-# Primary sources:
+# Sources used:
 
 # Form input: http://deanattali.com/2015/06/14/mimicking-google-form-shiny/
 # CRUD application: http://ipub.com/shiny-crud-app/
@@ -88,11 +88,6 @@ ui <- navbarPage(
                 # ---- Banding effort --------------------------------------------
                 h4(strong('Banding effort:')),
                 fluidRow(
-                  column(6, selectizeInput('startNetTime', 'Nets opened:', 
-                                           choices = choiceTimeOfDay)),
-                  column(6, selectizeInput('endNetTime', 'Nets closed:', 
-                                           choices = choiceTimeOfDay))),
-                fluidRow(
                   column(6, selectizeInput('netCount', 'Number of nets:', 
                                            choices = choiceNetCount)),
                   column(6, selectizeInput('netHours', 'Net hours:', 
@@ -101,61 +96,67 @@ ui <- navbarPage(
                 # ---- Resight effort --------------------------------------------
                 h4(strong('Resight effort:')),
                 fluidRow(
-                  column(4, selectizeInput('startRsTime', 'Started resight:', 
+                  column(4, selectizeInput('startRsTime', 'Resight, start time:', 
                                            choices = choiceTimeOfDay)),
-                  column(4, selectizeInput('endRsTime', 'Ended resight:', 
+                  column(4, selectizeInput('endRsTime', 'Resight, end time:', 
                                            choices = choiceTimeOfDay)),
                   column(4, textInput('rsPathDistance',
-                                      'Path distance traveled:'))),
+                                      'Path distance traveled (m):'))),
                 h5(strong('Observed, unbanded:')),
                 fluidRow(column(1, 'AMRO'),
                          column(2, selectizeInput(
                            'amroUnbanded', label = NULL,
                            choiceCount)),
-                         column(1, 'CACH'),
-                         column(2, selectizeInput(
-                           'cachUnbanded', label = NULL,
-                           choiceCount)),
-                         column(1, 'HOWR'),
-                         column(2, selectizeInput(
-                           'howrUnbanded', label = NULL,
-                           choiceCount)),
-                         column(1, 'SOSP'),
-                         column(2, selectizeInput(
-                           'sospUnbanded', label = NULL,
-                           choiceCount))),
-                fluidRow(column(1, 'BCCH'),
+                         column(1, 'BCCH'),
                          column(2, selectizeInput(
                            'bcchUnbanded', label = NULL,
                            choiceCount)),
-                         column(1, 'CARW'),
+                         column(1, 'BRTH'),
+                         column(2, selectizeInput(
+                           'brthUnbanded', label = NULL,
+                           choiceCount)),
+                         column(1, 'CACH'),
+                         column(2, selectizeInput(
+                           'cachUnbanded', label = NULL,
+                           choiceCount))),
+                fluidRow(column(1, 'CARW'),
                          column(2, selectizeInput(
                            'carwUnbanded', label = NULL,
                            choiceCount)),
-                         column(1, 'NOCA'),
+                         column(1, 'EAPH'),
                          column(2, selectizeInput(
-                           'nocaUnbanded', label = NULL,
-                           choiceCount)),
-                         column(1, 'TUTI'),
-                         column(2, selectizeInput(
-                           'tutiUnbanded', label = NULL,
-                           choiceCount))),
-                fluidRow(column(1, 'BRTH'),
-                         column(2, selectizeInput(
-                           'brthUnbanded', label = NULL,
+                           'eaphUnbanded', label = NULL,
                            choiceCount)),
                          column(1, 'GRCA'),
                          column(2, selectizeInput(
                            'grcaUnbanded', label = NULL,
                            choiceCount)),
+                         column(1, 'HOWR'),
+                         column(2, selectizeInput(
+                           'howrUnbanded', label = NULL,
+                           choiceCount))),
+                fluidRow(column(1, 'NOCA'),
+                         column(2, selectizeInput(
+                           'nocaUnbanded', label = NULL,
+                           choiceCount)),
                          column(1, 'NOMO'),
                          column(2, selectizeInput(
                            'nomoUnbanded', label = NULL,
                            choiceCount)),
-                         column(1, 'UNCH'),
+                         column(1, 'SOSP'),
+                         column(2, selectizeInput(
+                           'sospUnbanded', label = NULL,
+                           choiceCount)),
+                         column(1, 'TUTI'),
+                         column(2, selectizeInput(
+                           'tutiUnbanded', label = NULL,
+                           choiceCount))),
+                fluidRow(column(1, 'UNCH'),
                          column(2, selectizeInput(
                            'unchUnbanded', label = NULL,
-                           choiceCount))),
+                           choiceCount
+                         )),
+                         column(9, '')),
                 br(),
                 h4(strong('Did you band or encounter a banded bird during your visit?')),
                 radioButtons('encounteredBirds', label = NULL,
@@ -164,18 +165,26 @@ ui <- navbarPage(
                 br(),
                 h4(strong('Visit notes:')),
                 br(),
+                #div(id = "form", ...),
                 # ---- Notes -----------------------------------------------------
                 fluidRow(column(12, textInput('visitNotes', 
                                               label = NULL))),
                 br(),
                 actionButton("submitVisitData", "Submit visit data", 
                              class = "btn-primary"),
+                shinyjs::hidden(
+                  div(
+                    id = "thankyou_msgVisit",
+                    h3("Thanks, your visit data have been recorded!")
+                    #actionLink("submit_another", "Submit another response")
+                  )
+                ),
                 width = 6, position = 'right'),
             # ---- Visit text ----------------------------------------------------
             mainPanel(
               textVisit, hr(),
               ttRegion, ttSite, ttVisitDate, ttVisitObserver, ttNetCount,
-              ttNetHours, ttVisitNotes, ttStartEndResightTime, ttPathDistance,
+              ttNetHours, ttStartEndResightTime, ttPathDistance,
               ttObservedUnbanded, ttEncounteredBirds, ttVisitNotes, 
               width = 6, position = 'left'))),
   #-------------------------------------------------------------------------------*
@@ -230,8 +239,10 @@ ui <- navbarPage(
                  column(3, textInput('tail',label = 'Tail (mm):')),
                  column(3, textInput('tarsus',label = 'Tarsus (mm):'))),
                fluidRow(
-                 column(4, textInput('featherID', label = 'Feather ID:')),
-                 column(8, textInput('notes', label = 'Notes:'))),
+                 column(6, textInput('featherID', label = 'Feather ID:')),
+                 column(6, '')),
+               fluidRow(
+                 column(12, textInput('notes', label = 'Notes:'))),
                br(),
                fluidRow(column(1, ''),
                         column(3, actionButton("newRecord", "New record (clear fields)",
@@ -253,7 +264,7 @@ ui <- navbarPage(
              ),
            hr(),
            # ---- QC and submission ---------------------------------------------------
-           h3(strong('Quality Control and submission of encounter records:')),
+           h3(strong('Data-proofing and submission of encounter records:')),
            br(),
            DT::dataTableOutput("responses"),
            br(),
@@ -307,6 +318,7 @@ server <- function(input, output, session) {
   # When the Submit button is clicked, save form data:
   observeEvent(input$submitVisitData, {
     saveVisitData(visitData())
+    shinyjs::show("thankyou_msgVisit")
   })
   
   #-------------------------------------------------------------------------------*
