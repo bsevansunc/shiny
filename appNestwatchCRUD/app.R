@@ -68,7 +68,8 @@ ui <- navbarPage(
               sidebarPanel(
                 br(),
                 # ---- Site and observer -----------------------------------------
-                h4(strong('Visit')),
+                h4(strong('Visit:')),
+                br(),
                 fluidRow(
                   column(4,
                     selectInput('hub','Regional Hub:', choiceRegions)),
@@ -76,6 +77,7 @@ ui <- navbarPage(
                     selectizeInput('site', 'Site:',  
                                    choices = choiceSites,
                                    selected = NULL))),
+                br(),
                 fluidRow(
                   column(6,
                          dateInput('date',
@@ -87,6 +89,7 @@ ui <- navbarPage(
                 br(),
                 # ---- Banding effort --------------------------------------------
                 h4(strong('Banding effort:')),
+                br(),
                 fluidRow(
                   column(6, selectizeInput('netCount', 'Number of nets:', 
                                            choices = choiceNetCount)),
@@ -95,6 +98,7 @@ ui <- navbarPage(
                 br(),
                 # ---- Resight effort --------------------------------------------
                 h4(strong('Resight effort:')),
+                br(),
                 fluidRow(
                   column(4, selectizeInput('startRsTime', 'Resight, start time:', 
                                            choices = choiceTimeOfDay)),
@@ -102,6 +106,7 @@ ui <- navbarPage(
                                            choices = choiceTimeOfDay)),
                   column(4, textInput('rsPathDistance',
                                       'Path distance traveled (m):'))),
+                br(),
                 h5(strong('Observed, unbanded:')),
                 fluidRow(column(1, 'AMRO'),
                          column(2, selectizeInput(
@@ -207,7 +212,7 @@ ui <- navbarPage(
                                      label = 'Date: yyyy-mm-dd',
                                      value = Sys.Date()
                  ))
-                 ),
+                 ), br(),
                fluidRow(
                  column(4, selectizeInput('bandTime', 'Time:',
                                           choices = choiceTimeOfDay)),
@@ -216,6 +221,7 @@ ui <- navbarPage(
                                           'Encounter type:',
                                           choices = choiceEncounterType, 
                                           selected = 'Band'))),
+               br(),
                fluidRow(
                  column(4, selectizeInput('species', label = 'Species:',
                                           choices = choiceSpecies)),
@@ -233,28 +239,35 @@ ui <- navbarPage(
                                           choices = choiceBreedingCond)),
                  column(3, selectizeInput('fat',label = 'Fat:',
                                           choices = choiceFat))),
+               br(),
                fluidRow(
                  column(3, textInput('mass',label = 'Mass (g):')),
                  column(3, textInput('wing',label = 'Wing (mm):')),
                  column(3, textInput('tail',label = 'Tail (mm):')),
                  column(3, textInput('tarsus',label = 'Tarsus (mm):'))),
+               br(),
                fluidRow(
                  column(6, textInput('featherID', label = 'Feather ID:')),
                  column(6, '')),
+               br(),
                fluidRow(
                  column(12, textInput('notes', label = 'Notes:'))),
                br(),
                fluidRow(column(1, ''),
-                        column(3, actionButton("newRecord", "New record (clear fields)",
+                        column(3, actionButton("newRecord", "Clear fields",
                                                class = 'btn-primary')),
                         column(2, ''),
                         column(3, actionButton('submitRecord', 'Add record to table',
                                                class = "btn-primary")),
                         column(3, '')),
+               br(),
                width = 6, position = 'right'),
              # ---- Encounter text ----------------------------------------------------
              mainPanel(
-               textBanding, 
+               textBandingIntro,
+               textBandingList1,
+               textBandingIntro2,
+               textBandingList2,
                hr(),
                ttBandTime, ttBanderInitials, ttEncounterType,
                ttSpecies, ttBandNumber, ttColorCombo, ttAgeThroughFat, 
