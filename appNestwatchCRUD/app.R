@@ -74,9 +74,10 @@ ui <- navbarPage(
                   column(4,
                     selectInput('hub','Regional Hub:', choiceRegions)),
                     column(8,
-                    selectizeInput('site', 'Site:',  
-                                   choices = choiceSites,
-                                   selected = NULL))),
+#                     selectizeInput('site', 'Site:',  
+#                                    choices = choiceSites,
+#                                    selected = NULL))),
+                      selectInput('site', 'Site', ''))),
                 br(),
                 fluidRow(
                   column(6,
@@ -317,6 +318,20 @@ ui <- navbarPage(
 #=================================================================================*
 
 server <- function(input, output, session) {
+  # Update site drop-down menu as a function of the hub:
+  observe({
+    inHub <- input$hub
+    print(inHub)
+    if(is.null(inHub))
+      return(NULL)
+    siteNames <- encounters %>%
+      select(hub, site) %>%
+      distinct %>%
+      filter(hub == inHub) %>%
+      arrange(site) %>%
+      .$site
+    updateSelectInput(session, 'site', choices = siteNames)
+  })
   
   #-------------------------------------------------------------------------------*
   # ---- SERVER: VISIT DATA ----
