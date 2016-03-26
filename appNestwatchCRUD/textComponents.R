@@ -18,7 +18,16 @@ ttNetHours <- p(strong('Net hours:'), 'You can either select net hours from the 
 
 ttStartEndResightTime <- p(strong('Start resight time, End resight time:'), 'These are the times in which you began and ended your targeted resight effort. All times are to be entered in the 24-hour clock (ISO 8601 time format), for example 1 pm would be provided as 13:00.', em('Note: targeted resighting does not include time spent at a site doing other activities (e.g., nest searching or banding).'))
 
-ttPathDistance <- p(strong('Path distance traveled:'), ' If you had a GPS unit with you, this is the path distance that you recorded on your GPS unit, in meters.')
+ttPathDistance <- p(strong('Path distance traveled:'), ' If you had a GPS unit with you, this is the path distance that you recorded on your GPS unit, in meters.',
+                    helpText('Note: To find out how to record path distance on a Garmin eTrex, please see',
+                             a(href = "http://www8.garmin.com/learningcenter/on-the-trail/etrex/",
+                               target="_blank", "this link.")))
+
+helpText(
+  "For more information on this tool please go to the following address: ",
+  a(href="http://www.example.com", target="_blank", "Example")
+)
+
 
 ttObservedUnbanded <- p(strong('Observed, unbanded:'), 'As a measure of resight effort, we would like you to record the number of unbanded individuals observed during your', em('targeted'), 'resight activity. Only include counts representing species that have been previously banded at a site. If you have encountered all individuals for a given species prior to targeted resighting, do not record counts for this species.')
 
@@ -36,7 +45,7 @@ ttEncounterType <- p(strong('Encounter type:'), ' Select the type of encounter f
 
 ttSpecies <- p(strong('Species:'), ' Drop-down menu choices only include Nestwatch focal species. Store all other encounter data locally.')
 
-ttBandNumber <- p(strong('Band number:'), ' Please include only the numeric band number in this field (no dashes).')
+ttBandNumber <- p(strong('Band number:'), 'Separate band prefix and suffix with a "-". Do not include any spaces. If you did not add an aluminum band, type "NA". If you resighted a bird and were not able to identify the band in the query table (on the next tab), type "UNK".')
 
 ttColorCombo <- p(strong('Color combo:'), ' Enter color combinations as L/L,R/R. Do not include any spaces. Color abbreviations must match those used on the website for Nestwatch participants.')
 
@@ -54,6 +63,21 @@ ttBandNotes <- 'Any other observations to report on this bird? Provide it here!'
 
 textVisit <- p(strong('Start by entering your visit data.'), 'These data only need to be entered once for each site visit. After entering data into a field, press enter and tab to the next field. When you finish entering the data for each of the fields, make sure to double-check all of your entries for accuracy then press the', em('Submit visit data'),  'button.', strong('Do not enter banding, resight, point count, nest, or habitat survey data prior to completing and submitting this form!'))
 
-textBanding <- p(strong('AFTER entering visit data you are ready to enter your encounter records!'), ' This page is divided into two sections: ', strong('1) Encounter record:'), ' Enter one record for each individual. If you do not have data for a given field, leave that field blank. After entering all available data press the ', em('Add record to table'),'button. If you are unsure of the band number of a resighted bird use the', em('Query records'), 'form on the next tab to find the identity of the resighted bird. If the available fields on the data entry form are not blank (with the exception of Id, Date, and Encounter Type), click the ',em('Clear fields'), 'button. It is not otherwise necessary to click this button prior to each entry.', strong('2) Data-proofing and submission of encounter records:'), 'After entering all of the records from your visit, compare table values with your paper record. If you find mistakes, select the record with your mouse -- you will notice that the fields above will be filled with that records entry and can simply be modified. If you need to remove the entire record, simply select that record with your mouse and click', em('Delete record.'), 'After you are confident of the quality of data provided, press the ', em('Submit encounter data'), 'button.')
+textBandingIntro <- p(strong('AFTER entering visit data you are ready to enter your encounter records!'), ' This page is divided into two sections: ', br(), strong('1) Encounter record:'))
+
+textBandingList1 <- tags$ul(
+  tags$li('Enter one record for each individual.'),
+  tags$li('If you do not have data for a given field, leave that field blank.'),
+  tags$li('After entering all available data press the ', em('Add record to table'),'button.'),
+  tags$li('If you are unsure of the band number of a resighted bird use the', em('Query records'), 'form on the next tab to find the identity of the resighted bird.'),
+  tags$li('If the available fields on the data entry form are not blank (with the exception of Id, Date, and Encounter Type), click the ',em('Clear fields'), 'button.'))
+          
+textBandingIntro2 <- p(strong('2) Data-proofing and submission of encounter records:'))
+
+textBandingList2 <- tags$ul(
+  tags$li('After entering all of the records from your visit, compare table values with your paper record.'),
+  tags$li('If you find mistakes, select the record with your mouse -- you will notice that the fields above will be filled with that records entry and can simply be modified.'),
+  tags$li('If you need to remove the entire record, simply select that record with your mouse and click', em('Delete record.')),
+  tags$li('After you are confident of the quality of data provided, press the ', em('Submit encounter data'), 'button.'))
 
 textQuery <- p('Query the table below to search for the band number associated with a given resight. While only 5 rows of data are shown, the table includes the initial record (band encounter) across all Neighborhood Nestwatch banding records and regional hubs. You can adjust the number of rows viewed using the "Show __ entries" drop-down button. You can sort the data table by column by clicking the column header. For example, to sort the data table by date, you would click on the "Date" column header. Query fields are at the bottom of each column. Use these fields to subset the data table. Data may be subset using partial matching. For example, typing "bu" in the Color combo field will match blue color bands on either leg or position. Likewise, typing "bu/bu" will query all records in which either leg has a blue over blue color band combo. You can use the search tool on the upper-right to query all fields simultaneously. Query fields are not case-sensitive.')
