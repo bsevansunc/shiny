@@ -37,6 +37,8 @@ ttVisitNotes <- p(strong('Visit notes:'), 'Have anything else to say about your 
 
 # ---- Encounter tooltips: --------------------------------------------------------
 
+ttId <- p(strong('Id:'), 'You do not need to enter any data into this field.')
+
 ttBandTime <- p(strong('Time:'), ' This is the time (24-hour format) in which you began processing the bird.')
 
 ttBanderInitials <- p(strong('Observer initials:'), ' Enter the initials of the technician or techicians (comma-separated) who measured or resighted the bird.')
@@ -66,7 +68,7 @@ textVisit <- p(strong('Start by entering your visit data.'), 'These data only ne
 textBandingIntro <- p(strong('AFTER entering visit data you are ready to enter your encounter records!'), ' This page is divided into two sections: ', br(), strong('1) Encounter record:'))
 
 textBandingList1 <- tags$ul(
-  tags$li('Enter one record for each individual.'),
+  tags$li('Enter one record for each individual, whether captured, recaptured, or resighted.'),
   tags$li('If you do not have data for a given field, leave that field blank.'),
   tags$li('After entering all available data press the ', em('Add record to table'),'button.'),
   tags$li('If you are unsure of the band number of a resighted bird use the', em('Query records'), 'form on the next tab to find the identity of the resighted bird.'),

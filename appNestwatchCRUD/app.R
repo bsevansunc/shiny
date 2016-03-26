@@ -269,7 +269,7 @@ ui <- navbarPage(
                textBandingIntro2,
                textBandingList2,
                hr(),
-               ttBandTime, ttBanderInitials, ttEncounterType,
+               ttId, ttBandTime, ttBanderInitials, ttEncounterType,
                ttSpecies, ttBandNumber, ttColorCombo, ttAgeThroughFat, 
                ttMassThroughTarsus,
                ttFeatherID,
