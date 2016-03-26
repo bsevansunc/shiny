@@ -38,6 +38,11 @@ encounters <- read.csv('encounters.csv', stringsAsFactors = F) %>%
   mutate(date = as.Date(date),
          site = toupper(site)) 
 
+# Load species by hub data:
+
+hubSpecies <- read.csv('hubSpecies.csv', stringsAsFactors = F) %>%
+  tbl_df
+
 #---------------------------------------------------------------------------------*
 # ---- Source functions ----
 #---------------------------------------------------------------------------------*
@@ -225,8 +230,9 @@ ui <- navbarPage(
                                           selected = 'Band'))),
                br(),
                fluidRow(
-                 column(4, selectizeInput('species', label = 'Species:',
-                                          choices = choiceSpecies)),
+                 column(4, selectInput('species', 'Species:', '')),
+#                  column(4, selectizeInput('species', label = 'Species:',
+#                                           choices = choiceSpecies)),
                  column(4, textInput('bandNumber', 'Band number:')),
                  column(4, selectizeInput('colorCombo', 
                                           'Color combination:',
@@ -333,6 +339,19 @@ server <- function(input, output, session) {
       .$site
     updateSelectInput(session, 'site', choices = siteNames)
     updateSelectInput(session, 'sitev', choices = siteNames)
+  })
+  
+  # Update species drop-down menu by hub:
+  observe({
+    inHub <- input$hub
+    print(inHub)
+    if(is.null(inHub))
+      return(NULL)
+    siteNames <- hubSpecies %>%
+      filter(hub == inHub) %>%
+      arrange(species) %>%
+      .$species
+    updateSelectInput(session, 'species', choices = siteNames)
   })
   
   #-------------------------------------------------------------------------------*
