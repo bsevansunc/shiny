@@ -206,9 +206,10 @@ ui <- navbarPage(
                br(),
                fluidRow(
                  column(2, shinyjs::disabled(textInput("id", "Id", "0"))),
-                 column(5, selectizeInput('sitev', 'Site:', 
-                                choices = choiceSites,
-                                selected = NULL)),
+#                  column(5, selectizeInput('sitev', 'Site:', 
+#                                 choices = choiceSites,
+#                                 selected = NULL)),
+                 column(5, selectInput('sitev', 'Site', '')),
                  column(5, dateInput('datev',
                                      label = 'Date: yyyy-mm-dd',
                                      value = Sys.Date()
@@ -331,6 +332,7 @@ server <- function(input, output, session) {
       arrange(site) %>%
       .$site
     updateSelectInput(session, 'site', choices = siteNames)
+    updateSelectInput(session, 'sitev', choices = siteNames)
   })
   
   #-------------------------------------------------------------------------------*
