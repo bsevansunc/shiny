@@ -1,10 +1,11 @@
 
 # Define fields for visit data:
 
-visitFields <- c('hub', 'site', 'observer', 'startNetTime', 'endNetTime',
+visitFields <- c('hub', 'site', 'observer',
                  'netCount', 'netHours', 'startRsTime', 'endRsTime',
                  'rsPathDistace', 'amroUnbanded', 'bcchUnbanded', 'brthUnbanded',
-                 'cachUnbanded', 'carwUnbanded', 'grcaUnbanded', 'howrUnbanded',
+                 'cachUnbanded', 'carwUnbanded', 'eaphUnbanded','grcaUnbanded',
+                 'howrUnbanded',
                  'nocaUnbanded', 'nomoUnbanded', 'sospUnbanded',
                  'tutiUnbanded', 'unchUnbanded', 'encounteredBird','notes')
 
