@@ -237,7 +237,27 @@ ui <- navbarPage(
                  column(4, selectizeInput('colorCombo', 
                                           'Color combination:',
                                           choices = choiceColorCombos))),
-               br(),
+               hr(),
+               h4(strong('Color bands:')),
+               fluidRow(
+                 column(3, p(strong('- :'), 'No band')),
+                 column(3, p(strong('BK :'), 'Black')),
+                 column(3, p(strong('PK :'), 'Pink')),
+                 column(3, p(strong('Y :'), 'Yellow'))
+               ),
+               fluidRow(
+                 column(3, p(strong('AL :'), 'Aluminum')),
+                 column(3, p(strong('G :'), 'Green')),
+                 column(3, p(strong('P :'), 'Purple')),
+                 column(3, p(strong('W :'), 'White'))
+               ),
+               fluidRow(
+                 column(3, p(strong('BU :'), 'Blue')),
+                 column(3, p(strong('O :'), 'Orange')),
+                 column(3, p(strong('R :'), 'Red')),
+                 column(3, ' ')
+               ),
+               hr(),
                fluidRow(
                  column(3, selectizeInput('age','Age:',
                                           choices = choiceAge)),
