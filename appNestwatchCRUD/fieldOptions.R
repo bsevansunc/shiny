@@ -37,7 +37,7 @@ choiceSpecies <- c('', 'AMRO', 'BCCH', 'BRTH', 'CACH', 'CARW',
                    'EAPH','GRCA','HOWR','NOCA','NOMO','SOSP',
                    'TUTI','UNCH')
 
-colorValues <- c('', 'AL', 'BU', 'BK', 'G', 'O','PK', 'PU','R', 'Y', 'W')
+colorValues <- c('', 'AL', 'BL', 'BK', 'G', 'O','PK', 'P','R', 'Y', 'W')
 
 choiceColorCombos <- expand.grid(rep(list(colorValues), 4)) %>%
   tbl_df %>%
