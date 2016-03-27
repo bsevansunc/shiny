@@ -29,7 +29,7 @@ helpText(
 )
 
 
-ttObservedUnbanded <- p(strong('Observed, unbanded:'), 'As a measure of resight effort, we would like you to record the number of unbanded individuals observed during your', em('targeted'), 'resight foray. Only include counts of species that were previously color-banded at the current site.  For example, if no CARWs wre ever colorbanded at that site, do not cound undbanded CARW during your foray. If you have encountered all individuals for a given species prior to targeted resighting, do not record counts for this species.')
+ttObservedUnbanded <- p(strong('Observed, unbanded:'), 'As a measure of resight effort, we would like you to record the number of unbanded individuals observed during your', em('targeted'), 'resight foray. Only include counts of species that were previously color-banded at the current site.  For example, if no CARWs were ever color-banded at that site, do not count unbanded CARW during your foray. If you have encountered all individuals for a given species prior to targeted resighting, do not record counts for this species.')
 
 ttEncounteredBirds <- p(strong('Did you band or encounter banded birds during your visit?'), 'We want you to keep track of your visits regardless of whether you encountered a banded bird during your visit. It sometimes happens that you are not successful in your efforts to band or re-encounter a bird during a visit. If this is the case, select', em('no.'))
 
