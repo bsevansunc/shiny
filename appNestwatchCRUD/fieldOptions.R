@@ -53,7 +53,7 @@ choiceColorCombos <- expand.grid(rep(list(colorValues), 4)) %>%
            str_replace_all('^,', '-,') %>%
            str_replace_all('^/', '') %>%
            str_replace_all('/$', '') %>%
-           str_replace_all(',', ',')) %>%
+           str_replace_all(',', ', ')) %>%
   distinct %>% .$combo
 
 choiceColorCombos <- c('', choiceColorCombos)
