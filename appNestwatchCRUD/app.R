@@ -36,7 +36,7 @@ aouCodes <- read.csv('speciesAouCodes.csv')
 encounters <- read.csv('encounters.csv', stringsAsFactors = F) %>%
   tbl_df %>%
   mutate(date = as.Date(date),
-         site = toupper(site)) 
+         bandNumber = as.character(bandNumber))
 
 # Load species by hub data:
 
@@ -454,3 +454,5 @@ server <- function(input, output, session) {
   }
 
 shinyApp(ui, server)
+
+#rsconnect::deployApp()
