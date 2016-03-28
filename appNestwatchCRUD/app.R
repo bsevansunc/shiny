@@ -428,10 +428,11 @@ ui <- navbarPage(
                    width = 6, position = 'right'),
 #                  # ---- PC text ----------------------------------------------------
                  mainPanel(
-                   textBandingIntro,
+                   textPcIntro0,
+                   textPcIntro1,
                    hr(),
-                   strong('Find AOU code'),
-                   textQuery,
+                   h4('Find AOU code'),
+                   textAouQuery,
                    fluidRow(column(11, DT::dataTableOutput('aouTable'))),
                    width = 6, position = 'left')
                ),
