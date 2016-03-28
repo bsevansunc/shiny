@@ -29,7 +29,15 @@ library(shinyjs)
 
 # All possible AOU codes (for point counts):
 
-aouCodes <- read.csv('speciesAouCodes.csv')
+aouCodes <- read.csv('speciesAouCodes.csv', stringsAsFactors = FALSE) %>%
+  tbl_df %>%
+  rename(AOU = Alpha.Code, Common = Common.Name, Scientific = Scientific.Name) %>%
+  select(AOU, Common, Scientific)
+
+justAlphaCode <- aouCodes %>% 
+  select(AOU) %>%
+  distinct %>%
+  .$AOU
 
 # Load encounter data:
 
@@ -320,14 +328,112 @@ ui <- navbarPage(
   #--------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: QUERY RECORDS ----
   #--------------------------------------------------------------------------------*
-  tabPanel(strong('Query records'),
+  tabPanel(strong('Query encounter records'),
            textQuery,
            fluidRow(column(11, DT::dataTableOutput('encounterTable')))
   ),
-  #-------------------------------------------------------------------------------*
+  #--------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: POINT COUNT ----
-  #-------------------------------------------------------------------------------*
-  tabPanel(strong('Point count data')),
+  #--------------------------------------------------------------------------------*
+  tabPanel(strong('Point count data'),
+           sidebarLayout(
+             sidebarPanel(
+               div(id = 'pointCountVisitInfo',
+                   shinyjs::useShinyjs(),
+                   h3(strong('Enter point count observation record:')),
+                   fluidRow(
+                     column(3, selectInput('sitePc', 'Site:', '')),
+                     column(3, textInput('observerPc', 'Observer initials:')),
+                     column(3, dateInput('datePc',
+                                       label = 'Date: yyyy-mm-dd',
+                                       value = Sys.Date())),
+                     column(3, selectizeInput('timePc', 'Start time:',
+                                              choices = choiceTimeOfDay))
+                   ),
+                   br(),
+                   h4(strong('Location')),
+                   fluidRow(
+                     column(4, 
+                            textInput('longitude', 
+                                      'Longitude (decimal degrees):')),
+                     column(4, 
+                            textInput('longitude', 
+                                      'Longitude (decimal degrees):')),
+                     column(4,
+                            textInput('accuracy', 'Accuracy (meters):'))
+                   ),
+                   fluidRow(
+                     column(12, textInput('locationNotes', 
+                                          label = 'Location notes:'))),
+                   br(),
+                   h4(strong('Conditions')),
+                   fluidRow(
+                     column(4, selectizeInput('temperature', 'Temperature (C):',
+                                              choices = seq(-10, 40),
+                                              selected = 20)),
+                     column(4, selectizeInput('sky', 'Sky (0-5):',
+                                              choices = seq(0, 5))),
+                     column(4, selectizeInput('wind', 
+                                              'Wind (Beaufort number, 0-6):',
+                                              choices = seq(0, 6)))
+                   ),
+                   h4(strong('Ambient noise (dB)')),
+                   fluidRow(
+                     column(3, selectizeInput('splN', 'N:',
+                                              choices = seq(0, 130))),
+                     column(3, selectizeInput('splE', 'E:',
+                                              choices = seq(0, 130))),
+                     column(3, selectizeInput('splE', 'S:',
+                                              choices = seq(0, 130))),
+                     column(3, selectizeInput('splE', 'W:',
+                                              choices = seq(0, 130)))
+                   )
+                   ),
+               hr(),
+               div(id = 'pointCountData',
+                 # ---- Point count entry ------------------------------------------
+                   h3(strong('Enter point count record:')),
+                   br(),
+                   fluidRow(
+                     column(2, shinyjs::disabled(textInput("id", "Id", "0"))),
+                     column(10, ' ')),
+                   fluidRow(
+                     column(3, selectizeInput('timeInterval', 'Time interval (min):',
+                                              choices = seq(1, 10))),
+                     column(3, selectizeInput('pcSpecies', 
+                                              'Species (AOU alpha code):',
+                                              choices = justAlphaCode)),
+                     column(3, selectizeInput('distancePc', 'Distance (m):',
+                                              choices = 0:100)),
+                     column(3, selectizeInput('detectionMethodPc',
+                                              'Detection Method:',
+                                              choices = c('V','A', 'B')))
+                     ),
+                 br()
+                 ),
+                   width = 6, position = 'right'),
+                 # ---- Encounter text ----------------------------------------------------
+                 mainPanel(
+                   textBandingIntro,
+                   hr(),
+                   width = 6, position = 'left')
+               ),
+               hr(),
+               # ---- QC and submission ---------------------------------------------------
+               h3(strong('Data-proofing and submission of encounter records:')),
+               br(),
+               DT::dataTableOutput("responses"),
+               br(),
+               fluidRow(column(1, ''),
+                        column(4, actionButton("delete", "Delete record", 
+                                               class = "btn-primary")),
+                        column(3, ' '),
+                        column(4, actionButton('submitEncounterData', 
+                                               'Submit encounter data',
+                                               class = "btn-primary"))
+               ),
+               br(), br()
+           ),
   #-------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: NEST DATA ----
   #-------------------------------------------------------------------------------*
