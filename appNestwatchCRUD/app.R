@@ -31,13 +31,15 @@ library(shinyjs)
 
 aouCodes <- read.csv('speciesAouCodes.csv', stringsAsFactors = FALSE) %>%
   tbl_df %>%
-  rename(AOU = Alpha.Code, Common = Common.Name, Scientific = Scientific.Name) %>%
-  select(AOU, Common, Scientific)
+  rename(SpNumber = Species.Number, 
+         Alpha = Alpha.Code, 
+         Common = Common.Name, 
+         Scientific = Scientific.Name)
 
 justAlphaCode <- aouCodes %>% 
-  select(AOU) %>%
+  select(Alpha) %>%
   distinct %>%
-  .$AOU
+  .$Alpha
 
 # Load encounter data:
 
@@ -424,13 +426,15 @@ ui <- navbarPage(
                                               choices = c('Visual','Auditory', 'Both')))
                      )), br(),
                    width = 6, position = 'right'),
-#                  # ---- Encounter text ----------------------------------------------------
+#                  # ---- PC text ----------------------------------------------------
                  mainPanel(
                    textBandingIntro,
                    hr(),
+                   strong('Find AOU code'),
+                   textQuery,
+                   fluidRow(column(11, DT::dataTableOutput('aouTable'))),
                    width = 6, position = 'left')
                ),
-# Good to here
                hr(),
                # ---- QC and submission ---------------------------------------------------
                h3(strong('3) Data-proofing and submission of point count records:')),
@@ -590,6 +594,13 @@ server <- function(input, output, session) {
   #-------------------------------------------------------------------------------*
   output$encounterTable = DT::renderDataTable(
     datatable(encounters, filter = 'bottom'))
+  
+  #-------------------------------------------------------------------------------*
+  # ---- SERVER: QUERY AOU names ----
+  #-------------------------------------------------------------------------------*
+  output$aouTable = DT::renderDataTable(
+    datatable(aouCodes, filter = 'none', rownames = FALSE,
+              options = list(pageLength = 1)))
   }
 
 shinyApp(ui, server)
