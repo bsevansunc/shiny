@@ -79,9 +79,6 @@ ui <- navbarPage(
                   column(4,
                     selectInput('hub','Regional Hub:', choiceRegions)),
                     column(8,
-#                     selectizeInput('site', 'Site:',  
-#                                    choices = choiceSites,
-#                                    selected = NULL))),
                       selectInput('site', 'Site', ''))),
                 br(),
                 fluidRow(
@@ -187,7 +184,6 @@ ui <- navbarPage(
                   div(
                     id = "thankyou_msgVisit",
                     h3("Thanks, your visit data have been recorded!")
-                    #actionLink("submit_another", "Submit another response")
                   )
                 ),
                 width = 6, position = 'right'),
@@ -211,9 +207,6 @@ ui <- navbarPage(
                br(),
                fluidRow(
                  column(2, shinyjs::disabled(textInput("id", "Id", "0"))),
-#                  column(5, selectizeInput('sitev', 'Site:', 
-#                                 choices = choiceSites,
-#                                 selected = NULL)),
                  column(5, selectInput('sitev', 'Site', '')),
                  column(5, dateInput('datev',
                                      label = 'Date: yyyy-mm-dd',
@@ -231,8 +224,6 @@ ui <- navbarPage(
                br(),
                fluidRow(
                  column(4, selectInput('species', 'Species:', '')),
-#                  column(4, selectizeInput('species', label = 'Species:',
-#                                           choices = choiceSpecies)),
                  column(4, textInput('bandNumber', 'Band number:')),
                  column(4, selectizeInput('colorCombo', 
                                           'Color combination:',
@@ -317,7 +308,14 @@ ui <- navbarPage(
                                            'Submit encounter data',
                                              class = "btn-primary"))
                     ),
-           br(), br()
+           br(), 
+           shinyjs::hidden(
+             div(
+               id = "thankyou_msgEncounter",
+               h3("Thanks, your encounter data have been recorded!")
+             )
+           ),
+           br()
            )),
   #--------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: QUERY RECORDS ----
@@ -464,6 +462,7 @@ server <- function(input, output, session) {
   observeEvent(input$submitEncounterData, {
     saveEncounterData(reactiveOut())
     shinyjs::reset("encounterData")
+    shinyjs::show("thankyou_msgEncounter")
   })
   
   #-------------------------------------------------------------------------------*
