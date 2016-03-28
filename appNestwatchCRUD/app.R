@@ -340,7 +340,8 @@ ui <- navbarPage(
              sidebarPanel(
                div(id = 'pointCountVisitInfo',
                    shinyjs::useShinyjs(),
-                   h3(strong('Enter point count observation record:')),
+                   h3(strong('1) Submit site-level point count data:')),
+                   br(),
                    fluidRow(
                      column(3, selectInput('sitePc', 'Site:', '')),
                      column(3, textInput('observerPc', 'Observer initials:')),
@@ -366,7 +367,7 @@ ui <- navbarPage(
                      column(12, textInput('locationNotes', 
                                           label = 'Location notes:'))),
                    br(),
-                   h4(strong('Conditions')),
+                   h4(strong('Weather')),
                    fluidRow(
                      column(4, selectizeInput('temperature', 'Temperature (C):',
                                               choices = seq(-10, 40),
@@ -377,6 +378,7 @@ ui <- navbarPage(
                                               'Wind (Beaufort number, 0-6):',
                                               choices = seq(0, 6)))
                    ),
+                   br(),
                    h4(strong('Ambient noise (dB)')),
                    fluidRow(
                      column(3, selectizeInput('splN', 'N:',
@@ -387,49 +389,61 @@ ui <- navbarPage(
                                               choices = seq(0, 130))),
                      column(3, selectizeInput('splE', 'W:',
                                               choices = seq(0, 130)))
-                   )
                    ),
+               br(),
+               actionButton("submitSiteLevelPcData", 
+                            "Submit site-level point count data", 
+                            class = "btn-primary"),
+               shinyjs::hidden(
+                 div(
+                   id = "thankyou_msgPcSiteLevel",
+                   h3("Thanks, your site-level point count data have been recorded!")
+                 )
+               )),
                hr(),
                div(id = 'pointCountData',
                  # ---- Point count entry ------------------------------------------
-                   h3(strong('Enter point count record:')),
+                   h3(strong('2) Enter point count observation records:')),
                    br(),
                    fluidRow(
-                     column(2, shinyjs::disabled(textInput("id", "Id", "0"))),
-                     column(10, ' ')),
+                     column(1, shinyjs::disabled(textInput("id", "Id", "0"))),
+                     column(11, ' ')
+                   ), 
                    fluidRow(
-                     column(3, selectizeInput('timeInterval', 'Time interval (min):',
+                     column(2, selectizeInput('timeInterval', 'Time interval:',
                                               choices = seq(1, 10))),
                      column(3, selectizeInput('pcSpecies', 
-                                              'Species (AOU alpha code):',
+                                              'Species:',
                                               choices = justAlphaCode)),
-                     column(3, selectizeInput('distancePc', 'Distance (m):',
+                     column(2, selectizeInput('distancePc', 'Distance (m):',
                                               choices = 0:100)),
+                     column(2, selectizeInput('pcCount', 'Count:', 
+                                              choices = 1:100)), 
                      column(3, selectizeInput('detectionMethodPc',
-                                              'Detection Method:',
-                                              choices = c('V','A', 'B')))
-                     ),
-                 br()
-                 ),
+                                              'Detection:',
+                                              choices = c('Visual','Auditory', 'Both')))
+                     )), br(),
                    width = 6, position = 'right'),
-                 # ---- Encounter text ----------------------------------------------------
+#                  # ---- Encounter text ----------------------------------------------------
                  mainPanel(
                    textBandingIntro,
                    hr(),
                    width = 6, position = 'left')
                ),
+# Good to here
                hr(),
                # ---- QC and submission ---------------------------------------------------
-               h3(strong('Data-proofing and submission of encounter records:')),
+               h3(strong('3) Data-proofing and submission of point count records:')),
                br(),
-               DT::dataTableOutput("responses"),
+               DT::dataTableOutput("pointCountRecordTable"),
                br(),
                fluidRow(column(1, ''),
-                        column(4, actionButton("delete", "Delete record", 
+                        column(4, actionButton("deletePcRecord",
+                                               "Delete point count record", 
                                                class = "btn-primary")),
                         column(3, ' '),
-                        column(4, actionButton('submitEncounterData', 
-                                               'Submit encounter data',
+                        column(4, actionButton('submitPcData', 
+                                               'Submit point count data',
                                                class = "btn-primary"))
                ),
                br(), br()
