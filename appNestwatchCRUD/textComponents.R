@@ -83,3 +83,13 @@ textBandingList2 <- tags$ul(
   tags$li('After you are confident of the quality of data provided, press the ', em('Submit encounter data'), 'button.'))
 
 textQuery <- p('Query the table below to search for the band number associated with a given resight. While only 5 rows of data are shown, the table includes the initial record (band encounter) across all Neighborhood Nestwatch banding records and regional hubs. You can adjust the number of rows viewed using the "Show __ entries" drop-down button. You can sort the data table by column by clicking the column header. For example, to sort the data table by date, you would click on the "Date" column header. Query fields are at the bottom of each column. Use these fields to subset the data table. Data may be subset using partial matching. For example, typing "bu" in the Color combo field will match blue color bands on either leg or position. Likewise, typing "bu/bu" will query all records in which either leg has a blue over blue color band combo. You can use the search tool on the upper-right to query all fields simultaneously. Query fields are not case-sensitive.')
+
+textPcIntro0 <- h3('Point count data are entered in three steps:')
+
+textPcIntro1 <- tags$ol(
+  tags$li(p(strong('Submit site-level point count data:'),'This section is where you enter your site data and the conditions at the site during your point count. You only need to enter these data once per point count. After filling in all of the fields, click the', em('Submit site-level point count data'), 'button.')),
+  tags$li(p(strong('Add bird count records:'), 'This section is where you add records your actual counts of species. You will provide one record per observation. For example, if you saw 3 Northern Cardinal at a distance of 30 meters within a given time window, this would be a single observation. The table at the bottom of this page will display each record that you have added to the table.')),
+  tags$li(p(strong('Submit bird count data:'), 'When you are done adding all of the records above, look through the table at the bottom of the page. Compare this table with your paper copy and modify any records as necessary. Once you are confident that your data are error free, click the', em('Submit point count data'), 'button'))
+)
+
+textAouQuery <- p(strong('Query, AOU codes:'), 'If you do not know the 4-letter AOU alpha code for a species that you observed during your point count, you can use this simple query table to find it. To search for a species, just type the common or scientific name in the search box. Search entries are not case-sensitive.')
