@@ -213,7 +213,7 @@ ui <- navbarPage(
              # ---- Record entry -------------------------------------------------
              sidebarPanel(
                shinyjs::useShinyjs(),
-               h3(strong('Enter encounter record:')),
+               h3(strong('1. Enter encounter record:')),
                br(),
                fluidRow(
                  column(2, shinyjs::disabled(textInput("id", "Id", "0"))),
@@ -294,9 +294,10 @@ ui <- navbarPage(
              # ---- Encounter text ----------------------------------------------------
              mainPanel(
                textBandingIntro,
-               textBandingList1,
-               textBandingIntro2,
-               textBandingList2,
+               textBandingIntro1,
+#                textBandingList1,
+#                textBandingIntro2,
+#                textBandingList2,
                hr(),
                ttId, ttBandTime, ttBanderInitials, ttEncounterType,
                ttSpecies, ttBandNumber, ttColorCombo, ttAgeThroughFat, 
@@ -306,7 +307,7 @@ ui <- navbarPage(
              ),
            hr(),
            # ---- QC and submission ---------------------------------------------------
-           h3(strong('Data-proofing and submission of encounter records:')),
+           h3(strong('2. Data-proofing and submission of encounter records:')),
            br(),
            DT::dataTableOutput("responses"),
            br(),
@@ -342,7 +343,7 @@ ui <- navbarPage(
              sidebarPanel(
                div(id = 'pointCountVisitInfo',
                    shinyjs::useShinyjs(),
-                   h3(strong('1) Submit site-level point count data:')),
+                   h3(strong('1. Submit site-level point count data:')),
                    br(),
                    fluidRow(
                      column(3, selectInput('sitePc', 'Site:', '')),
@@ -363,7 +364,7 @@ ui <- navbarPage(
                             textInput('longitude', 
                                       'Longitude (decimal degrees):')),
                      column(4,
-                            textInput('accuracy', 'Accuracy (meters):'))
+                            textInput('accuracy', 'Accuracy (m):'))
                    ),
                    fluidRow(
                      column(12, textInput('locationNotes', 
@@ -372,26 +373,29 @@ ui <- navbarPage(
                    h4(strong('Weather')),
                    fluidRow(
                      column(4, selectizeInput('temperature', 'Temperature (C):',
-                                              choices = seq(-10, 40),
-                                              selected = 20)),
+                                              choices = c('',seq(-10, 40)))),
                      column(4, selectizeInput('sky', 'Sky (0-5):',
-                                              choices = seq(0, 5))),
+                                              choices = c('',seq(0, 5)))),
                      column(4, selectizeInput('wind', 
                                               'Wind (Beaufort number, 0-6):',
-                                              choices = seq(0, 6)))
+                                              choices = c('',seq(0, 6))))
                    ),
                    br(),
                    h4(strong('Ambient noise (dB)')),
                    fluidRow(
                      column(3, selectizeInput('splN', 'N:',
-                                              choices = seq(0, 130))),
+                                              choices = c('',seq(0, 130)))),
                      column(3, selectizeInput('splE', 'E:',
-                                              choices = seq(0, 130))),
+                                              choices = c('',seq(0, 130)))),
                      column(3, selectizeInput('splE', 'S:',
-                                              choices = seq(0, 130))),
+                                              choices = c('',seq(0, 130)))),
                      column(3, selectizeInput('splE', 'W:',
-                                              choices = seq(0, 130)))
+                                              choices = c('',seq(0, 130))))
                    ),
+               br(),
+               fluidRow(
+                 column(12, textInput('siteLevelPcNotes', 
+                                      label = 'Site-level point count notes:'))),
                br(),
                actionButton("submitSiteLevelPcData", 
                             "Submit site-level point count data", 
@@ -405,40 +409,50 @@ ui <- navbarPage(
                hr(),
                div(id = 'pointCountData',
                  # ---- Point count entry ------------------------------------------
-                   h3(strong('2) Enter point count observation records:')),
+                   h3(strong('2. Enter point count observation records:')),
                    br(),
                    fluidRow(
                      column(1, shinyjs::disabled(textInput("id", "Id", "0"))),
                      column(11, ' ')
                    ), 
                    fluidRow(
-                     column(2, selectizeInput('timeInterval', 'Time interval:',
-                                              choices = seq(1, 10))),
+                     column(2, selectizeInput('timeInterval', 'Time:',
+                                              choices = c('',seq(1, 10)))),
                      column(3, selectizeInput('pcSpecies', 
                                               'Species:',
-                                              choices = justAlphaCode)),
-                     column(2, selectizeInput('distancePc', 'Distance (m):',
-                                              choices = 0:100)),
+                                              choices = c('',justAlphaCode))),
+                     column(2, selectizeInput('distancePc', 'Distance:',
+                                              choices = c('',0:100))),
                      column(2, selectizeInput('pcCount', 'Count:', 
-                                              choices = 1:100)), 
+                                              choices = c('',1:100))), 
                      column(3, selectizeInput('detectionMethodPc',
                                               'Detection:',
-                                              choices = c('Visual','Auditory', 'Both')))
-                     )), br(),
+                                              choices = c('', 'Visual','Auditory', 'Both')))
+                     ),
+                 br(),
+                 fluidRow(column(1, ''),
+                          column(3, actionButton("newRecordPc", "Clear fields",
+                                               class = 'btn-primary')),
+                          column(2, ''),
+                          column(3, actionButton('submitRecordPc', 'Add record to table',
+                                               class = "btn-primary")),
+                          column(3, '')),
+                 br()),
                    width = 6, position = 'right'),
 #                  # ---- PC text ----------------------------------------------------
                  mainPanel(
                    textPcIntro0,
                    textPcIntro1,
                    hr(),
-                   h4('Find AOU code'),
+                   fieldDescriptionsPc,
+                   hr(),
                    textAouQuery,
                    fluidRow(column(11, DT::dataTableOutput('aouTable'))),
                    width = 6, position = 'left')
                ),
                hr(),
                # ---- QC and submission ---------------------------------------------------
-               h3(strong('3) Data-proofing and submission of point count records:')),
+               h3(strong('3. Data-proofing and submission of point count records:')),
                br(),
                DT::dataTableOutput("pointCountRecordTable"),
                br(),
