@@ -407,7 +407,7 @@ ui <- navbarPage(
                  )
                )),
                hr(),
-               div(id = 'pointCountData',
+               div(id = 'pcData',
                  # ---- Point count entry ------------------------------------------
                    h3(strong('2. Enter point count observation records:')),
                    br(),
@@ -467,8 +467,8 @@ ui <- navbarPage(
                ),
                br(), shinyjs::hidden(
                 div(
-                  id = "thankyou_msgEncounter",
-                  h3("Thanks, your encounter data have been recorded!")
+                  id = "thankyou_msgPc",
+                  h3("Thanks, your point count data have been recorded!")
                 )
               ),
               br()),
