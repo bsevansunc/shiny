@@ -233,7 +233,7 @@ updateInputsPc <- function(data, session) {
   updateTextInput(session, "idPc", value = unname(rownames(data)))
   updateTextInput(session, "sitePc", value = unname(data['sitePc']))
   updateTextInput(session, "observerPc", value = unname(data['observerPc']))
-  updateTextInput(session, "datePc", value = dateOutPc)#unname(as.character(data['datev'])))
+  updateTextInput(session, "datePc", value = dateOutPc)
   updateTextInput(session, "timePc", value = unname(data["timePc"]))
   updateTextInput(session, "speciesPc", value = unname(data["speciesPc"]))
   updateTextInput(session, "distancePc", value = unname(data["distancePc"]))
@@ -274,7 +274,7 @@ readDataPc <- function() {
 # Update
 
 updateDataPc <- function(data) {
-  data <- castData(data)
+  data <- castDataPc(data)
   responsesPc[row.names(responsesPc) == row.names(data), ] <<- data
 }
 
