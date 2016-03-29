@@ -10,24 +10,25 @@ ttSite <- p(strong('Site:'), ' Begin typing the site code and a list of options 
 
 ttVisitDate <- p(strong('Date:'), ' Select the date of your visit from the calendar. All dates are to be provided in the international date standard format ISO 8601 (YYYY-MM-DD).', em('Note: that if you visited a site on multiple dates, you would enter visit data for each visit separately.'))
 
-ttVisitObserver <- p(strong('Observer initials:'), ' Please enter the two or three letter initials of EACH technician who visit a site, separating entries by a comma. For example, if Robert Reitsma and Brian S. Evans visited a site, they would enter RR, BSE in this field. Note: To avoid autocorrect woes, you may want to teach your initials to your browser.')
+ttVisitObserver <- p(strong('Observer initials:'), ' Please enter the two or three letter initials of EACH technician who visit a site, separating entries by a comma. For example, if Robert Reitsma and Brian S. Evans visited a site, they would enter RR, BSE in this field. Note: To avoid autocorrect woes, you may want to turn autocorrect off on your computer operating system or in your web application (See:',
+                     tags$a(href = "https://support.apple.com/kb/PH18451?locale=en_US",
+                       "How to disable autocorrect in Mac Yosemite"),
+                     ',',
+                     tags$a(href = "http://www.windowscentral.com/how-disable-spell-checker-windows-10", 
+                            'How to turn disable autocorrect in Windows 10'),
+                     ')'
+                     )
 
 ttNetCount <- p(strong('Number of nets:'), ' This is the total number of nets you put out, regardless of whether a net was moved or a net was put up later in the day.Begin typing the number of net and a list of options will appear. You can either select the number of nets from the list or press enter once you have finished typing the value. Number of nets is provided per 6 m length (e.g., 6 m = 1, 12 m = 2 nets).')
 
 ttNetHours <- p(strong('Net hours:'), 'You can either select net hours from the list or press enter once you have finished typing the value. To calculate net hours, make sure to keep track of how long each net was open during your visit. Multiply the length of time each net was open by the net length (see "Number of nets"), sum the nets, and record the number here. For example, if you had a 12 m open for three hours and two 6 m nets opened for 4 hours each, the net hours would be 2 nets x 3 hours + 2 nets x 4 hours = 14 net hours.')
 
-ttStartEndResightTime <- p(strong('Start resight time, End resight time:'), 'These are the times in which you began and ended your targeted resight effort. All times are to be entered in the 24-hour clock (ISO 8601 time format), for example 1 pm would be provided as 13:00.', em('Note: targeted resighting does not include time spent at a site doing other activities (e.g., nest searching or banding).'))
+ttStartEndResightTime <- p(strong('Start resight time, End resight time:'), 'These are the times in which you began and ended your targeted resight effort. All times are to be entered in the 24-hour clock (ISO 8601 time format), for example 1 pm would be provided as 13:00.', strong(em('Note: targeted resighting does not include time spent at a site doing other activities (e.g., nest searching or banding).')))
 
 ttPathDistance <- p(strong('Path distance traveled:'), ' If you had a GPS unit with you, this is the path distance that you recorded on your GPS unit, in meters.',
                     helpText('Note: To find out how to record path distance on a Garmin eTrex, please see',
                              a(href = "http://www8.garmin.com/learningcenter/on-the-trail/etrex/",
                                target="_blank", "this link.")))
-
-helpText(
-  "For more information on this tool please go to the following address: ",
-  a(href="http://www.example.com", target="_blank", "Example")
-)
-
 
 ttObservedUnbanded <- p(strong('Observed, unbanded:'), 'As a measure of resight effort, we would like you to record the number of unbanded individuals observed during your', em('targeted'), 'resight foray. Only include counts of species that were previously color-banded at the current site.  For example, if no CARWs were ever color-banded at that site, do not count unbanded CARW during your foray. If you have encountered all individuals for a given species prior to targeted resighting, do not record counts for this species.')
 
@@ -47,7 +48,7 @@ ttEncounterType <- p(strong('Encounter type:'), ' Select the type of encounter f
 
 ttSpecies <- p(strong('Species:'), ' Drop-down menu choices only include Nestwatch focal species. Store all other encounter data locally.')
 
-ttBandNumber <- p(strong('Band number:'), 'Separate band prefix and suffix with a "-". Do not include any spaces. If you did not add an aluminum band, type "NA". If you resighted a bird and were not able to identify the band in the query table (on the next tab), type "UNK".')
+ttBandNumber <- p(strong('Band number:'), 'Separate band prefix (first 3 or 4 digits, always before the dash) and suffix (last 5 digits, always after the dash) with a "-". Do not include any spaces. If you did not add an aluminum band, type "NA". If you resighted a bird and were not able to identify the band in the query table (on the next tab), type "UNK".')
 
 ttColorCombo <- p(strong('Color combo:'), ' Enter color combinations as L/L,R/R. Do not include any spaces. If a leg has no band, this is entered as "-" (a single dash). Color abbreviations must match those used on the website for Nestwatch participants.')
 
@@ -104,8 +105,8 @@ textPcIntro0 <- h3('Point count data are entered in three steps:')
 
 textPcIntro1 <- tags$ol(
   tags$li(p(strong('Submit site-level point count data:'),'This section is where you enter your site data and the conditions at the site during your point count. You only need to enter these data once per point count. As with the banding data entry, if a field represents data that you did not record, leave that field blank. After filling in all of the fields, click the', em('Submit site-level point count data'), 'button.')),
-  tags$li(p(strong('Add bird count records:'), 'This section is where you add records your actual counts of species. You will provide one record per observation. For example, if you saw 3 Northern Cardinal at a distance of 30 meters within a given time window, this would be a single observation. The table at the bottom of this page will display each record that you have added to the table.')),
-  tags$li(p(strong('Submit bird count data:'), 'When you are done adding all of the records above, look through the table at the bottom of the page. Compare this table with your paper copy and modify any records as necessary. Once you are confident that your data are error free, click the', em('Submit point count data'), 'button'))
+  tags$li(p(strong('Add bird count records:'), 'This section is where you record your observations of birds during your point count. Please provide one record per observation. For example, if you saw 3 Northern Cardinal at a distance of 30 meters within a given time window, this would be a single observation. The table at the bottom of this page will display each record that you have added to the table. If you detected one more NOCA in that same time period 40m away, that would be another observation. If you visually detected 2 NOCAs but at different distance intervals at the same time, these would be two separate observations. If you detected two NOCAs, one visually and one by ear at the same time in the same distance interval, this would also be two separate observations.')),
+  tags$li(p(strong('Submit bird count data:'), 'When you are done adding all of the records above compare the table at the bottom of the page with your paper copy and modify any records as necessary. Once you are confident that your data are error free, click the', em('Submit point count data'), 'button'))
 )
 
 fieldDescriptionsPc <- p(
@@ -113,7 +114,7 @@ fieldDescriptionsPc <- p(
   br(),br(),
   strong('Start time:'), 'The time you began your point count (24-hour clock).',
   br(),br(),
-  strong('Location:'), 'Only record location data if you moved the site center or if this is a new site. When recording your location, be sure that your GPS unit is set to WGS 1984.',
+  strong('Location:'), 'Only record location data if you took a new location reading with a GPS unit (e.g., moved site center or new site). When recording your location, be sure that your GPS unit is set to WGS 1984.',
   br(),br(),
   strong('Temperature:'), 'The temperature in degrees Celsius during your point count. If you do not bring a thermometer with you on your visit, these data are readily available using weather Apps on your phone or after the fact using the website Weather Underground.', tags$a(href="www.wunderground.com", 'Click here to go to Weather Underground.'),
   br(),br(),

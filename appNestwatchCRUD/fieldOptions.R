@@ -37,7 +37,7 @@ choiceSpecies <- c('', 'AMRO', 'BCCH', 'BRTH', 'CACH', 'CARW',
                    'EAPH','GRCA','HOWR','NOCA','NOMO','SOSP',
                    'TUTI','UNCH')
 
-colorValues <- c('', 'AL', 'BU', 'BK', 'G', 'O','PK', 'P','R', 'Y', 'W')
+colorValues <- c('', 'A', 'BU', 'BK', 'G', 'O','PK', 'P','R', 'Y', 'W')
 
 choiceColorCombos <- expand.grid(rep(list(colorValues), 4)) %>%
   tbl_df %>%
@@ -56,7 +56,7 @@ choiceColorCombos <- expand.grid(rep(list(colorValues), 4)) %>%
            str_replace_all(',', ', ')) %>%
   distinct %>% .$combo
 
-choiceColorCombos <- c('', choiceColorCombos)
+choiceColorCombos <- c('', choiceColorCombos) %>% sort
 
 choiceNetCount <- c('', seq(0, 12, by = 1))
 

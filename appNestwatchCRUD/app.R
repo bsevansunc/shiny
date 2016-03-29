@@ -419,7 +419,7 @@ ui <- navbarPage(
                    ), 
                    fluidRow(
                      column(2, selectizeInput('timePc', 'Time:',
-                                              choices = choiceTime))),
+                                              choices = choiceTime)),
                      column(3, selectizeInput('speciesPc', 
                                               'Species:',
                                               choices = c('',justAlphaCode))),
@@ -445,6 +445,7 @@ ui <- navbarPage(
                  mainPanel(
                    textPcIntro0,
                    textPcIntro1,
+                   'Leave fields blank if you do not have data for that field (e.g., ambient noise records refer only to data collected with an SPL meter).',
                    hr(),
                    fieldDescriptionsPc,
                    hr(),
