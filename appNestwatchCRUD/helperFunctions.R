@@ -206,7 +206,7 @@ castDataPc <- function(data) {
                       speciesPc = data["speciesPc"],
                       distancePc = data["distancePc"],
                       countPc  = data["countPc"],
-                      detectionPc = data(data["detectionPc"]),
+                      detectionPc = data["detectionPc"],
                       stringsAsFactors = FALSE)
   rownames(datar) <- data["idPc"]
   return (datar)
@@ -223,7 +223,8 @@ createDefaultRecordPc <- function() {
                              speciesPc = '',
                              distancePc = '',
                              countPc  = '',
-                             detectionPc = ''))
+                             detectionPc = ''
+                             ))
   return (mydefault)
 }
 
@@ -296,7 +297,8 @@ getTableMetadataPc <- function() {
               speciesPc = 'SPP',
               distancePc = 'Distance',
               countPc  = 'Count',
-              detectionPc = 'Detection')
+              detectionPc = 'Detection'
+              )
   result <- list(fields = fields)
   return (result)
 }
