@@ -247,7 +247,7 @@ ui <- navbarPage(
                  column(3, p(strong('Y :'), 'Yellow'))
                ),
                fluidRow(
-                 column(3, p(strong('AL :'), 'Aluminum')),
+                 column(3, p(strong('A :'), 'Aluminum')),
                  column(3, p(strong('G :'), 'Green')),
                  column(3, p(strong('P :'), 'Purple')),
                  column(3, p(strong('W :'), 'White'))
