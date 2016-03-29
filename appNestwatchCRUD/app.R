@@ -34,11 +34,13 @@ aouCodes <- read.csv('speciesAouCodes.csv', stringsAsFactors = FALSE) %>%
   rename(SpNumber = Species.Number, 
          Alpha = Alpha.Code, 
          Common = Common.Name, 
-         Scientific = Scientific.Name)
+         Scientific = Scientific.Name) %>%
+  arrange(Alpha)
 
 justAlphaCode <- aouCodes %>% 
   select(Alpha) %>%
   distinct %>%
+  arrange(Alpha) %>%
   .$Alpha
 
 # Load encounter data:
@@ -501,6 +503,7 @@ server <- function(input, output, session) {
       .$site
     updateSelectInput(session, 'site', choices = siteNames)
     updateSelectInput(session, 'sitev', choices = siteNames)
+    updateSelectInput(session, 'sitePc', choices = siteNames)
   })
   
   # Update species drop-down menu by hub:
