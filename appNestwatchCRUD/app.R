@@ -412,7 +412,7 @@ ui <- navbarPage(
                    h3(strong('2. Enter point count observation records:')),
                    br(),
                    fluidRow(
-                     column(1, shinyjs::disabled(textInput("id", "Id", "0"))),
+                     column(1, shinyjs::disabled(textInput("idPc", "Id", "0"))),
                      column(11, ' ')
                    ), 
                    fluidRow(
@@ -635,10 +635,10 @@ server <- function(input, output, session) {
   
   observeEvent(input$submitRecordPc, {
     dateOutPc <<- as.character(input$datePc) 
-    if (input$id != "0") {
+    if (input$idPc != "0") {
       updateDataPc(formDataPc())
     } else {
-      createData(formDataPc())
+      createDataPc(formDataPc())
       updateInputsPc(createDefaultRecordPc(), session)
     }
   }, priority = 1)
@@ -660,10 +660,10 @@ server <- function(input, output, session) {
   
   # Select row in table to show details in inputs:
   
-  observeEvent(input$responses_rows_selectedPc, {
+  observeEvent(input$responsesPc_rows_selected, {
     dateOutPc <<- as.character(input$datePc) 
-    if (length(input$responses_rows_selectedPc) > 0) {
-      data <- readDataPc()[input$responses_rows_selectedPc, ]
+    if (length(input$responsesPc_rows_selected) > 0) {
+      data <- readDataPc()[input$responsesPc_rows_selected, ]
       updateInputsPc(data, session)
     }
   })
