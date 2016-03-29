@@ -58,9 +58,9 @@ choiceColorCombos <- expand.grid(rep(list(colorValues), 4)) %>%
 
 choiceColorCombos <- c('', choiceColorCombos)
 
-choiceNetCount <- c('', seq(0, 12, by = 0.5))
+choiceNetCount <- c('', seq(0, 12, by = 1))
 
-choiceNetHours <- c('', seq(0, 24, by = 0.01))
+choiceNetHours <- c('', seq(0, 48, by = 0.1))
 
 choiceCount <- c('', 1:100)
 
