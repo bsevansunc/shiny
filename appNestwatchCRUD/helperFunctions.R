@@ -258,9 +258,9 @@ createDataPc <- function(data) {
   data <- castDataPc(data)
   rownames(data) <- getNextIdPc()
   if (exists("responsesPc")) {
-    responses <<- rbind(responsesPc, data)
+    responsesPc <<- rbind(responsesPc, data)
   } else {
-    responses <<- data
+    responsesPc <<- data
   }
 }
 
