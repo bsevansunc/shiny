@@ -84,3 +84,12 @@ read.csv('encounters.csv', stringsAsFactors = FALSE) %>%
                        '-, AL', bandCombo)
     ) %>%
   write.csv('encounters.csv', row.names = FALSE)
+
+# Replace AL with A, no spaces
+read.csv('encounters.csv', stringsAsFactors = FALSE) %>%
+  tbl_df %>%
+  mutate(bandCombo = bandCombo %>%
+           str_replace_all('AL', 'A') %>%
+           str_replace_all(' ', '')) %>%
+  write.csv('encounters.csv', row.names = FALSE)
+  
