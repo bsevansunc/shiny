@@ -668,7 +668,7 @@ server <- function(input, output, session) {
     }
   })
   
-  shinyjs::disable("id")
+  shinyjs::disable("idPc")
   
   # Inputs and submissions to temp data file:
   
@@ -692,7 +692,7 @@ server <- function(input, output, session) {
   # Submit encounter data from table:
   
   observeEvent(input$submitPcData, {
-    savePcData(reactiveOut())
+    savePcData(reactiveOutPc())
     shinyjs::reset("pcData")
     shinyjs::show("thankyou_msgPc")
   })
