@@ -75,3 +75,7 @@ choiceSex <- c('', 'M', 'F', 'UNK')
 choiceBreedingCond <-  c('','CP', 'BP','CP-', 'BP-','CP+', 'BP+')
 
 choiceFat <- c('', 0, 0.5, seq(1:5))
+
+choiceDistance <- c('', '0-10', '10-20', '20-30', '30-40', '40-50')
+
+choiceTime <- c('', 3, 2, 5)
