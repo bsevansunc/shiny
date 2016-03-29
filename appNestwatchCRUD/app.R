@@ -416,16 +416,16 @@ ui <- navbarPage(
                      column(11, ' ')
                    ), 
                    fluidRow(
-                     column(2, selectizeInput('timeInterval', 'Time:',
+                     column(2, selectizeInput('timePc', 'Time:',
                                               choices = c('',seq(1, 10)))),
-                     column(3, selectizeInput('pcSpecies', 
+                     column(3, selectizeInput('speciesPc', 
                                               'Species:',
                                               choices = c('',justAlphaCode))),
                      column(2, selectizeInput('distancePc', 'Distance:',
                                               choices = c('',0:100))),
-                     column(2, selectizeInput('pcCount', 'Count:', 
+                     column(2, selectizeInput('countPc', 'Count:', 
                                               choices = c('',1:100))), 
-                     column(3, selectizeInput('detectionMethodPc',
+                     column(3, selectizeInput('detectionPc',
                                               'Detection:',
                                               choices = c('', 'Visual','Auditory', 'Both')))
                      ),
