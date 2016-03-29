@@ -49,7 +49,7 @@ ttSpecies <- p(strong('Species:'), ' Drop-down menu choices only include Nestwat
 
 ttBandNumber <- p(strong('Band number:'), 'Separate band prefix and suffix with a "-". Do not include any spaces. If you did not add an aluminum band, type "NA". If you resighted a bird and were not able to identify the band in the query table (on the next tab), type "UNK".')
 
-ttColorCombo <- p(strong('Color combo:'), ' Enter color combinations as L/L, R/R. Legs are separated with a comma and then a space. If a leg has no band, this is entered as "-" (a single dash). Color abbreviations must match those used on the website for Nestwatch participants.')
+ttColorCombo <- p(strong('Color combo:'), ' Enter color combinations as L/L,R/R. Do not include any spaces. If a leg has no band, this is entered as "-" (a single dash). Color abbreviations must match those used on the website for Nestwatch participants.')
 
 ttAgeThroughFat <- p(strong('Age-Fat:'), ' Please select values for age, sex, breeding condition, and fat from the provided lists, entering', em('UNK'), 'if you were unable to identify the field value.')
 
