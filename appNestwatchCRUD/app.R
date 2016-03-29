@@ -439,7 +439,7 @@ ui <- navbarPage(
                           column(3, '')),
                  br()),
                    width = 6, position = 'right'),
-#                  # ---- PC text ----------------------------------------------------
+                  # ---- PC text ----------------------------------------------------
                  mainPanel(
                    textPcIntro0,
                    textPcIntro1,
@@ -454,10 +454,10 @@ ui <- navbarPage(
                # ---- QC and submission ---------------------------------------------------
                h3(strong('3. Data-proofing and submission of point count records:')),
                br(),
-               DT::dataTableOutput("pointCountRecordTable"),
+               DT::dataTableOutput("responsesPc"),
                br(),
                fluidRow(column(1, ''),
-                        column(4, actionButton("deletePcRecord",
+                        column(4, actionButton("deleteRecordPc",
                                                "Delete point count record", 
                                                class = "btn-primary")),
                         column(3, ' '),
@@ -465,8 +465,13 @@ ui <- navbarPage(
                                                'Submit point count data',
                                                class = "btn-primary"))
                ),
-               br(), br()
-           ),
+               br(), shinyjs::hidden(
+                div(
+                  id = "thankyou_msgEncounter",
+                  h3("Thanks, your encounter data have been recorded!")
+                )
+              ),
+              br()),
   #-------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: NEST DATA ----
   #-------------------------------------------------------------------------------*
@@ -616,6 +621,82 @@ server <- function(input, output, session) {
   output$aouTable = DT::renderDataTable(
     datatable(aouCodes, filter = 'none', rownames = FALSE,
               options = list(pageLength = 1)))
+  #-------------------------------------------------------------------------------*
+  # ---- SERVER: SUBMIT BIRD-LEVEL POINT COUNT DATA ----
+  #-------------------------------------------------------------------------------*
+  
+  # Link field names and data:
+  
+  formDataPc <- reactive({
+    sapply(names(getTableMetadataPc()$fields), function(x) input[[x]])
+  })
+  
+  # Click "Submit record" button to push result to table:
+  
+  observeEvent(input$submitRecordPc, {
+    dateOutPc <<- as.character(input$datePc) 
+    if (input$id != "0") {
+      updateDataPc(formDataPc())
+    } else {
+      createData(formDataPc())
+      updateInputsPc(createDefaultRecordPc(), session)
+    }
+  }, priority = 1)
+  
+  # Click "Delete" to remove a single record:
+  
+  observeEvent(input$deleteRecordPc, {
+    dateOutPc <<- as.character(input$datePc) 
+    deleteDataPc(formDataPc())
+    updateInputsPc(createDefaultRecordPc(), session)
+  }, priority = 1)
+  
+  # Press "New record" button to display empty record:
+  
+  observeEvent(input$newRecordPc, {
+    dateOutPc <<- as.character(input$datePc) 
+    updateInputsPc(createDefaultRecordPc(), session)
+  })
+  
+  # Select row in table to show details in inputs:
+  
+  observeEvent(input$responses_rows_selectedPc, {
+    dateOutPc <<- as.character(input$datePc) 
+    if (length(input$responses_rows_selectedPc) > 0) {
+      data <- readDataPc()[input$responses_rows_selectedPc, ]
+      updateInputsPc(data, session)
+    }
+  })
+  
+  shinyjs::disable("id")
+  
+  # Inputs and submissions to temp data file:
+  
+  reactiveOutPc <- reactive({
+    dateOutPc <<- as.character(input$datePc) # added mar 25
+    input$submitRecordPc
+    input$deletePc
+    readDataPc()
+  })
+  
+  # Display output table:
+  
+  output$responsesPc <- DT::renderDataTable({
+    dateOutPc <<- as.character(input$datePc) # added mar 25
+    reactiveOutPc()
+  },
+  server = FALSE, selection = "single",
+  colnames = unname(getTableMetadataPc()$fields)[-1]
+  )
+  
+  # Submit encounter data from table:
+  
+  observeEvent(input$submitPcData, {
+    savePcData(reactiveOut())
+    shinyjs::reset("pcData")
+    shinyjs::show("thankyou_msgPc")
+  })
+  # END
   }
 
 shinyApp(ui, server)
