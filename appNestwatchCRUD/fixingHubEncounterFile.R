@@ -1,3 +1,5 @@
+library(stringr)
+
 encounters %>%
   select(hub, species) %>%
   distinct %>%
@@ -85,11 +87,30 @@ read.csv('encounters.csv', stringsAsFactors = FALSE) %>%
     ) %>%
   write.csv('encounters.csv', row.names = FALSE)
 
+# ================================================================
 # Replace AL with A, no spaces
+
 read.csv('encounters.csv', stringsAsFactors = FALSE) %>%
   tbl_df %>%
   mutate(bandCombo = bandCombo %>%
            str_replace_all('AL', 'A') %>%
            str_replace_all(' ', '')) %>%
   write.csv('encounters.csv', row.names = FALSE)
+# ================================================================
+# Add dash between band prefix and suffix
+
+read.csv('encounters.csv', stringsAsFactors = FALSE) %>%
+  tbl_df %>%
+  mutate(bandNumber = ifelse(str_detect(bandNumber, '[:digit:]'),
+                             str_c(
+                               str_sub(bandNumber, end = -6),
+                               str_sub(bandNumber, start = -5),
+                               sep = '-'),
+                             bandNumber)) %>%
+  write.csv('encounters.csv', row.names = FALSE)
+
+
+
+
+
   
