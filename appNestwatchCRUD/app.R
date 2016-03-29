@@ -675,7 +675,7 @@ server <- function(input, output, session) {
   reactiveOutPc <- reactive({
     dateOutPc <<- as.character(input$datePc) # added mar 25
     input$submitRecordPc
-    input$deletePc
+    input$deleteRecordPc
     readDataPc()
   })
   
