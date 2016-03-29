@@ -198,17 +198,17 @@ getTableMetadata <- function() {
 
 # This method casts from the inputs to a one-row data.frame. We use it, for instance, when the user creates a new record by typing in values into the inputs, and then clicks "Submit":
 
-castDataPc <- function(data) {
-  datar <- data.frame(sitePc = as.character(data["sitePc"]),
-                      observerPc = data["observerPc"],
+castDataPc <- function(dataPc) {
+  datar <- data.frame(sitePc = as.character(dataPc["sitePc"]),
+                      observerPc = dataPc["observerPc"],
                       datePc = dateOutPc, 
-                      timePc = data["timePc"],
-                      speciesPc = data["speciesPc"],
-                      distancePc = data["distancePc"],
-                      countPc  = data["countPc"],
-                      detectionPc = data["detectionPc"],
+                      timePc = dataPc["timePc"],
+                      speciesPc = dataPc["speciesPc"],
+                      distancePc = dataPc["distancePc"],
+                      countPc  = dataPc["countPc"],
+                      detectionPc = dataPc["detectionPc"],
                       stringsAsFactors = FALSE)
-  rownames(datar) <- data["idPc"]
+  rownames(datar) <- dataPc["idPc"]
   return (datar)
 }
 
@@ -230,16 +230,16 @@ createDefaultRecordPc <- function() {
 
 # And this method takes the data as selected in the DataTable, and updates the inputs with the respective values:
 
-updateInputsPc <- function(data, session) {
-  updateTextInput(session, "idPc", value = unname(rownames(data)))
-  updateTextInput(session, "sitePc", value = unname(data['sitePc']))
-  updateTextInput(session, "observerPc", value = unname(data['observerPc']))
+updateInputsPc <- function(dataPc, session) {
+  updateTextInput(session, "idPc", value = unname(rownames(dataPc)))
+  updateTextInput(session, "sitePc", value = unname(dataPc['sitePc']))
+  updateTextInput(session, "observerPc", value = unname(dataPc['observerPc']))
   updateTextInput(session, "datePc", value = dateOutPc)
-  updateTextInput(session, "timePc", value = unname(data["timePc"]))
-  updateTextInput(session, "speciesPc", value = unname(data["speciesPc"]))
-  updateTextInput(session, "distancePc", value = unname(data["distancePc"]))
-  updateTextInput(session, "countPc", value = unname(data["countPc"]))
-  updateTextInput(session, "detectionPc", value = unname(data["detectionPc"]))
+  updateTextInput(session, "timePc", value = unname(dataPc["timePc"]))
+  updateTextInput(session, "speciesPc", value = unname(dataPc["speciesPc"]))
+  updateTextInput(session, "distancePc", value = unname(dataPc["distancePc"]))
+  updateTextInput(session, "countPc", value = unname(dataPc["countPc"]))
+  updateTextInput(session, "detectionPc", value = unname(dataPc["detectionPc"]))
 }
 
 # This function finds the next ID of a new record. In mysql, this could be done by an incremental index, automatically. But here, we do it manually, ourselves:
@@ -254,13 +254,13 @@ getNextIdPc <- function() {
 
 # Create data:
 
-createDataPc <- function(data) {
-  data <- castDataPc(data)
-  rownames(data) <- getNextIdPc()
+createDataPc <- function(dataPc) {
+  dataPc <- castDataPc(dataPc)
+  rownames(dataPc) <- getNextIdPc()
   if (exists("responsesPc")) {
-    responsesPc <<- rbind(responsesPc, data)
+    responsesPc <<- rbind(responsesPc, dataPc)
   } else {
-    responsesPc <<- data
+    responsesPc <<- dataPc
   }
 }
 
@@ -274,16 +274,16 @@ readDataPc <- function() {
 
 # Update
 
-updateDataPc <- function(data) {
-  data <- castDataPc(data)
-  responsesPc[row.names(responsesPc) == row.names(data), ] <<- data
+updateDataPc <- function(dataPc) {
+  dataPc <- castDataPc(dataPc)
+  responsesPc[row.names(responsesPc) == row.names(dataPc), ] <<- dataPc
 }
 
 
 # Delete
 
-deleteDataPc <- function(data) {
-  responsesPc<<- responses[row.names(responsesPc) != unname(data["idPc"]), ]
+deleteDataPc <- function(dataPc) {
+  responsesPc<<- responses[row.names(responsesPc) != unname(dataPc["idPc"]), ]
 }
 
 # The only thing that might not be straight forward is the GetTableMetadata function. We'll use it as a starting point for further development, as described below. For now, it's just a method that defines the names of the columns in our table:
