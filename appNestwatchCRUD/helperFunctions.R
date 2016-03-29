@@ -208,7 +208,7 @@ castDataPc <- function(data) {
                       countPc  = data["countPc"],
                       detectionPc = data(data["detectionPc"]),
                       stringsAsFactors = FALSE)
-  rownames(datar) <- data["id"]
+  rownames(datar) <- data["idPc"]
   return (datar)
 }
 
@@ -218,7 +218,7 @@ createDefaultRecordPc <- function() {
   mydefault <- castData(list(idPc = "0", 
                              sitePc = '',
                              observerPc = '',
-                             datePc = Sys.time(),
+                             datePc = '',
                              timePc = '',
                              speciesPc = '',
                              distancePc = '',
@@ -254,8 +254,8 @@ getNextIdPc <- function() {
 # Create data:
 
 createDataPc <- function(data) {
-  data <- castData(data)
-  rownames(data) <- getNextId()
+  data <- castDataPc(data)
+  rownames(data) <- getNextIdPc()
   if (exists("responsesPc")) {
     responses <<- rbind(responsesPc, data)
   } else {
