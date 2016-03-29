@@ -89,7 +89,7 @@ createDefaultRecord <- function() {
 
 updateInputs <- function(data, session) {
   updateTextInput(session, "id", value = unname(rownames(data)))
-  updateTextInput(session, "site", value = unname(data['site']))
+  updateTextInput(session, "sitev", value = unname(data['sitev']))
   updateTextInput(session, "datev", value = dateOut)#unname(as.character(data['datev'])))
   updateTextInput(session, "bandTime", value = unname(data["bandTime"]))
   updateTextInput(session, "bander", value = unname(data["bander"]))
