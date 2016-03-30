@@ -30,7 +30,7 @@ saveEncounterData <- function(encounterData) {
   drop_upload(filePath, dest = 'encounterData')
 }
 
-savePcData <- function(pcData) {
+savePcDataCounts <- function(pcData) {
   data <- pcData
   # Create a unique file name
   fileName <- sprintf("%s_%s.csv", as.integer(Sys.time()), digest::digest(data))
@@ -38,7 +38,7 @@ savePcData <- function(pcData) {
   filePath <- file.path(tempdir(), fileName)
   write.csv(data, filePath, row.names = FALSE, quote = TRUE)
   # Upload the file to Dropbox
-  drop_upload(filePath, dest = 'pcData')
+  drop_upload(filePath, dest = 'pcDataCounts')
 }
 
 #---------------------------------------------------------------------------------*

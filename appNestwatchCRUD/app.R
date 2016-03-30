@@ -714,7 +714,7 @@ server <- function(input, output, session) {
   # Submit encounter data from table:
   
   observeEvent(input$submitPcData, {
-    savePcData(reactiveOutPc())
+    savePcDataCounts(reactiveOutPc())
     shinyjs::reset("pcData")
     shinyjs::show("thankyou_msgPc")
   })
