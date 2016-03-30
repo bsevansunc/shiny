@@ -80,6 +80,10 @@ castData <- function(data) {
                       tail = data["tail"],
                       tarsus = data["tarsus"],
                       featherID = data["featherID"],
+                      toenailID = data["toenailID"],
+                      bloodID = data["bloodID"],
+                      fecalID = data["fecalID"],
+                      attachmentID = data["attachmentID"],
                       notes = as.character(data["notes"]),
                       stringsAsFactors = FALSE)
   rownames(datar) <- data["id"]
@@ -107,6 +111,10 @@ createDefaultRecord <- function() {
                              tail = '',
                              tarsus = '',
                              featherID = '',
+                             toenailID = '',
+                             bloodID = '',
+                             fecalID = '',
+                             attachmentID = '',
                              notes = ''))
   return (mydefault)
 }
@@ -132,6 +140,10 @@ updateInputs <- function(data, session) {
   updateTextInput(session, "tail", value = unname(data["tail"]))
   updateTextInput(session, "tarsus", value = unname(data["tarsus"]))
   updateTextInput(session, "featherID", value = unname(data["featherID"]))
+  updateTextInput(session, "toenailID", value = unname(data["toenailID"]))
+  updateTextInput(session, "bloodID", value = unname(data["bloodID"]))
+  updateTextInput(session, "fecalID", value = unname(data["fecalID"]))
+  updateTextInput(session, "attachmentID", value = unname(data["attachmentID"]))
   updateTextInput(session, "notes", value = unname(data["notes"]))
 }
 
@@ -186,11 +198,11 @@ getTableMetadata <- function() {
               sitev = "Site",
               datev = "Date",
               bandTime = 'Time',
-              bander = 'Observer',
-              encounterType = 'Encounter type',
+              bander = 'Obs.',
+              encounterType = 'Encounter',
               species = 'SPP',
-              bandNumber = 'Band number',
-              colorCombo  = 'Color combo',
+              bandNumber = 'Band #',
+              colorCombo  = 'Color c.',
               age = 'Age',
               sex = 'Sex',
               breedingCond = 'CP/BP',
@@ -199,7 +211,11 @@ getTableMetadata <- function() {
               wing = 'Wing',
               tail = 'Tail',
               tarsus = 'Tarsus',
-              featherID = 'Feather ID',
+              featherID = 'Feather',
+              toenailID = 'Toenail',
+              bloodID = 'Blood',
+              fecalID = 'Fecal',
+              attachmentID = 'Attachment',
               notes = "Notes")
   result <- list(fields = fields)
   return (result)

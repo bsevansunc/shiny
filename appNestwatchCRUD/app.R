@@ -279,7 +279,17 @@ ui <- navbarPage(
                br(),
                fluidRow(
                  column(6, textInput('featherID', label = 'Feather ID:')),
-                 column(6, '')),
+                 column(6, textInput('toenailID', label = 'Toenail ID:'))),
+               br(),
+               fluidRow(
+                 column(6, textInput('bloodID', label = 'Blood ID:')),
+                 column(6, textInput('fecalID', label = 'Fecal ID:'))),
+               br(),
+               fluidRow(
+                 column(6, 
+                        textInput('attachmentID',
+                                  label = 'Attachment ID (e.g., transmitter or geolocator):')),
+                 column(6, ' ')),
                br(),
                fluidRow(
                  column(12, textInput('notes', label = 'Notes:'))),
