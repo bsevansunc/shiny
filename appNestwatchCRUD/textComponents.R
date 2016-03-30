@@ -10,7 +10,7 @@ ttSite <- p(strong('Site:'), ' Begin typing the site code and a list of options 
 
 ttVisitDate <- p(strong('Date:'), ' Select the date of your visit from the calendar. All dates are to be provided in the international date standard format ISO 8601 (YYYY-MM-DD).', em('Note: that if you visited a site on multiple dates, you would enter visit data for each visit separately.'))
 
-ttVisitObserver <- p(strong('Observer initials:'), ' Please enter the two or three letter initials of EACH technician who visit a site, separating entries by a comma. For example, if Robert Reitsma and Brian S. Evans visited a site, they would enter RR, BSE in this field. Note: To avoid autocorrect woes, you may want to turn autocorrect off on your computer operating system or in your web application (See:',
+ttVisitObserver <- p(strong('Observer initials:'), ' Please enter the three-letter initials of EACH technician who visit a site, separating entries by a comma. For example, if Thomas Brandt Ryder and Brian S. Evans visited a site, they would enter "TBR,BSE" in this field. If the technician does not have a middle name, you may enter their two-letter initials. Please be sure to use the same initials across all of your visits!  Note: To avoid autocorrect woes, you may want to turn autocorrect off on your computer operating system or in your web application (See:',
                      tags$a(href = "https://support.apple.com/kb/PH18451?locale=en_US",
                        "How to disable autocorrect in Mac Yosemite"),
                      ',',
