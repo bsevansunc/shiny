@@ -638,7 +638,10 @@ server <- function(input, output, session) {
   # Click "Submit record" button to push result to table:
   
   observeEvent(input$submitRecordPc, {
-    dateOutPc <<- as.character(input$datePc) 
+    sitePc <<- as.character(input$sitePc)
+    dateOutPc <<- as.character(input$datePc)
+    observerPc <<- as.character(input$observerPc)
+    startTimePc <<- as.character(input$startTimePc)
     if (input$idPc != "0") {
       updateDataPc(formDataPc())
     } else {
@@ -650,7 +653,10 @@ server <- function(input, output, session) {
   # Click "Delete" to remove a single record:
   
   observeEvent(input$deleteRecordPc, {
+    sitePc <<- as.character(input$sitePc)
     dateOutPc <<- as.character(input$datePc) 
+    observerPc <<- as.character(input$observerPc)
+    startTimePc <<- as.character(input$startTimePc)
     deleteDataPc(formDataPc())
     updateInputsPc(createDefaultRecordPc(), session)
   }, priority = 1)
@@ -658,14 +664,20 @@ server <- function(input, output, session) {
   # Press "New record" button to display empty record:
   
   observeEvent(input$newRecordPc, {
-    dateOutPc <<- as.character(input$datePc) 
+    sitePc <<- as.character(input$sitePc)
+    dateOutPc <<- as.character(input$datePc)
+    observerPc <<- as.character(input$observerPc)
+    startTimePc <<- as.character(input$startTimePc)
     updateInputsPc(createDefaultRecordPc(), session)
   })
   
   # Select row in table to show details in inputs:
   
   observeEvent(input$responsesPc_rows_selected, {
-    dateOutPc <<- as.character(input$datePc) 
+    sitePc <<- as.character(input$sitePc)
+    dateOutPc <<- as.character(input$datePc)
+    observerPc <<- as.character(input$observerPc)
+    startTimePc <<- as.character(input$startTimePc)
     if (length(input$responsesPc_rows_selected) > 0) {
       data <- readDataPc()[input$responsesPc_rows_selected, ]
       updateInputsPc(data, session)
@@ -677,7 +689,10 @@ server <- function(input, output, session) {
   # Inputs and submissions to temp data file:
   
   reactiveOutPc <- reactive({
-    dateOutPc <<- as.character(input$datePc) # added mar 25
+    sitePc <<- as.character(input$sitePc)
+    dateOutPc <<- as.character(input$datePc) 
+    observerPc <<- as.character(input$observerPc)
+    startTimePc <<- as.character(input$startTimePc)
     input$submitRecordPc
     input$deleteRecordPc
     readDataPc()
@@ -686,7 +701,10 @@ server <- function(input, output, session) {
   # Display output table:
   
   output$responsesPc <- DT::renderDataTable({
-    dateOutPc <<- as.character(input$datePc) # added mar 25
+    sitePc <<- as.character(input$sitePc)
+    dateOutPc <<- as.character(input$datePc) 
+    observerPc <<- as.character(input$observerPc)
+    startTimePc <<- as.character(input$startTimePc)
     reactiveOutPc()
   },
   server = FALSE, selection = "single",

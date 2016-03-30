@@ -197,9 +197,10 @@ getTableMetadata <- function() {
 # This method casts from the inputs to a one-row data.frame. We use it, for instance, when the user creates a new record by typing in values into the inputs, and then clicks "Submit":
 
 castDataPc <- function(dataPc) {
-  datarPc <- data.frame(sitePc = as.character(dataPc["sitePc"]),
-                      observerPc = dataPc["observerPc"],
+  datarPc <- data.frame(sitePc = sitePc,
+                      observerPc = observerPc,
                       datePc = dateOutPc, 
+                      startTimePc = startTimePc,
                       timePc = dataPc["timePc"],
                       speciesPc = dataPc["speciesPc"],
                       distancePc = dataPc["distancePc"],
@@ -217,6 +218,7 @@ createDefaultRecordPc <- function() {
                              sitePc = '',
                              observerPc = '',
                              datePc = '',
+                             startTimePc = '',
                              timePc = '',
                              speciesPc = '',
                              distancePc = '',
@@ -230,9 +232,10 @@ createDefaultRecordPc <- function() {
 
 updateInputsPc <- function(dataPc, session) {
   updateTextInput(session, "idPc", value = unname(rownames(dataPc)))
-  updateTextInput(session, "sitePc", value = unname(dataPc['sitePc']))
-  updateTextInput(session, "observerPc", value = unname(dataPc['observerPc']))
+  updateTextInput(session, "sitePc", value = sitePc)
+  updateTextInput(session, "observerPc", value = observerPc)
   updateTextInput(session, "datePc", value = dateOutPc)
+  updateTextInput(session, "startTimePc", value = startTimePc)
   updateTextInput(session, "timePc", value = unname(dataPc["timePc"]))
   updateTextInput(session, "speciesPc", value = unname(dataPc["speciesPc"]))
   updateTextInput(session, "distancePc", value = unname(dataPc["distancePc"]))
@@ -291,7 +294,8 @@ getTableMetadataPc <- function() {
               sitePc = "Site",
               observerPc = 'Observer',
               datePc = "Date",
-              timePc = 'Time',
+              startTimePc = 'Start time',
+              timePc = 'Time interval',
               speciesPc = 'SPP',
               distancePc = 'Distance',
               countPc  = 'Count',
