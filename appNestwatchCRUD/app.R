@@ -507,6 +507,18 @@ server <- function(input, output, session) {
     updateSelectInput(session, 'sitePc', choices = siteNames)
   })
   
+  # Update site drop-down menu as a function of the site chosen in the visit section:
+  observe({
+    inSite <- input$site
+    print(inSite)
+    if(is.null(inSite))
+      return(NULL)
+    updateSelectInput(session, 'sitev', selected = input$site)
+    updateSelectInput(session, 'sitePc', selected = input$site)
+  })
+  
+  updateSelectInput(session, 'sitev')
+  
   # Update species drop-down menu by hub:
   observe({
     inHub <- input$hub
@@ -616,9 +628,26 @@ server <- function(input, output, session) {
   #-------------------------------------------------------------------------------*
   # ---- SERVER: QUERY BANDING RECORDS ----
   #-------------------------------------------------------------------------------*
-  output$encounterTable = DT::renderDataTable(
-    datatable(encounters, filter = 'bottom'))
+#   output$encounterTable <- DT::renderDataTable({
+#     # encounters <<- encounters %>% dplyr::filter(hub == input$hub)
+#     datatable(encounters, filter = 'bottom')
+#     })
   
+  dataEncountersSubset <- reactive({
+    switch(input$hub,
+           "Atlanta" = filter(encounters, hub == 'Atlanta'),
+           "DC" = filter(encounters, hub == 'DC'),
+           "Gainesville" = filter(encounters, hub == 'Gainesville'),
+           "Pittsburgh" = filter(encounters, hub == 'Pittsburgh'),
+           "Raleigh" = filter(encounters, hub == 'Raleigh'),
+           "Springfield" = filter(encounters, hub == 'Springfield'))
+  })
+  
+  output$encounterTable <- DT::renderDataTable({
+    DT::datatable(dataEncountersSubset(), filter = 'bottom')
+  })
+  
+
   #-------------------------------------------------------------------------------*
   # ---- SERVER: QUERY AOU names ----
   #-------------------------------------------------------------------------------*
