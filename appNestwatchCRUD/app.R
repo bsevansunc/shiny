@@ -19,7 +19,6 @@ library(stringr)
 library(shinyBS)
 library(R.utils)
 library(rdrop2)
-# library(googlesheets)
 library(DT)
 library(shinyjs)
 
@@ -324,9 +323,6 @@ ui <- navbarPage(
              mainPanel(
                textBandingIntro,
                textBandingIntro1,
-#                textBandingList1,
-#                textBandingIntro2,
-#                textBandingList2,
                hr(),
                ttId, ttBandTime, ttBanderInitials, ttEncounterType,
                ttSpecies, ttBandNumber, ttColorCombo, ttAgeThroughFat, 
@@ -370,73 +366,6 @@ ui <- navbarPage(
   tabPanel(strong('Point count data'),
            sidebarLayout(
              sidebarPanel(
-#                div(id = 'pcDataConditions',
-#                    shinyjs::useShinyjs(),
-#                    h3(strong('1. Add point count record:')),
-#                    br(),
-#                    fluidRow(
-#                      column(3, selectInput('sitePc', 'Site:', '')),
-#                      column(3, textInput('observerPc', 'Observer initials:')),
-#                      column(3, dateInput('datePc',
-#                                        label = 'Date: yyyy-mm-dd',
-#                                        value = Sys.Date())),
-#                      column(3, selectizeInput('startTimePc', 'Start time:',
-#                                               choices = choiceTimeOfDay))
-#                    ),
-#                    br(),
-#                    h4(strong('Location')),
-#                    fluidRow(
-#                      column(4, 
-#                             textInput('longitude', 
-#                                       'Longitude (decimal degrees):')),
-#                      column(4, 
-#                             textInput('latitude', 
-#                                       'Latitude (decimal degrees):')),
-#                      column(4,
-#                             textInput('accuracy', 'Accuracy (m):'))
-#                    ),
-#                    fluidRow(
-#                      column(12, textInput('locationNotes', 
-#                                           label = 'Location notes:'))),
-#                    br(),
-#                    h4(strong('Weather')),
-#                    fluidRow(
-#                      column(4, selectizeInput('temperature', 'Temperature (C):',
-#                                               choices = c('',seq(-10, 40)))),
-#                      column(4, selectizeInput('sky', 'Sky (0-5):',
-#                                               choices = c('',seq(0, 5)))),
-#                      column(4, selectizeInput('wind', 
-#                                               'Wind (Beaufort number, 0-6):',
-#                                               choices = c('',seq(0, 6))))
-#                    ),
-#                    br(),
-#                    h4(strong('Ambient noise (dB)')),
-#                    fluidRow(
-#                      column(3, selectizeInput('splN', 'N:',
-#                                               choices = c('',seq(0, 130)))),
-#                      column(3, selectizeInput('splE', 'E:',
-#                                               choices = c('',seq(0, 130)))),
-#                      column(3, selectizeInput('splS', 'S:',
-#                                               choices = c('',seq(0, 130)))),
-#                      column(3, selectizeInput('splW', 'W:',
-#                                               choices = c('',seq(0, 130))))
-#                    ),
-#                br(),
-#                fluidRow(
-#                  column(12, textInput('siteLevelPcNotes', 
-#                                       label = 'Point count notes:')))),
-#                br(),
-#                actionButton("submitPcDataConditions", 
-#                             "Submit site-level point count data", 
-#                             class = "btn-primary"),
-#                shinyjs::hidden(
-#                  div(
-#                    id = "thankyou_msgPcDataConditions",
-#                    h3("Thanks, your site-level point count data have been recorded!")
-#                  )
-#                )
-# ),
-               # hr(),
                div(id = 'pcData',
                  # ---- Point count entry ------------------------------------------
                    h3(strong('1. Add point count records:')),
@@ -583,10 +512,7 @@ server <- function(input, output, session) {
     updateTextInput(session, 'bander', value = input$observer)
     updateTextInput(session, 'observerPc', value = input$observer)
   })
-  
-  
-  # updateSelectInput(session, 'sitev')
-  
+
   # Update species drop-down menu by hub:
   observe({
     inHub <- input$hub
@@ -696,10 +622,6 @@ server <- function(input, output, session) {
   #-------------------------------------------------------------------------------*
   # ---- SERVER: QUERY BANDING RECORDS ----
   #-------------------------------------------------------------------------------*
-#   output$encounterTable <- DT::renderDataTable({
-#     # encounters <<- encounters %>% dplyr::filter(hub == input$hub)
-#     datatable(encounters, filter = 'bottom')
-#     })
   
   dataEncountersSubset <- reactive({
     switch(input$hub,
