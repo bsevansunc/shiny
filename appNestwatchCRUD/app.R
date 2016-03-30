@@ -366,23 +366,23 @@ ui <- navbarPage(
   #--------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: POINT COUNT ----
   #--------------------------------------------------------------------------------*
-  tabPanel(strong('1. Enter point count data'),
+  tabPanel(strong('Point count data'),
            sidebarLayout(
              sidebarPanel(
-               div(id = 'pcDataConditions',
-                   shinyjs::useShinyjs(),
-                   h3(strong('1. Submit site-level point count data:')),
-                   br(),
-                   fluidRow(
-                     column(3, selectInput('sitePc', 'Site:', '')),
-                     column(3, textInput('observerPc', 'Observer initials:')),
-                     column(3, dateInput('datePc',
-                                       label = 'Date: yyyy-mm-dd',
-                                       value = Sys.Date())),
-                     column(3, selectizeInput('startTimePc', 'Start time:',
-                                              choices = choiceTimeOfDay))
-                   ),
-                   br(),
+#                div(id = 'pcDataConditions',
+#                    shinyjs::useShinyjs(),
+#                    h3(strong('1. Add point count record:')),
+#                    br(),
+#                    fluidRow(
+#                      column(3, selectInput('sitePc', 'Site:', '')),
+#                      column(3, textInput('observerPc', 'Observer initials:')),
+#                      column(3, dateInput('datePc',
+#                                        label = 'Date: yyyy-mm-dd',
+#                                        value = Sys.Date())),
+#                      column(3, selectizeInput('startTimePc', 'Start time:',
+#                                               choices = choiceTimeOfDay))
+#                    ),
+#                    br(),
 #                    h4(strong('Location')),
 #                    fluidRow(
 #                      column(4, 
@@ -420,29 +420,37 @@ ui <- navbarPage(
 #                      column(3, selectizeInput('splW', 'W:',
 #                                               choices = c('',seq(0, 130))))
 #                    ),
-               br(),
-               fluidRow(
-                 column(12, textInput('siteLevelPcNotes', 
-                                      label = 'Point count notes:'))),
-               br(),
-               actionButton("submitPcDataConditions", 
-                            "Submit site-level point count data", 
-                            class = "btn-primary"),
-               shinyjs::hidden(
-                 div(
-                   id = "thankyou_msgPcDataConditions",
-                   h3("Thanks, your site-level point count data have been recorded!")
-                 )
-               )),
-               hr(),
+#                br(),
+#                fluidRow(
+#                  column(12, textInput('siteLevelPcNotes', 
+#                                       label = 'Point count notes:')))),
+#                br(),
+#                actionButton("submitPcDataConditions", 
+#                             "Submit site-level point count data", 
+#                             class = "btn-primary"),
+#                shinyjs::hidden(
+#                  div(
+#                    id = "thankyou_msgPcDataConditions",
+#                    h3("Thanks, your site-level point count data have been recorded!")
+#                  )
+#                )
+# ),
+               # hr(),
                div(id = 'pcData',
                  # ---- Point count entry ------------------------------------------
-                   h3(strong('2. Enter point count observation records:')),
-                   br(),
+                   h3(strong('1. Add point count records:')),
+#                    br(),
                    fluidRow(
                      column(1, shinyjs::disabled(textInput("idPc", "Id", "0"))),
-                     column(11, ' ')
+                     column(3, selectInput('sitePc', 'Site:', '')),
+                     column(2, textInput('observerPc', 'Observer:')),
+                     column(3, dateInput('datePc',
+                                         label = 'Date: yyyy-mm-dd',
+                                         value = Sys.Date())),
+                     column(3, selectizeInput('startTimePc', 'Start time:',
+                                              choices = choiceTimeOfDay))
                    ), 
+                   hr(),
                    fluidRow(
                      column(2, selectizeInput('timePc', 'Time:',
                                               choices = choiceTime)),
@@ -457,7 +465,9 @@ ui <- navbarPage(
                                               'Detection:',
                                               choices = c('', 'Visual','Auditory', 'Both')))
                      ),
-                 br(),
+                 hr(),
+                 fluidRow(column(12, textInput('notesPc', label = 'Point count notes:'))),
+                 hr(),
                  fluidRow(column(1, ''),
                           column(3, actionButton("newRecordPc", "Clear fields",
                                                class = 'btn-primary')),
@@ -741,6 +751,7 @@ server <- function(input, output, session) {
     dateOutPc <<- as.character(input$datePc)
     observerPc <<- as.character(input$observerPc)
     startTimePc <<- as.character(input$startTimePc)
+    notesPc <<- as.character(input$notesPc)
     if (input$idPc != "0") {
       updateDataPc(formDataPc())
     } else {
@@ -756,6 +767,7 @@ server <- function(input, output, session) {
     dateOutPc <<- as.character(input$datePc) 
     observerPc <<- as.character(input$observerPc)
     startTimePc <<- as.character(input$startTimePc)
+    notesPc <<- as.character(input$notesPc)
     deleteDataPc(formDataPc())
     updateInputsPc(createDefaultRecordPc(), session)
   }, priority = 1)
@@ -767,6 +779,7 @@ server <- function(input, output, session) {
     dateOutPc <<- as.character(input$datePc)
     observerPc <<- as.character(input$observerPc)
     startTimePc <<- as.character(input$startTimePc)
+    notesPc <<- as.character(input$notesPc)
     updateInputsPc(createDefaultRecordPc(), session)
   })
   
@@ -777,6 +790,7 @@ server <- function(input, output, session) {
     dateOutPc <<- as.character(input$datePc)
     observerPc <<- as.character(input$observerPc)
     startTimePc <<- as.character(input$startTimePc)
+    notesPc <<- as.character(input$notesPc)
     if (length(input$responsesPc_rows_selected) > 0) {
       data <- readDataPc()[input$responsesPc_rows_selected, ]
       updateInputsPc(data, session)
@@ -792,6 +806,7 @@ server <- function(input, output, session) {
     dateOutPc <<- as.character(input$datePc) 
     observerPc <<- as.character(input$observerPc)
     startTimePc <<- as.character(input$startTimePc)
+    notesPc <<- as.character(input$notesPc)
     input$submitRecordPc
     input$deleteRecordPc
     readDataPc()
@@ -804,6 +819,7 @@ server <- function(input, output, session) {
     dateOutPc <<- as.character(input$datePc) 
     observerPc <<- as.character(input$observerPc)
     startTimePc <<- as.character(input$startTimePc)
+    notesPc <<- as.character(input$notesPc)
     reactiveOutPc()
   },
   server = FALSE, selection = "single",

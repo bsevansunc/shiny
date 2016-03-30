@@ -237,6 +237,7 @@ castDataPc <- function(dataPc) {
                       distancePc = dataPc["distancePc"],
                       countPc  = dataPc["countPc"],
                       detectionPc = dataPc["detectionPc"],
+                      notesPc = notesPc,
                       stringsAsFactors = FALSE)
   rownames(datarPc) <- dataPc["idPc"]
   return (datarPc)
@@ -254,7 +255,8 @@ createDefaultRecordPc <- function() {
                              speciesPc = '',
                              distancePc = '',
                              countPc  = '',
-                             detectionPc = ''
+                             detectionPc = '',
+                             notesPc = ''
                              ))
   return (mydefault)
 }
@@ -272,6 +274,7 @@ updateInputsPc <- function(dataPc, session) {
   updateTextInput(session, "distancePc", value = unname(dataPc["distancePc"]))
   updateTextInput(session, "countPc", value = unname(dataPc["countPc"]))
   updateTextInput(session, "detectionPc", value = unname(dataPc["detectionPc"]))
+  updateTextInput(session, "notesPc", value = unname(dataPc["notesPc"]))
 }
 
 # This function finds the next ID of a new record. In mysql, this could be done by an incremental index, automatically. But here, we do it manually, ourselves:
@@ -330,7 +333,8 @@ getTableMetadataPc <- function() {
               speciesPc = 'SPP',
               distancePc = 'Distance',
               countPc  = 'Count',
-              detectionPc = 'Detection'
+              detectionPc = 'Detection',
+              notesPc = 'Notes'
               )
   result <- list(fields = fields)
   return (result)
