@@ -343,7 +343,7 @@ ui <- navbarPage(
   tabPanel(strong('Point count data'),
            sidebarLayout(
              sidebarPanel(
-               div(id = 'pointCountVisitInfo',
+               div(id = 'pcDataConditions',
                    shinyjs::useShinyjs(),
                    h3(strong('1. Submit site-level point count data:')),
                    br(),
@@ -363,8 +363,8 @@ ui <- navbarPage(
                             textInput('longitude', 
                                       'Longitude (decimal degrees):')),
                      column(4, 
-                            textInput('longitude', 
-                                      'Longitude (decimal degrees):')),
+                            textInput('latitude', 
+                                      'Latitude (decimal degrees):')),
                      column(4,
                             textInput('accuracy', 'Accuracy (m):'))
                    ),
@@ -389,9 +389,9 @@ ui <- navbarPage(
                                               choices = c('',seq(0, 130)))),
                      column(3, selectizeInput('splE', 'E:',
                                               choices = c('',seq(0, 130)))),
-                     column(3, selectizeInput('splE', 'S:',
+                     column(3, selectizeInput('splS', 'S:',
                                               choices = c('',seq(0, 130)))),
-                     column(3, selectizeInput('splE', 'W:',
+                     column(3, selectizeInput('splW', 'W:',
                                               choices = c('',seq(0, 130))))
                    ),
                br(),
@@ -399,12 +399,12 @@ ui <- navbarPage(
                  column(12, textInput('siteLevelPcNotes', 
                                       label = 'Site-level point count notes:'))),
                br(),
-               actionButton("submitSiteLevelPcData", 
+               actionButton("submitPcDataConditions", 
                             "Submit site-level point count data", 
                             class = "btn-primary"),
                shinyjs::hidden(
                  div(
-                   id = "thankyou_msgPcSiteLevel",
+                   id = "thankyou_msgPcDataConditions",
                    h3("Thanks, your site-level point count data have been recorded!")
                  )
                )),
@@ -550,7 +550,7 @@ server <- function(input, output, session) {
   # Click "Submit record" button to push result to table:
   
   observeEvent(input$submitRecord, {
-    dateOut <<- as.character(input$datev) # added mar 25
+    dateOut <<- as.character(input$datev) 
     if (input$id != "0") {
       updateData(formData())
     } else {
@@ -562,7 +562,7 @@ server <- function(input, output, session) {
   # Click "Delete" to remove a single record:
   
   observeEvent(input$delete, {
-    dateOut <<- as.character(input$datev) # added mar 25
+    dateOut <<- as.character(input$datev) 
     deleteData(formData())
     updateInputs(createDefaultRecord(), session)
   }, priority = 1)
@@ -625,6 +625,23 @@ server <- function(input, output, session) {
   output$aouTable = DT::renderDataTable(
     datatable(aouCodes, filter = 'none', rownames = FALSE,
               options = list(pageLength = 1)))
+  
+  #-------------------------------------------------------------------------------*
+  # ---- SERVER: PC DATA CONDITIONS ----
+  #-------------------------------------------------------------------------------*
+  # Link fields to input:
+  pcDataConditions <- reactive({
+    dateOut <- as.character(input$datePc)
+    data <- t(sapply(pcDataConditionsFields, function(x) input[[x]]))
+    cbind(dateOut, data)
+  })
+  
+  # When the Submit button is clicked, save form data:
+  observeEvent(input$submitPcDataConditions, {
+    savePcDataConditions(pcDataConditions())
+    shinyjs::show("thankyou_msgPcDataConditions")
+  })
+  
   #-------------------------------------------------------------------------------*
   # ---- SERVER: SUBMIT BIRD-LEVEL POINT COUNT DATA ----
   #-------------------------------------------------------------------------------*

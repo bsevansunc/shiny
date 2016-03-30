@@ -9,6 +9,13 @@ visitFields <- c('hub', 'site', 'observer',
                  'nocaUnbanded', 'nomoUnbanded', 'sospUnbanded',
                  'tutiUnbanded', 'unchUnbanded', 'encounteredBird','notes')
 
+# Define fields for PC data conditions (site-level pc records):
+
+pcDataConditionsFields <- c('sitePc', 'observerPc', 'datePc', 'startTimePc',
+                            'longitude', 'latitude', 'accuracy', 'locationNotes',
+                            'temperature', 'sky', 'wind', 'splN', 'splE',
+                            'splS', 'splW', 'siteLevelPcNotes')
+
 # Visit choices
 
 choiceRegions <- c('Atlanta' = 'Atlanta',
