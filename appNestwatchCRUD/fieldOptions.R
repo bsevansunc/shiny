@@ -2,6 +2,7 @@
 # Define fields for visit data:
 
 visitFields <- c('hub', 'site', 'observer',
+                 'longitude', 'latitude', 'accuracy', 'locationNotes',
                  'netCount', 'netHours', 'startRsTime', 'endRsTime',
                  'rsPathDistace', 'amroUnbanded', 'bcchUnbanded', 'brthUnbanded',
                  'cachUnbanded', 'carwUnbanded', 'eaphUnbanded','grcaUnbanded',

@@ -101,7 +101,23 @@ ui <- navbarPage(
                          )),
                   column(6,
                          textInput("observer", "Observer initials:"))),
+                hr(),
+                h4(strong('Location:')),
                 br(),
+                fluidRow(
+                  column(4, 
+                         textInput('longitude', 
+                                   'Longitude (decimal degrees):')),
+                  column(4, 
+                         textInput('latitude', 
+                                   'Latitude (decimal degrees):')),
+                  column(4,
+                         textInput('accuracy', 'Accuracy (m):'))
+                ),
+                fluidRow(
+                  column(12, textInput('locationNotes', 
+                                       label = 'Location notes:'))),
+                hr(),
                 # ---- Banding effort --------------------------------------------
                 h4(strong('Banding effort:')),
                 br(),
@@ -110,7 +126,7 @@ ui <- navbarPage(
                                            choices = choiceNetCount)),
                   column(6, selectizeInput('netHours', 'Net hours:', 
                                            choices = choiceNetHours))),
-                br(),
+                hr(),
                 # ---- Resight effort --------------------------------------------
                 h4(strong('Resight effort:')),
                 br(),
@@ -177,12 +193,12 @@ ui <- navbarPage(
                            choiceCount
                          )),
                          column(9, '')),
-                br(),
+                hr(),
                 h4(strong('Did you band or encounter a banded bird during your visit?')),
                 radioButtons('encounteredBirds', label = NULL,
                              choices = list('Yes' = 1, 'No' = 2), 
                              selected = 1),
-                br(),
+                hr(),
                 h4(strong('Visit notes:')),
                 br(),
                 #div(id = "form", ...),
@@ -350,7 +366,7 @@ ui <- navbarPage(
   #--------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: POINT COUNT ----
   #--------------------------------------------------------------------------------*
-  tabPanel(strong('Point count data'),
+  tabPanel(strong('1. Enter point count data'),
            sidebarLayout(
              sidebarPanel(
                div(id = 'pcDataConditions',
@@ -367,47 +383,47 @@ ui <- navbarPage(
                                               choices = choiceTimeOfDay))
                    ),
                    br(),
-                   h4(strong('Location')),
-                   fluidRow(
-                     column(4, 
-                            textInput('longitude', 
-                                      'Longitude (decimal degrees):')),
-                     column(4, 
-                            textInput('latitude', 
-                                      'Latitude (decimal degrees):')),
-                     column(4,
-                            textInput('accuracy', 'Accuracy (m):'))
-                   ),
-                   fluidRow(
-                     column(12, textInput('locationNotes', 
-                                          label = 'Location notes:'))),
-                   br(),
-                   h4(strong('Weather')),
-                   fluidRow(
-                     column(4, selectizeInput('temperature', 'Temperature (C):',
-                                              choices = c('',seq(-10, 40)))),
-                     column(4, selectizeInput('sky', 'Sky (0-5):',
-                                              choices = c('',seq(0, 5)))),
-                     column(4, selectizeInput('wind', 
-                                              'Wind (Beaufort number, 0-6):',
-                                              choices = c('',seq(0, 6))))
-                   ),
-                   br(),
-                   h4(strong('Ambient noise (dB)')),
-                   fluidRow(
-                     column(3, selectizeInput('splN', 'N:',
-                                              choices = c('',seq(0, 130)))),
-                     column(3, selectizeInput('splE', 'E:',
-                                              choices = c('',seq(0, 130)))),
-                     column(3, selectizeInput('splS', 'S:',
-                                              choices = c('',seq(0, 130)))),
-                     column(3, selectizeInput('splW', 'W:',
-                                              choices = c('',seq(0, 130))))
-                   ),
+#                    h4(strong('Location')),
+#                    fluidRow(
+#                      column(4, 
+#                             textInput('longitude', 
+#                                       'Longitude (decimal degrees):')),
+#                      column(4, 
+#                             textInput('latitude', 
+#                                       'Latitude (decimal degrees):')),
+#                      column(4,
+#                             textInput('accuracy', 'Accuracy (m):'))
+#                    ),
+#                    fluidRow(
+#                      column(12, textInput('locationNotes', 
+#                                           label = 'Location notes:'))),
+#                    br(),
+#                    h4(strong('Weather')),
+#                    fluidRow(
+#                      column(4, selectizeInput('temperature', 'Temperature (C):',
+#                                               choices = c('',seq(-10, 40)))),
+#                      column(4, selectizeInput('sky', 'Sky (0-5):',
+#                                               choices = c('',seq(0, 5)))),
+#                      column(4, selectizeInput('wind', 
+#                                               'Wind (Beaufort number, 0-6):',
+#                                               choices = c('',seq(0, 6))))
+#                    ),
+#                    br(),
+#                    h4(strong('Ambient noise (dB)')),
+#                    fluidRow(
+#                      column(3, selectizeInput('splN', 'N:',
+#                                               choices = c('',seq(0, 130)))),
+#                      column(3, selectizeInput('splE', 'E:',
+#                                               choices = c('',seq(0, 130)))),
+#                      column(3, selectizeInput('splS', 'S:',
+#                                               choices = c('',seq(0, 130)))),
+#                      column(3, selectizeInput('splW', 'W:',
+#                                               choices = c('',seq(0, 130))))
+#                    ),
                br(),
                fluidRow(
                  column(12, textInput('siteLevelPcNotes', 
-                                      label = 'Site-level point count notes:'))),
+                                      label = 'Point count notes:'))),
                br(),
                actionButton("submitPcDataConditions", 
                             "Submit site-level point count data", 
