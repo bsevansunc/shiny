@@ -190,8 +190,6 @@ getTableMetadata <- function() {
   return (result)
 }
 
-###
-
 #---------------------------------------------------------------------------------*
 # ---- Point count editable frame ----
 #=================================================================================*
@@ -199,7 +197,7 @@ getTableMetadata <- function() {
 # This method casts from the inputs to a one-row data.frame. We use it, for instance, when the user creates a new record by typing in values into the inputs, and then clicks "Submit":
 
 castDataPc <- function(dataPc) {
-  datar <- data.frame(sitePc = as.character(dataPc["sitePc"]),
+  datarPc <- data.frame(sitePc = as.character(dataPc["sitePc"]),
                       observerPc = dataPc["observerPc"],
                       datePc = dateOutPc, 
                       timePc = dataPc["timePc"],
@@ -208,14 +206,14 @@ castDataPc <- function(dataPc) {
                       countPc  = dataPc["countPc"],
                       detectionPc = dataPc["detectionPc"],
                       stringsAsFactors = FALSE)
-  rownames(datar) <- dataPc["idPc"]
-  return (datar)
+  rownames(datarPc) <- dataPc["idPc"]
+  return (datarPc)
 }
 
 # This creates an empty record, to be used e.g. to fill the inputs with the default values when the user clicks the "New" button:
 
 createDefaultRecordPc <- function() {
-  mydefault <- castData(list(idPc = "0", 
+  mydefault <- castDataPc(list(idPc = "0", 
                              sitePc = '',
                              observerPc = '',
                              datePc = '',
@@ -283,7 +281,7 @@ updateDataPc <- function(dataPc) {
 # Delete
 
 deleteDataPc <- function(dataPc) {
-  responsesPc<<- responses[row.names(responsesPc) != unname(dataPc["idPc"]), ]
+  responsesPc<<- responsesPc[row.names(responsesPc) != unname(dataPc["idPc"]), ]
 }
 
 # The only thing that might not be straight forward is the GetTableMetadata function. We'll use it as a starting point for further development, as described below. For now, it's just a method that defines the names of the columns in our table:
