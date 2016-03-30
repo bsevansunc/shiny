@@ -490,6 +490,9 @@ ui <- navbarPage(
 #=================================================================================*
 
 server <- function(input, output, session) {
+  #-------------------------------------------------------------------------------*
+  # ---- SERVER: REACTIVE INPUTS ----
+  #-------------------------------------------------------------------------------*
   # Update site drop-down menu as a function of the hub:
   observe({
     inHub <- input$hub
@@ -507,7 +510,8 @@ server <- function(input, output, session) {
     updateSelectInput(session, 'sitePc', choices = siteNames)
   })
   
-  # Update site drop-down menu as a function of the site chosen in the visit section:
+  # Once SITE is chosen on the visit page, have this be the default entry:
+  
   observe({
     inSite <- input$site
     print(inSite)
@@ -517,7 +521,30 @@ server <- function(input, output, session) {
     updateSelectInput(session, 'sitePc', selected = input$site)
   })
   
-  updateSelectInput(session, 'sitev')
+  # Once DATE is chosen on the visit page, have this be the default entry:
+  
+  observe({
+    inDate <- input$date
+    print(inDate)
+    if(is.null(inDate))
+      return(NULL)
+    updateSelectInput(session, 'datev', selected = input$date)
+    updateSelectInput(session, 'datePc', selected = input$date)
+  })
+  
+  # Once observers are written on the visit page, have this be the default entry:
+  
+  observe({
+    inObserver <- input$observer
+    print(inObserver)
+    if(is.null(inObserver))
+      return(NULL)
+    updateTextInput(session, 'bander', value = input$observer)
+    updateTextInput(session, 'observerPc', value = input$observer)
+  })
+  
+  
+  # updateSelectInput(session, 'sitev')
   
   # Update species drop-down menu by hub:
   observe({
