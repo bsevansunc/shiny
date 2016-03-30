@@ -316,12 +316,9 @@ ui <- navbarPage(
                width = 6, position = 'right'),
              # ---- Encounter text ----------------------------------------------------
              mainPanel(
-               textBandingIntro,
-               textBandingIntro1,
+               introTextEncounter,
                hr(),
-               ttId, ttBandTime, ttBanderInitials, ttEncounterType,
-               ttSpecies, ttBandNumber, ttColorCombo, ttAgeThroughFat, 
-               ttMassThroughTarsus,
+               fieldDescriptionsEncounter,
                width = 6, position = 'left')
              ),
            hr(),
@@ -411,8 +408,7 @@ ui <- navbarPage(
                    width = 6, position = 'right'),
                   # ---- PC text ----------------------------------------------------
                  mainPanel(
-                   textPcIntro0,
-                   textPcIntro1,
+                   introTextPc,
                    hr(),
                    fieldDescriptionsPc,
                    # hr(),
