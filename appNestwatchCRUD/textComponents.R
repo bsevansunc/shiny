@@ -15,7 +15,7 @@ ttVisitObserver <- p(strong('Observer initials:'), ' Please enter the two or thr
                        "How to disable autocorrect in Mac Yosemite"),
                      ',',
                      tags$a(href = "http://www.windowscentral.com/how-disable-spell-checker-windows-10", 
-                            'How to turn disable autocorrect in Windows 10'),
+                            'How to disable autocorrect in Windows 10'),
                      ')'
                      )
 
