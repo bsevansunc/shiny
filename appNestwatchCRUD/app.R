@@ -232,7 +232,8 @@ ui <- navbarPage(
              sidebarPanel(
                shinyjs::useShinyjs(),
                h3(strong('1. Enter encounter record:')),
-               br(),
+               strong(em('IMPORTANT! Be sure to enter encounter data AFTER entering visit data!')),
+               br(), br(),
                fluidRow(
                  column(2, shinyjs::disabled(textInput("id", "Id", "0"))),
                  column(5, selectInput('sitev', 'Site', '')),
@@ -439,17 +440,24 @@ ui <- navbarPage(
                div(id = 'pcData',
                  # ---- Point count entry ------------------------------------------
                    h3(strong('1. Add point count records:')),
-#                    br(),
+                   strong(em('IMPORTANT! Be sure to enter point count data AFTER entering visit data!')),
+                   br(), br(),
                    fluidRow(
                      column(1, shinyjs::disabled(textInput("idPc", "Id", "0"))),
                      column(3, selectInput('sitePc', 'Site:', '')),
                      column(2, textInput('observerPc', 'Observer:')),
+                     column(6, '')
+                   ),
+                   fluidRow(
                      column(3, dateInput('datePc',
                                          label = 'Date: yyyy-mm-dd',
                                          value = Sys.Date())),
                      column(3, selectizeInput('startTimePc', 'Start time:',
-                                              choices = choiceTimeOfDay))
+                                              choices = choiceTimeOfDay)),
+                     column(6, '')
                    ), 
+                   hr(),
+                   fluidRow(column(12, textInput('notesPc', label = 'Point count notes:'))),
                    hr(),
                    fluidRow(
                      column(2, selectizeInput('timePc', 'Time:',
@@ -466,8 +474,6 @@ ui <- navbarPage(
                                               choices = c('', 'Visual','Auditory', 'Both')))
                      ),
                  hr(),
-                 fluidRow(column(12, textInput('notesPc', label = 'Point count notes:'))),
-                 hr(),
                  fluidRow(column(1, ''),
                           column(3, actionButton("newRecordPc", "Clear fields",
                                                class = 'btn-primary')),
@@ -481,7 +487,6 @@ ui <- navbarPage(
                  mainPanel(
                    textPcIntro0,
                    textPcIntro1,
-                   'Leave fields blank if you do not have data for that field (e.g., ambient noise records refer only to data collected with an SPL meter).',
                    hr(),
                    fieldDescriptionsPc,
                    hr(),
@@ -491,7 +496,7 @@ ui <- navbarPage(
                ),
                hr(),
                # ---- QC and submission ---------------------------------------------------
-               h3(strong('3. Data-proofing and submission of point count records:')),
+               h3(strong('2. Data-proofing and submission of point count records:')),
                br(),
                DT::dataTableOutput("responsesPc"),
                br(),

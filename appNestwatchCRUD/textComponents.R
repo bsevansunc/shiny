@@ -66,7 +66,7 @@ ttBandNotes <- 'Any other observations to report on this bird? Provide it here!'
 
 textVisit <- p(strong('Start by entering your visit data.'), 'These data only need to be entered once for each site visit. After entering data into a field, press enter and tab to the next field. When you finish entering the data for each of the fields, make sure to double-check all of your entries for accuracy then press the', em('Submit visit data'),  'button.', strong('Do not enter banding, resight, point count, nest, or habitat survey data prior to completing and submitting this form!'))
 
-textBandingIntro <- p(strong('AFTER entering visit data'), 'you are ready to enter your encounter records. This is completed in two steps:')
+textBandingIntro <- h3('Encounter data are entered in two steps:')
 
 textBandingIntro1 <- tags$ol(
   tags$li(strong('Enter encounter record:'),
@@ -101,37 +101,51 @@ textBandingList2 <- tags$ul(
 
 textQuery <- p('Query the table below to search for the band number associated with a given resight. While only 5 rows of data are shown, the table includes the initial record (band encounter) across all Neighborhood Nestwatch banding records and regional hubs. You can adjust the number of rows viewed using the "Show __ entries" drop-down button. You can sort the data table by column by clicking the column header. For example, to sort the data table by date, you would click on the "Date" column header. Query fields are at the bottom of each column. Use these fields to subset the data table. Data may be subset using partial matching. For example, typing "bu" in the Color combo field will match blue color bands on either leg or position. Likewise, typing "bu/bu" will query all records in which either leg has a blue over blue color band combo. You can use the search tool on the upper-right to query all fields simultaneously. Query fields are not case-sensitive.')
 
-textPcIntro0 <- h3('Point count data are entered in three steps:')
+textPcIntro0 <- h3('Point count data are entered in two steps:')
 
 textPcIntro1 <- tags$ol(
-  tags$li(p(strong('Submit site-level point count data:'),'This section is where you enter your site data and the conditions at the site during your point count. You only need to enter these data once per point count. As with the banding data entry, if a field represents data that you did not record, leave that field blank. After filling in all of the fields, click the', em('Submit site-level point count data'), 'button.')),
-  tags$li(p(strong('Add bird count records:'), 'This section is where you record your observations of birds during your point count. Please provide one record per observation. For example, if you saw 3 Northern Cardinal at a distance of 30 meters within a given time window, this would be a single observation. The table at the bottom of this page will display each record that you have added to the table. If you detected one more NOCA in that same time period 40m away, that would be another observation. If you visually detected 2 NOCAs but at different distance intervals at the same time, these would be two separate observations. If you detected two NOCAs, one visually and one by ear at the same time in the same distance interval, this would also be two separate observations.')),
-  tags$li(p(strong('Submit bird count data:'), 'When you are done adding all of the records above compare the table at the bottom of the page with your paper copy and modify any records as necessary. Once you are confident that your data are error free, click the', em('Submit point count data'), 'button'))
-)
+  tags$li(strong('Enter point count record:'),
+          tags$ul(
+            tags$li('Please provide one record per observation. For example, if you saw 3 Northern Cardinal at a distance of 30 meters within a given time window, this would be a single observation. The table at the bottom of this page will display each record that you have added to the table. If you detected one more NOCA in that same time period 40m away, that would be another observation. If you visually detected 2 NOCAs but at different distance intervals at the same time, these would be two separate observations. If you detected two NOCAs, one visually and one by ear at the same time in the same distance interval, this would also be two separate observations.'),
+            tags$li('After entering all available data across fields press the ', em('Add record to table'),'button.')
+            )),
+  tags$li(strong('Data-proofing and submission of point count records:'),
+          tags$ul(
+            tags$li('After entering all of the point count records from your visit, compare table values with your paper record.'),
+            tags$li('If you find mistakes, select the record with your mouse -- you will notice that the fields above will be filled with that records entry and can simply be modified.'),
+            tags$li('If you need to remove the entire record, simply select that record with your mouse and click', em('Delete record.')),
+            tags$li('After you are confident of the quality of data provided, press the ', em('Submit encounter data'), 'button.')) 
+  ))
+# 
+# textPcIntro1 <- tags$ol(
+#   tags$li(p(strong('Submit site-level point count data:'),'This section is where you enter your site data and the conditions at the site during your point count. You only need to enter these data once per point count. As with the banding data entry, if a field represents data that you did not record, leave that field blank. After filling in all of the fields, click the', em('Submit site-level point count data'), 'button.')),
+#   tags$li(p(strong('Add bird count records:'), 'This section is where you record your observations of birds during your point count. Please provide one record per observation. For example, if you saw 3 Northern Cardinal at a distance of 30 meters within a given time window, this would be a single observation. The table at the bottom of this page will display each record that you have added to the table. If you detected one more NOCA in that same time period 40m away, that would be another observation. If you visually detected 2 NOCAs but at different distance intervals at the same time, these would be two separate observations. If you detected two NOCAs, one visually and one by ear at the same time in the same distance interval, this would also be two separate observations.')),
+#   tags$li(p(strong('Submit bird count data:'), 'When you are done adding all of the records above compare the table at the bottom of the page with your paper copy and modify any records as necessary. Once you are confident that your data are error free, click the', em('Submit point count data'), 'button'))
+# )
 
 fieldDescriptionsPc <- p(
   strong('Observer:'), 'If more than one person conducted the count formally (for example, if counts were conducted using a multiple observer protocol), please enter separate site-level point count records for each observer.',
   br(),br(),
   strong('Start time:'), 'The time you began your point count (24-hour clock).',
   br(),br(),
-  strong('Location:'), 'Only record location data if you took a new location reading with a GPS unit (e.g., moved site center or new site). When recording your location, be sure that your GPS unit is set to WGS 1984.',
-  br(),br(),
-  strong('Temperature:'), 'The temperature in degrees Celsius during your point count. If you do not bring a thermometer with you on your visit, these data are readily available using weather Apps on your phone or after the fact using the website Weather Underground.', tags$a(href="www.wunderground.com", 'Click here to go to Weather Underground.'),
-  br(),br(),
-  strong('Sky (0-5):'), 'The sky index gives us a general measure of the weather conditions. Entries are:',
-  tags$ul(
-    tags$li('0: Clear (barely a cloud in the sky!)'),
-    tags$li('1: Partly cloudy/partly sunny (some clouds, but predominantly sunny)'),
-    tags$li('2: Mostly cloudy (the sky is more than 50 % covered with clouds)'),
-    tags$li('3: Cloudy (no sun to be seen)'),
-    tags$li('4: Light rain'),
-    tags$li('5: Rain')
-  ),
-  br(),
-  strong('Wind (Beaufort scale)'), 'The Beaufort scale is a universal wind scale. While the scale goes up to 12, only values 0-6 apply to Nestwatch visits. To learn about the Beaufort scale, ', tags$a(href = 'http://www.spc.noaa.gov/faq/tornado/beaufort.html', 'click here.'),
-  br(),br(),
-  strong('Ambient noise (dB):'), 'Only record ambient noise if you have an SPL (sound pressure level) meter.',
-  br(),br(),
+#   strong('Location:'), 'Only record location data if you took a new location reading with a GPS unit (e.g., moved site center or new site). When recording your location, be sure that your GPS unit is set to WGS 1984.',
+#   br(),br(),
+#   strong('Temperature:'), 'The temperature in degrees Celsius during your point count. If you do not bring a thermometer with you on your visit, these data are readily available using weather Apps on your phone or after the fact using the website Weather Underground.', tags$a(href="www.wunderground.com", 'Click here to go to Weather Underground.'),
+#   br(),br(),
+#   strong('Sky (0-5):'), 'The sky index gives us a general measure of the weather conditions. Entries are:',
+#   tags$ul(
+#     tags$li('0: Clear (barely a cloud in the sky!)'),
+#     tags$li('1: Partly cloudy/partly sunny (some clouds, but predominantly sunny)'),
+#     tags$li('2: Mostly cloudy (the sky is more than 50 % covered with clouds)'),
+#     tags$li('3: Cloudy (no sun to be seen)'),
+#     tags$li('4: Light rain'),
+#     tags$li('5: Rain')
+#   ),
+#   br(),
+#   strong('Wind (Beaufort scale)'), 'The Beaufort scale is a universal wind scale. While the scale goes up to 12, only values 0-6 apply to Nestwatch visits. To learn about the Beaufort scale, ', tags$a(href = 'http://www.spc.noaa.gov/faq/tornado/beaufort.html', 'click here.'),
+#   br(),br(),
+#   strong('Ambient noise (dB):'), 'Only record ambient noise if you have an SPL (sound pressure level) meter.',
+#   br(),br(),
   strong('Point count, time:'), 'This is the time segment of the point count, in minutes. For example, if you broke a 10 minute point count into 3, 2, and 5 minute segments, all observations in the first time interval would be recorded as 3.',
   br(),br(),
   strong('Species:'), 'Type your species into the field (do not try to scroll through all of the entries ... this is all of the birds in N. America!). If you do not know the 4-letter alpha code, search the query table below.',
