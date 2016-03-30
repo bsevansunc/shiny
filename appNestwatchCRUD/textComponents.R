@@ -56,7 +56,7 @@ ttAgeThroughFat <- p(strong('Age-Fat:'), ' Please select values for age, sex, br
 
 ttMassThroughTarsus <- p(strong('Mass-Tarsus:'), ' Enter the measurement data in each field (please error-check prior to submission!).')
 
-ttFeatherID <- p(strong('Feather ID:'), ' Please provide the ID of the feather sample.')
+# ttFeatherID <- p(strong('Feather ID:'), ' Please provide the ID of the feather sample.')
 
 ttBandNotes <- 'Any other observations to report on this bird? Provide it here!'
 
@@ -64,8 +64,50 @@ ttBandNotes <- 'Any other observations to report on this bird? Provide it here!'
 # ---- PAGE TEXT ----
 #---------------------------------------------------------------------------------*
 
-textVisit <- p(strong('Start by entering your visit data.'), 'These data only need to be entered once for each site visit. After entering data into a field, press enter and tab to the next field. When you finish entering the data for each of the fields, make sure to double-check all of your entries for accuracy then press the', em('Submit visit data'),  'button.', strong('Do not enter banding, resight, point count, nest, or habitat survey data prior to completing and submitting this form!'))
+textVisit <- p(
+  h3('Start by entering your visit data:'), 
+  p('These data only need to be entered once for each site visit. After entering data into a field, press enter and tab to the next field. When you finish entering the data for each of the fields, make sure to double-check all of your entries for accuracy then press the', em('Submit visit data'),  'button.', strong('Do not enter banding, resight, point count, nest, or habitat survey data prior to completing and submitting this form!')),
+  hr(),
+  p(strong('Regional Hub:'),
+  'Select your study region from the list.'),
+  br(),br(),
+  p(strong('Site:'), 
+    'Begin typing the site code and a list of options will appear. Either select the site from the list or press enter once you have finished entering the site data (i.e., only one choice in the dropdown menu). The site is the first four letters of the last name of the participant, the first three letters of their first name, the two-letter state abbreviation, and a number that signifies whether a participant has moved. For example, if a participant was named Robert Reitsma, they lived in Maryland, and this was the original Nestwatch site associated with the participant, the site would be REITROBMD1. If the participant moved to a new location, the site code for the new location would be REITROBMD2.'),
+  br(),br(),
+  p(strong('Date:'), 
+    'Select the date of your visit from the calendar. All dates are to be provided in the international date standard format ISO 8601 (YYYY-MM-DD).', em('Note: that if you visited a site on multiple dates, you would enter visit data for each visit separately.')),
+  br(),br(),
+  p(strong('Observer initials:'), ' Please enter the three-letter initials of EACH technician who visit a site, separating entries by a comma. For example, if Thomas Brandt Ryder and Brian S. Evans visited a site, they would enter "TBR,BSE" in this field. If the technician does not have a middle name, you may enter their two-letter initials. Please be sure to use the same initials across all of your visits!  Note: To avoid autocorrect woes, you may want to turn autocorrect off on your computer operating system or in your web application (See:',
+                       tags$a(href = "https://support.apple.com/kb/PH18451?locale=en_US",
+                              "How to disable autocorrect in Mac Yosemite"),
+                       ',',
+                       tags$a(href = "http://www.windowscentral.com/how-disable-spell-checker-windows-10", 
+                              'How to disable autocorrect in Windows 10'),
+                       ')'),
+  br(), br(),
+  p(strong('Location:'), 'Only record location data if you took a new location reading with a GPS unit (e.g., moved site center or new site). When recording your location, be sure that your GPS unit is set to WGS 1984.'),
+  br(),br(),
+  p(strong('Number of nets:'), ' This is the total number of nets you put out, regardless of whether a net was moved or a net was put up later in the day.Begin typing the number of net and a list of options will appear. You can either select the number of nets from the list or press enter once you have finished typing the value. Number of nets is provided per 6 m length (e.g., 6 m = 1, 12 m = 2 nets).'),
+  br(),br(),
+  p(strong('Net hours:'), 'You can either select net hours from the list or press enter once you have finished typing the value. To calculate net hours, make sure to keep track of how long each net was open during your visit. Multiply the length of time each net was open by the net length (see "Number of nets"), sum the nets, and record the number here. For example, if you had a 12 m open for three hours and two 6 m nets opened for 4 hours each, the net hours would be 2 nets x 3 hours + 2 nets x 4 hours = 14 net hours.'),
+  br(),br(),
+  p(strong('Start resight time, End resight time:'), 'These are the times in which you began and ended your targeted resight effort. All times are to be entered in the 24-hour clock (ISO 8601 time format), for example 1 pm would be provided as 13:00.', strong(em('Note: targeted resighting does not include time spent at a site doing other activities (e.g., nest searching or banding).'))),
+  br(),br(),
+  p(strong('Path distance traveled:'), ' If you had a GPS unit with you, this is the path distance that you recorded on your GPS unit, in meters.',
+    helpText('Note: To find out how to record path distance on a Garmin eTrex, please see',
+             a(href = "http://www8.garmin.com/learningcenter/on-the-trail/etrex/",
+               target="_blank", "this link."))),
+  br(), br(),
+  p(strong('Observed, unbanded:'), 'As a measure of resight effort, we would like you to record the number of unbanded individuals observed during your', em('targeted'), 'resight foray. Only include counts of species that were previously color-banded at the current site.  For example, if no CARWs were ever color-banded at that site, do not count unbanded CARW during your foray. If you have encountered all individuals for a given species prior to targeted resighting, do not record counts for this species.'),
+  br(),br(),
+  p(strong('Did you band or encounter banded birds during your visit?'), 'We want you to keep track of your visits regardless of whether you encountered a banded bird during your visit. It sometimes happens that you are not successful in your efforts to band or re-encounter a bird during a visit. If this is the case, select', em('no.')),
+  br(), br(),
+  p(strong('Visit notes:'), 'Have anything else to say about your visit (not about individual birds)? Put it here!')
+  )
 
+
+
+#######################################################################
 textBandingIntro <- h3('Encounter data are entered in two steps:')
 
 textBandingIntro1 <- tags$ol(
@@ -124,9 +166,9 @@ textPcIntro1 <- tags$ol(
 # )
 
 fieldDescriptionsPc <- p(
-  strong('Observer:'), 'If more than one person conducted the count formally (for example, if counts were conducted using a multiple observer protocol), please enter separate site-level point count records for each observer.',
+  p(strong('Observer:'), 'If more than one person conducted the count formally (for example, if counts were conducted using a multiple observer protocol), please enter separate site-level point count records for each observer.'),
   br(),br(),
-  strong('Start time:'), 'The time you began your point count (24-hour clock).',
+  p(strong('Start time:'), 'The time you began your point count (24-hour clock).'),
   br(),br(),
 #   strong('Location:'), 'Only record location data if you took a new location reading with a GPS unit (e.g., moved site center or new site). When recording your location, be sure that your GPS unit is set to WGS 1984.',
 #   br(),br(),
@@ -146,11 +188,11 @@ fieldDescriptionsPc <- p(
 #   br(),br(),
 #   strong('Ambient noise (dB):'), 'Only record ambient noise if you have an SPL (sound pressure level) meter.',
 #   br(),br(),
-  strong('Point count, time:'), 'This is the time segment of the point count, in minutes. For example, if you broke a 10 minute point count into 3, 2, and 5 minute segments, all observations in the first time interval would be recorded as 3.',
+  p(strong('Point count, time:'), 'This is the time segment of the point count, in minutes. For example, if you broke a 10 minute point count into 3, 2, and 5 minute segments, all observations in the first time interval would be recorded as 3.'),
   br(),br(),
-  strong('Species:'), 'Type your species into the field (do not try to scroll through all of the entries ... this is all of the birds in N. America!). If you do not know the 4-letter alpha code, search the query table below.',
+  p(strong('Species:'), 'Type your species into the field (do not try to scroll through all of the entries ... this is all of the birds in N. America!). If you do not know the 4-letter alpha code, search the query table below.'),
   br(),br(),
-  strong('Distance:'), 'This is the distance interval, in meters, in which a bird was observed.'
+  p(strong('Distance:'), 'This is the distance interval, in meters, in which a bird was observed.')
 )
 
 textAouQuery <- p(strong('Query, AOU codes:'), 'If you do not know the 4-letter AOU alpha code for a species that you observed during your point count, you can use this simple query table to find it. To search for a species, just type the common or scientific name in the search box. Search entries are not case-sensitive.')

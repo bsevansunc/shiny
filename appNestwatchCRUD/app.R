@@ -215,12 +215,7 @@ ui <- navbarPage(
                 ),
                 width = 6, position = 'right'),
             # ---- Visit text ----------------------------------------------------
-            mainPanel(
-              textVisit, hr(),
-              ttRegion, ttSite, ttVisitDate, ttVisitObserver, ttNetCount,
-              ttNetHours, ttStartEndResightTime, ttPathDistance,
-              ttObservedUnbanded, ttEncounteredBirds, ttVisitNotes, 
-              width = 6, position = 'left'))),
+            mainPanel(textVisit, width = 6, position = 'left'))),
   #-------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: ENCOUNTERS ----
   #-------------------------------------------------------------------------------*
@@ -327,7 +322,6 @@ ui <- navbarPage(
                ttId, ttBandTime, ttBanderInitials, ttEncounterType,
                ttSpecies, ttBandNumber, ttColorCombo, ttAgeThroughFat, 
                ttMassThroughTarsus,
-               ttFeatherID,
                width = 6, position = 'left')
              ),
            hr(),
@@ -388,6 +382,9 @@ ui <- navbarPage(
                    hr(),
                    fluidRow(column(12, textInput('notesPc', label = 'Point count notes:'))),
                    hr(),
+                   textAouQuery,
+                   fluidRow(column(11, DT::dataTableOutput('aouTable'))),
+                   hr(),
                    fluidRow(
                      column(2, selectizeInput('timePc', 'Time:',
                                               choices = choiceTime)),
@@ -418,9 +415,9 @@ ui <- navbarPage(
                    textPcIntro1,
                    hr(),
                    fieldDescriptionsPc,
-                   hr(),
-                   textAouQuery,
-                   fluidRow(column(11, DT::dataTableOutput('aouTable'))),
+                   # hr(),
+                   # textAouQuery,
+                   # fluidRow(column(11, DT::dataTableOutput('aouTable'))),
                    width = 6, position = 'left')
                ),
                hr(),
