@@ -353,7 +353,7 @@ ui <- navbarPage(
                      column(3, dateInput('datePc',
                                        label = 'Date: yyyy-mm-dd',
                                        value = Sys.Date())),
-                     column(3, selectizeInput('timePc', 'Start time:',
+                     column(3, selectizeInput('startTimePc', 'Start time:',
                                               choices = choiceTimeOfDay))
                    ),
                    br(),
