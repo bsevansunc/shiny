@@ -82,7 +82,21 @@ source('textComponents.R', local = TRUE)
 #=================================================================================*
 
 ui <- navbarPage(
-  "Neighborhood Nestwatch technician data submission interface",
+  title = p(
+    h4(strong("Neighborhood Nestwatch technician data submission interface")),
+    br()
+    ),
+  windowTitle = 'Neighborhood Nestwatch Technician data submission',
+  footer = p(
+    br(),
+    hr(),
+    br(),
+    fluidRow(
+    column(4, imageOutput('siLogo')),
+    column(5, ''),
+    column(3, imageOutput('nnLogo'))
+    )),
+  inverse = TRUE,
   #-------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: VISIT ----
   #-------------------------------------------------------------------------------*
@@ -130,22 +144,26 @@ ui <- navbarPage(
                 fluidRow(
                   column(6, selectizeInput('netCount6', 'Number of 6 m nets:', 
                                            choices = choiceNetCount)),
-                  column(6, selectizeInput('netTime6', 'Total time open (minutes), 6 m nets:', 
+                  column(6, selectizeInput('netTime6', 
+                                           'Total time open (minutes), 6 m nets:', 
                                            choices = choiceNetHours))),
                 fluidRow(
                   column(6, selectizeInput('netCount9', 'Number of 9 m nets:', 
                                            choices = choiceNetCount)),
-                  column(6, selectizeInput('netTime9', 'Total time open (minutes), 9 m nets:', 
+                  column(6, selectizeInput('netTime9', 
+                                           'Total time open (minutes), 9 m nets:', 
                                            choices = choiceNetHours))),
                 fluidRow(
                   column(6, selectizeInput('netCount12', 'Number of 12 m nets:', 
                                            choices = choiceNetCount)),
-                  column(6, selectizeInput('netTime12', 'Total time open (minutes), 12 m nets:', 
+                  column(6, selectizeInput('netTime12', 
+                                           'Total time open (minutes), 12 m nets:', 
                                            choices = choiceNetHours))),
                 fluidRow(
                   column(6, selectizeInput('netCount18', 'Number of 18 m nets:', 
                                            choices = choiceNetCount)),
-                  column(6, selectizeInput('netTime18', 'Total time open (minutes), 18 m nets:', 
+                  column(6, selectizeInput('netTime18', 
+                                           'Total time open (minutes), 18 m nets:', 
                                            choices = choiceNetHours))),
                 hr(),
                 # ---- Resight effort --------------------------------------------
@@ -222,7 +240,6 @@ ui <- navbarPage(
                 hr(),
                 h4(strong('Visit notes:')),
                 br(),
-                #div(id = "form", ...),
                 # ---- Notes -----------------------------------------------------
                 fluidRow(column(12, textInput('visitNotes', 
                                               label = NULL))),
@@ -237,7 +254,8 @@ ui <- navbarPage(
                 ),
                 width = 6, position = 'right'),
             # ---- Visit text ----------------------------------------------------
-            mainPanel(textVisit, width = 6, position = 'left'))),
+            mainPanel(textVisit, width = 6, position = 'left'))
+           ),
   #-------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: ENCOUNTERS ----
   #-------------------------------------------------------------------------------*
@@ -399,7 +417,8 @@ ui <- navbarPage(
                      column(6, '')
                    ), 
                    hr(),
-                   fluidRow(column(12, textInput('notesPc', label = 'Point count notes:'))),
+                   fluidRow(column(12, textInput('notesPc', 
+                                                 label = 'Point count notes:'))),
                    hr(),
                    textAouQuery,
                    fluidRow(column(11, DT::dataTableOutput('aouTable'))),
@@ -470,40 +489,122 @@ ui <- navbarPage(
                    h3(strong('1. Add nest records:')),
                    strong(em('IMPORTANT! Be sure to enter nest data AFTER entering visit data!')),
                    br(), br(),
+                   h4('Location:'),
                    fluidRow(
                      column(2, shinyjs::disabled(textInput("idPc", "Id", "0"))),
-                     column(4, selectInput('siteNest', 'Site (grid ID):', '')),
-                     column(3, textInput('plotNest', 'Plot (sub-site):', '')),
-                     column(3, textInput('nestID', 'Nest ID:'))
+                     column(5, selectInput('siteNest', 'Site (grid ID):', '')),
+                     column(5, textInput('plotNest', 'Plot (sub-site):', ''))
                    ),
+                   fluidRow(
+                     column(3, selectInput('nestLocation', 'Nest Location',
+                                           nestLocationChoices)),
+                     column(9, textInput('nestLocationNotesOther', 
+                                         'Nest location notes (if other):'))
+                   ),
+                   fluidRow(
+                     column(9, textInput('plantSp', 
+                                         'Plant species (if applicable):')),
+                     column(3, selectInput('nestHeight', 'Nest height (m):',
+                                           c('', 0:12), ''))
+                   ),
+                   hr(),
                    h4('Identification:'),
                    fluidRow(
-                     column(4, selectInput('speciesNest', 'Species:', '')),
-                     column(4, '')
+                     column(3, strong('Species:')),
+                     column(3, strong('Color combo:')),
+                     column(3, strong('Band number:')),
+                     column(3, strong('Nest ID:'))
                    ),
                    fluidRow(
-                     column(4, selectInput('colorComboNestFemale', 
-                                           'Color combo, female:',
+                     column(3, selectInput('speciesNest', ' ', '')),
+                     column(3, selectInput('colorComboNestFemale', 
+                                           'Female:',
                                            choices = choiceColorCombos)),
-                     column(4, textInput('bandNumberNestFemale', 'Band number, female:')),
-                     column(4, '')
-                     ),
-                   fluidRow(
-                     column(4, selectInput('colorComboNestMale', 
-                                           'Color combo, male:',
-                                           choices = choiceColorCombos)),
-                     column(4, textInput('bandNumberNestMale', 'Band number, male:')),
-                     column(4, '')
+                     column(3, textInput('bandNumberNestFemale', 'Female:')),
+                     column(3, textInput('nestID', ' '))
                    ),
                    fluidRow(
-                     column(4, textInput('observerNest', 'Observer:'))
-                   )
-                 
+                     column(3, ''),
+                     column(3, selectInput('colorComboNestMale', 
+                                           'Male:',
+                                           choices = choiceColorCombos)),
+                     column(3, textInput('bandNumberNestMale', 'Male:')),
+                     column(3, '')
+                   ),
+                   hr(),
+                   h4('Summary information:'),
+                   fluidRow(
+                     column(5, selectInput('nestFate', 'Nest Fate:',
+                                           nestFateChoices)),
+                     column(7, textInput('nestFateOther', 'If other, explain:'))
+                   ),
+                   fluidRow(
+                     column(4, dateInput('dateClutch',
+                                         label = 'Date, clutch completion:',
+                                         value = '')),
+                     column(4, dateInput('dateHatch',
+                                         label = 'Date, hatch:',
+                                         value = '')),
+                     column(4, dateInput('dateFledgeFail',
+                                         label = 'Date, fledge/fail:',
+                                         value = ''))
+                   ),
+                   hr(),
+                   h4('Observation data:'),
+                   fluidRow(
+                     column(3, dateInput('dateNestObs',
+                                         label = 'Date:',
+                                         value = '')),
+                     column(3, selectizeInput('nestTime', 'Time:',
+                                              choices = choiceTimeOfDay)),
+                     column(3, selectInput('nestStage', 'Stage:',
+                                           choices = nestStageChoices)),
+                     column(3, selectInput('adAtt', 'Adult attending:',
+                                           choices = nestAttendChoices))),
+                   fluidRow(
+                     column(2, selectInput('nEgg', '# egg:',
+                                           choices = c('', 0:10))),
+                     column(2, selectInput('nYoung', '# yng:',
+                                           choices = c('', 0:10))),
+                     column(6, textInput('nestObsNotes', 
+                                         'Notes: Building, age, fate, behavior, etc.')),
+                     column(2, textInput('observerNest', 'Obs:'))
+                   ),
+                   hr(),
+                   br(),
+                   fluidRow(column(1, ''),
+                            column(3, actionButton("newRecordNest", 
+                                                   "Clear fields",
+                                                   class = 'btn-primary')),
+                            column(2, ''),
+                            column(3, actionButton('submitRecordNest', 
+                                                   'Add record to table',
+                                                   class = "btn-primary")),
+                            column(3, ''))
                ),
              width = 6, position = 'left'),
              mainPanel = ''
-           )
-  ),
+           ),
+           h3(strong('2. Data-proofing and submission of nest records:')),
+           br(),
+           br(),
+           fluidRow(column(1, ''),
+                    column(4, actionButton("deleteRecordNest",
+                                           "Delete nest record", 
+                                           class = "btn-primary")),
+                    column(3, ' '),
+                    column(4, actionButton('submitNestData', 
+                                           'Submit nest data',
+                                           class = "btn-primary"))
+           ),
+           br(), shinyjs::hidden(
+             div(
+               id = "thankyou_msgNest",
+               h3("Thanks, your nest data have been recorded!")
+             )
+           ),
+           br()
+           ),
   #-------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: HABITAT SURVEY ----
   #-------------------------------------------------------------------------------*
@@ -816,8 +917,28 @@ server <- function(input, output, session) {
     shinyjs::reset("pcData")
     shinyjs::show("thankyou_msgPc")
   })
+  #-------------------------------------------------------------------------------*
+  # ---- SERVER: IMAGES ----
+  #-------------------------------------------------------------------------------*
+  
+  # Smithsonian logo:
+  
+  output$siLogo <- renderImage({
+    list(src = 'siLogo.png',
+         width = 200, 
+         height = 134)
+  }, deleteFile = FALSE)
+  
+  output$nnLogo <- renderImage({
+    list(src = 'logo.jpg',
+         width = 300,
+         height = 134, 
+         position = 'right')
+  }, deleteFile = FALSE)
   # END
-  }
+}
+
+
 
 shinyApp(ui, server)
 

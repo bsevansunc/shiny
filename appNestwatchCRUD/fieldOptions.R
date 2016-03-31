@@ -3,7 +3,9 @@
 
 visitFields <- c('hub', 'site', 'observer',
                  'longitude', 'latitude', 'accuracy', 'locationNotes',
-                 'netCount', 'netHours', 'startRsTime', 'endRsTime',
+                 'netCount6', 'netTime6','netCount9', 'netTime9',
+                 'netCount12', 'netTime12','netCount18', 'netTime18',
+                 'startRsTime', 'endRsTime',
                  'rsPathDistace', 'amroUnbanded', 'bcchUnbanded', 'brthUnbanded',
                  'cachUnbanded', 'carwUnbanded', 'eaphUnbanded','grcaUnbanded',
                  'howrUnbanded',
@@ -87,3 +89,23 @@ choiceFat <- c('', 0, 0.5, seq(1:5))
 choiceDistance <- c('', '0-10', '10-20', '20-30', '30-40', '40-50')
 
 choiceTime <- c('', 3, 2, 5)
+
+# Nest choices:
+
+nestLocationChoices <- c('', 'Nestbox', 'Shrub', 'Tree', 'Other')
+
+nestFateChoices <- c('', 'Successful', 'Successful but parasitized', 
+                     'Failed: Predated', 
+                     'Failed: Starvation',
+                     'Failed: Human activity related', 
+                     'Failed: Weather related ',
+                     'Failed: Parasitized',
+                     'Failed: Unknown',
+                     'Failed: Other')
+
+nestStageChoices <- c('', 'B', 'L', 'I', 'H', 'N', 'F', 'P', 'A')
+
+nestAttendChoices <- c('', '-', 'F', 'M', 'F+M')
+
+nestEggsYoungChoices <- c('', 0:10)
+
