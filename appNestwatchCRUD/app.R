@@ -54,6 +54,12 @@ encounters <- read.csv('encounters.csv', stringsAsFactors = F) %>%
 hubSpecies <- read.csv('hubSpecies.csv', stringsAsFactors = F) %>%
   tbl_df
 
+# Load color combinations:
+
+choiceColorCombos <- read.csv('choiceColorCombos.csv',
+                              stringsAsFactors = FALSE) %>%
+  .$choiceColorCombos
+
 #---------------------------------------------------------------------------------*
 # ---- Source functions ----
 #---------------------------------------------------------------------------------*
@@ -363,10 +369,10 @@ ui <- navbarPage(
                    strong(em('IMPORTANT! Be sure to enter point count data AFTER entering visit data!')),
                    br(), br(),
                    fluidRow(
-                     column(1, shinyjs::disabled(textInput("idPc", "Id", "0"))),
+                     column(2, shinyjs::disabled(textInput("idPc", "Id", "0"))),
                      column(3, selectInput('sitePc', 'Site:', '')),
                      column(2, textInput('observerPc', 'Observer:')),
-                     column(6, '')
+                     column(5, '')
                    ),
                    fluidRow(
                      column(3, dateInput('datePc',
@@ -441,7 +447,44 @@ ui <- navbarPage(
   #-------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: NEST DATA ----
   #-------------------------------------------------------------------------------*
-  tabPanel(strong('Nest data')),
+  tabPanel(strong('Nest data'),
+           sidebarLayout(
+             sidebarPanel(
+               div(id = 'nestData',
+                   h3(strong('1. Add nest records:')),
+                   strong(em('IMPORTANT! Be sure to enter nest data AFTER entering visit data!')),
+                   br(), br(),
+                   fluidRow(
+                     column(2, shinyjs::disabled(textInput("idPc", "Id", "0"))),
+                     column(3, selectInput('siteNest', 'Site:', '')),
+                     column(3, textInput('plotNest', 'Plot:', '')),
+                     column(4, textInput('observerNest', 'Observer:'))
+                   ),
+                   h4('Identification:'),
+                   fluidRow(
+                     # column(4, selectInput('speciesNest', 'Species:')),
+                     column(8, '')
+                   ),
+                   fluidRow(
+                     column(4, selectInput('colorComboNestFemale', 
+                                           'Color combo, female:',
+                                           choices = choiceColorCombos)),
+                     column(3, textInput('bandNumberNestFemale', 'Band number, female:')),
+                     column(5, '')
+                     ),
+                   fluidRow(
+                     column(4, selectInput('colorComboNestMale', 
+                                           'Color combo, male:',
+                                           choices = choiceColorCombos)),
+                     column(3, textInput('bandNumberNestMale', 'Band number, male:')),
+                     column(5, '')
+                   )
+                 
+               ),
+             width = 6, position = 'left'),
+             mainPanel = ''
+           )
+  ),
   #-------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: HABITAT SURVEY ----
   #-------------------------------------------------------------------------------*
@@ -517,6 +560,7 @@ server <- function(input, output, session) {
       arrange(species) %>%
       .$species
     updateSelectInput(session, 'species', choices = siteNames)
+    updateSelectInput(session, 'speciesNest', choices = siteNames)
   })
   
   #-------------------------------------------------------------------------------*

@@ -46,25 +46,25 @@ choiceSpecies <- c('', 'AMRO', 'BCCH', 'BRTH', 'CACH', 'CARW',
                    'TUTI','UNCH')
 
 colorValues <- c('', 'A', 'BU', 'BK', 'G', 'O','PK', 'P','R', 'Y', 'W')
-
-choiceColorCombos <- expand.grid(rep(list(colorValues), 4)) %>%
-  tbl_df %>%
-  transmute(L = paste(Var1, Var2, sep = '/'),
-            R = paste(Var3, Var4, sep = '/'), 
-            combo = paste(L, R, sep = ',')) %>%
-  select(-c(L, R)) %>%
-  filter(str_count(combo, 'AL') == 1) %>%
-  mutate(combo = combo %>%
-           str_replace_all('/,', ',') %>%
-           str_replace_all(',/', ',') %>%
-           str_replace_all(',$',',-') %>%
-           str_replace_all('^,', '-,') %>%
-           str_replace_all('^/', '') %>%
-           str_replace_all('/$', '') %>%
-           str_replace_all(',', ', ')) %>%
-  distinct %>% .$combo
-
-choiceColorCombos <- c('', choiceColorCombos) %>% sort
+# 
+# choiceColorCombos <- expand.grid(rep(list(colorValues), 4)) %>%
+#   tbl_df %>%
+#   transmute(L = paste(Var1, Var2, sep = '/'),
+#             R = paste(Var3, Var4, sep = '/'), 
+#             combo = paste(L, R, sep = ',')) %>%
+#   select(-c(L, R)) %>%
+#   filter(str_count(combo, 'AL') == 1) %>%
+#   mutate(combo = combo %>%
+#            str_replace_all('/,', ',') %>%
+#            str_replace_all(',/', ',') %>%
+#            str_replace_all(',$',',-') %>%
+#            str_replace_all('^,', '-,') %>%
+#            str_replace_all('^/', '') %>%
+#            str_replace_all('/$', '') %>%
+#            str_replace_all(',', ', ')) %>%
+#   distinct %>% .$combo
+# 
+# choiceColorCombos <- c('', choiceColorCombos) %>% sort
 
 choiceNetCount <- c('', seq(0, 12, by = 1))
 
