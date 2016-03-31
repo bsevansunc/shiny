@@ -70,7 +70,7 @@ colorValues <- c('', 'A', 'BU', 'BK', 'G', 'O','PK', 'P','R', 'Y', 'W')
 
 choiceNetCount <- c('', seq(0, 12, by = 1))
 
-choiceNetHours <- c('', seq(0, 48, by = 0.1))
+choiceNetHours <- c('', seq(0, 2000, by = 0.1))
 
 choiceCount <- c('', 1:100)
 
@@ -86,7 +86,7 @@ choiceBreedingCond <-  c('','CP', 'BP','CP-', 'BP-','CP+', 'BP+')
 
 choiceFat <- c('', 0, 0.5, seq(1:5))
 
-choiceDistance <- c('', '0-10', '10-20', '20-30', '30-40', '40-50')
+choiceDistance <- c('', '0-10', '11-20', '21-30', '31-40', '41-50')
 
 choiceTime <- c('', 3, 2, 5)
 

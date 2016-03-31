@@ -90,12 +90,21 @@ ui <- navbarPage(
   footer = p(
     br(),
     hr(),
-    br(),
     fluidRow(
-    column(4, imageOutput('siLogo')),
-    column(5, ''),
-    column(3, imageOutput('nnLogo'))
-    )),
+      column(4, ''),
+      column(4, imageOutput('nnLogo')),
+      column(4, '')
+    )
+  ),
+#   footer = p(
+#     br(),
+#     hr(),
+#     br(),
+#     fluidRow(
+#     column(4, imageOutput('siLogo')),
+#     column(5, ''),
+#     column(3, imageOutput('nnLogo'))
+#     )),
   inverse = TRUE,
   #-------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: VISIT ----
@@ -127,10 +136,10 @@ ui <- navbarPage(
                 fluidRow(
                   column(4, 
                          textInput('longitude', 
-                                   'Longitude (decimal degrees):')),
+                                   'Longitude:')),
                   column(4, 
                          textInput('latitude', 
-                                   'Latitude (decimal degrees):')),
+                                   'Latitude:')),
                   column(4,
                          textInput('accuracy', 'Accuracy (m):'))
                 ),
@@ -404,17 +413,17 @@ ui <- navbarPage(
                    br(), br(),
                    fluidRow(
                      column(2, shinyjs::disabled(textInput("idPc", "Id", "0"))),
-                     column(3, selectInput('sitePc', 'Site:', '')),
+                     column(5, selectInput('sitePc', 'Site:', '')),
                      column(2, textInput('observerPc', 'Observer:')),
-                     column(5, '')
+                     column(3, '')
                    ),
                    fluidRow(
-                     column(3, dateInput('datePc',
+                     column(5, dateInput('datePc',
                                          label = 'Date: yyyy-mm-dd',
                                          value = Sys.Date())),
                      column(3, selectizeInput('startTimePc', 'Start time:',
                                               choices = choiceTimeOfDay)),
-                     column(6, '')
+                     column(4, '')
                    ), 
                    hr(),
                    fluidRow(column(12, textInput('notesPc', 
@@ -485,72 +494,73 @@ ui <- navbarPage(
   tabPanel(strong('Nest data'),
            sidebarLayout(
              sidebarPanel(
-               div(id = 'nestData',
-                   h3(strong('1. Add nest records:')),
+               div(id = 'nestSummaryData',
+                   h3(strong('1. Submit nest location and summary data:')),
                    strong(em('IMPORTANT! Be sure to enter nest data AFTER entering visit data!')),
                    br(), br(),
-                   h4('Location:'),
-                   fluidRow(
-                     column(2, shinyjs::disabled(textInput("idPc", "Id", "0"))),
-                     column(5, selectInput('siteNest', 'Site (grid ID):', '')),
-                     column(5, textInput('plotNest', 'Plot (sub-site):', ''))
-                   ),
-                   fluidRow(
-                     column(3, selectInput('nestLocation', 'Nest Location',
-                                           nestLocationChoices)),
-                     column(9, textInput('nestLocationNotesOther', 
-                                         'Nest location notes (if other):'))
-                   ),
-                   fluidRow(
-                     column(9, textInput('plantSp', 
-                                         'Plant species (if applicable):')),
-                     column(3, selectInput('nestHeight', 'Nest height (m):',
-                                           c('', 0:12), ''))
-                   ),
-                   hr(),
-                   h4('Identification:'),
                    fluidRow(
                      column(3, strong('Species:')),
                      column(3, strong('Color combo:')),
-                     column(3, strong('Band number:')),
-                     column(3, strong('Nest ID:'))
+                     column(3, strong('FWS Bands:')),
+                     column(3, strong('Nest: Yr-#'))
                    ),
                    fluidRow(
                      column(3, selectInput('speciesNest', ' ', '')),
-                     column(3, selectInput('colorComboNestFemale', 
-                                           'Female:',
-                                           choices = choiceColorCombos)),
-                     column(3, textInput('bandNumberNestFemale', 'Female:')),
-                     column(3, textInput('nestID', ' '))
-                   ),
-                   fluidRow(
-                     column(3, ''),
                      column(3, selectInput('colorComboNestMale', 
                                            'Male:',
                                            choices = choiceColorCombos)),
                      column(3, textInput('bandNumberNestMale', 'Male:')),
+                     column(3, textInput('nestID', ' '))
+                   ),
+                   fluidRow(
+                     column(3, ''),
+                     column(3, selectInput('colorComboNestFemale', 
+                                           'Female:',
+                                           choices = choiceColorCombos)),
+                     column(3, textInput('bandNumberNestFemale', 'Female:')),
                      column(3, '')
                    ),
                    hr(),
-                   h4('Summary information:'),
                    fluidRow(
-                     column(5, selectInput('nestFate', 'Nest Fate:',
-                                           nestFateChoices)),
-                     column(7, textInput('nestFateOther', 'If other, explain:'))
+                     column(9, ''),
+                     column(3, tags$u(strong('Summary dates')))
                    ),
                    fluidRow(
-                     column(4, dateInput('dateClutch',
-                                         label = 'Date, clutch completion:',
-                                         value = '')),
-                     column(4, dateInput('dateHatch',
-                                         label = 'Date, hatch:',
-                                         value = '')),
-                     column(4, dateInput('dateFledgeFail',
-                                         label = 'Date, fledge/fail:',
+                     column(2, textInput('plotNest', 'Plot:', '')),
+                     column(3, selectInput('siteNest', 'Grid (site):', '')),
+                     column(4, selectInput('nestFate', 'Nest Fate:',
+                                           nestFateChoices)),
+                     column(3, dateInput('dateClutch',
+                                        label = 'Clutch completion:',
+                                        value = ''))
+                   ),
+                   fluidRow(
+                     column(7, textInput('plantSp', 
+                                         'Plant species (if applicable):')),
+                     column(2, selectInput('nestHeight', 'Nest ht (m):',
+                                           c('', 0:12), '')),
+                     column(3, dateInput('dateHatch',
+                                         label = 'Hatch:',
                                          value = ''))
                    ),
+                   fluidRow(
+                     column(9, textInput('nestDescription', 'Nest description:')),
+                     column(3, dateInput('dateFledgeFail',
+                                         label = 'Fledge/fail (date):',
+                                         value = ''))
+                   ),
+                   fluidRow(
+                     column(3, selectInput('nestLocation', 'Nest Location',
+                                           nestLocationChoices)),
+                     column(9, textInput('nestFateOther', 
+                                         'If nest fate was "other", explain:'))
+                   )
+               ),
                    hr(),
-                   h4('Observation data:'),
+               div(id = 'nestObservationData',
+                   h3(strong('2. Add nest observation records:')),
+                   strong(em('IMPORTANT! Be sure to enter nest observation records data AFTER nest location and summary data!')),
+                   br(), br(),
                    fluidRow(
                      column(3, dateInput('dateNestObs',
                                          label = 'Date:',
@@ -585,7 +595,7 @@ ui <- navbarPage(
              width = 6, position = 'left'),
              mainPanel = ''
            ),
-           h3(strong('2. Data-proofing and submission of nest records:')),
+           h3(strong('3. Data-proofing and submission of nest observation records:')),
            br(),
            br(),
            fluidRow(column(1, ''),
@@ -917,6 +927,11 @@ server <- function(input, output, session) {
     shinyjs::reset("pcData")
     shinyjs::show("thankyou_msgPc")
   })
+  
+  #-------------------------------------------------------------------------------*
+  # ---- SERVER: NEST DATA ----
+  #-------------------------------------------------------------------------------*
+  
   #-------------------------------------------------------------------------------*
   # ---- SERVER: IMAGES ----
   #-------------------------------------------------------------------------------*
@@ -931,14 +946,12 @@ server <- function(input, output, session) {
   
   output$nnLogo <- renderImage({
     list(src = 'logo.jpg',
-         width = 300,
-         height = 134, 
-         position = 'right')
+         width = 450,
+         height = 201, 
+         position = 'center')
   }, deleteFile = FALSE)
   # END
 }
-
-
 
 shinyApp(ui, server)
 
