@@ -47,7 +47,8 @@ justAlphaCode <- aouCodes %>%
 encounters <- read.csv('encounters.csv', stringsAsFactors = F) %>%
   tbl_df %>%
   mutate(date = as.Date(date),
-         bandNumber = as.character(bandNumber))
+         bandNumber = as.character(bandNumber)) %>%
+  distinct
 
 # Load species by hub data:
 
@@ -127,9 +128,24 @@ ui <- navbarPage(
                 h4(strong('Banding effort:')),
                 br(),
                 fluidRow(
-                  column(6, selectizeInput('netCount', 'Number of nets:', 
+                  column(6, selectizeInput('netCount6', 'Number of 6 m nets:', 
                                            choices = choiceNetCount)),
-                  column(6, selectizeInput('netHours', 'Net hours:', 
+                  column(6, selectizeInput('netTime6', 'Total time open (minutes), 6 m nets:', 
+                                           choices = choiceNetHours))),
+                fluidRow(
+                  column(6, selectizeInput('netCount9', 'Number of 9 m nets:', 
+                                           choices = choiceNetCount)),
+                  column(6, selectizeInput('netTime9', 'Total time open (minutes), 9 m nets:', 
+                                           choices = choiceNetHours))),
+                fluidRow(
+                  column(6, selectizeInput('netCount12', 'Number of 12 m nets:', 
+                                           choices = choiceNetCount)),
+                  column(6, selectizeInput('netTime12', 'Total time open (minutes), 12 m nets:', 
+                                           choices = choiceNetHours))),
+                fluidRow(
+                  column(6, selectizeInput('netCount18', 'Number of 18 m nets:', 
+                                           choices = choiceNetCount)),
+                  column(6, selectizeInput('netTime18', 'Total time open (minutes), 18 m nets:', 
                                            choices = choiceNetHours))),
                 hr(),
                 # ---- Resight effort --------------------------------------------
@@ -456,28 +472,31 @@ ui <- navbarPage(
                    br(), br(),
                    fluidRow(
                      column(2, shinyjs::disabled(textInput("idPc", "Id", "0"))),
-                     column(3, selectInput('siteNest', 'Site:', '')),
-                     column(3, textInput('plotNest', 'Plot:', '')),
-                     column(4, textInput('observerNest', 'Observer:'))
+                     column(4, selectInput('siteNest', 'Site (grid ID):', '')),
+                     column(3, textInput('plotNest', 'Plot (sub-site):', '')),
+                     column(3, textInput('nestID', 'Nest ID:'))
                    ),
                    h4('Identification:'),
                    fluidRow(
-                     # column(4, selectInput('speciesNest', 'Species:')),
-                     column(8, '')
+                     column(4, selectInput('speciesNest', 'Species:', '')),
+                     column(4, '')
                    ),
                    fluidRow(
                      column(4, selectInput('colorComboNestFemale', 
                                            'Color combo, female:',
                                            choices = choiceColorCombos)),
-                     column(3, textInput('bandNumberNestFemale', 'Band number, female:')),
-                     column(5, '')
+                     column(4, textInput('bandNumberNestFemale', 'Band number, female:')),
+                     column(4, '')
                      ),
                    fluidRow(
                      column(4, selectInput('colorComboNestMale', 
                                            'Color combo, male:',
                                            choices = choiceColorCombos)),
-                     column(3, textInput('bandNumberNestMale', 'Band number, male:')),
-                     column(5, '')
+                     column(4, textInput('bandNumberNestMale', 'Band number, male:')),
+                     column(4, '')
+                   ),
+                   fluidRow(
+                     column(4, textInput('observerNest', 'Observer:'))
                    )
                  
                ),
@@ -514,6 +533,7 @@ server <- function(input, output, session) {
     updateSelectInput(session, 'site', choices = siteNames)
     updateSelectInput(session, 'sitev', choices = siteNames)
     updateSelectInput(session, 'sitePc', choices = siteNames)
+    updateSelectInput(session, 'siteNest', choices = siteNames)
   })
   
   # Once SITE is chosen on the visit page, have this be the default entry:
@@ -673,7 +693,6 @@ server <- function(input, output, session) {
   output$encounterTable <- DT::renderDataTable({
     DT::datatable(dataEncountersSubset(), filter = 'bottom')
   })
-  
 
   #-------------------------------------------------------------------------------*
   # ---- SERVER: QUERY AOU names ----
