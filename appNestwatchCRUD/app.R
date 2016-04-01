@@ -923,7 +923,7 @@ server <- function(input, output, session) {
   observeEvent(input$submitRecordNest, {
     siteNest <<- as.character(input$siteNest)
     nestID <<- as.character(input$nestID)
-    specieNest <<- as.character(input$speciesNest)
+    speciesNest <<- as.character(input$speciesNest)
     observerNest <<- as.character(input$observerNest)
     if (input$idNest != "0") {
       updateDataNest(formDataNest())
@@ -938,7 +938,7 @@ server <- function(input, output, session) {
   observeEvent(input$deleteRecordNest, {
     siteNest <<- as.character(input$siteNest)
     nestID <<- as.character(input$nestID)
-    specieNest <<- as.character(input$speciesNest)
+    speciesNest <<- as.character(input$speciesNest)
     observerNest <<- as.character(input$observerNest)
     deleteDataNest(formDataNest())
     updateInputsNest(createDefaultRecordNest(), session)
@@ -949,7 +949,7 @@ server <- function(input, output, session) {
   observeEvent(input$newRecordNest, {
     siteNest <<- as.character(input$siteNest)
     nestID <<- as.character(input$nestID)
-    specieNest <<- as.character(input$speciesNest)
+    speciesNest <<- as.character(input$speciesNest)
     observerNest <<- as.character(input$observerNest)
     updateInputsNest(createDefaultRecordNest(), session)
   })
@@ -959,7 +959,7 @@ server <- function(input, output, session) {
   observeEvent(input$responsesNest_rows_selected, {
     siteNest <<- as.character(input$siteNest)
     nestID <<- as.character(input$nestID)
-    specieNest <<- as.character(input$speciesNest)
+    speciesNest <<- as.character(input$speciesNest)
     observerNest <<- as.character(input$observerNest)
     if (length(input$responsesNest_rows_selected) > 0) {
       data <- readDataNest()[input$responsesNest_rows_selected, ]
@@ -974,7 +974,7 @@ server <- function(input, output, session) {
   reactiveOutNest <- reactive({
     siteNest <<- as.character(input$siteNest)
     nestID <<- as.character(input$nestID)
-    specieNest <<- as.character(input$speciesNest)
+    speciesNest <<- as.character(input$speciesNest)
     observerNest <<- as.character(input$observerNest)
     input$submitRecordNest
     input$deleteRecordNest
@@ -986,7 +986,7 @@ server <- function(input, output, session) {
   output$responsesNest <- DT::renderDataTable({
     siteNest <<- as.character(input$siteNest)
     nestID <<- as.character(input$nestID)
-    specieNest <<- as.character(input$speciesNest)
+    speciesNest <<- as.character(input$speciesNest)
     observerNest <<- as.character(input$observerNest)
     reactiveOutNest()
   },
