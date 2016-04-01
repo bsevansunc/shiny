@@ -28,31 +28,18 @@ library(shinyjs)
 
 # All possible AOU codes (for point counts):
 
-aouCodes <- read.csv('speciesAouCodes.csv', stringsAsFactors = FALSE) %>%
-  tbl_df %>%
-  rename(SpNumber = Species.Number, 
-         Alpha = Alpha.Code, 
-         Common = Common.Name, 
-         Scientific = Scientific.Name) %>%
-  arrange(Alpha)
+aouCodes <- read.csv('speciesAouForApp.csv', stringsAsFactors = FALSE) 
 
-justAlphaCode <- aouCodes %>% 
-  select(Alpha) %>%
-  distinct %>%
-  arrange(Alpha) %>%
-  .$Alpha
+justAlphaCode <- aouCodes %>% .$Alpha
 
 # Load encounter data:
 
-encounters <- read.csv('encounters.csv', stringsAsFactors = F) %>%
-  tbl_df %>%
-  mutate(date = as.Date(date),
-         bandNumber = as.character(bandNumber)) %>%
-  distinct
+encounters <- read.csv('encounters.csv', stringsAsFactors = FALSE) %>%
+  mutate(date = as.Date(date))
 
 # Load species by hub data:
 
-hubSpecies <- read.csv('hubSpecies.csv', stringsAsFactors = F) %>%
+hubSpecies <- read.csv('hubSpecies.csv', stringsAsFactors = FALSE) %>%
   tbl_df
 
 # Load color combinations:
