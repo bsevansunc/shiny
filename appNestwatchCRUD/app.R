@@ -96,15 +96,6 @@ ui <- navbarPage(
       column(4, '')
     )
   ),
-#   footer = p(
-#     br(),
-#     hr(),
-#     br(),
-#     fluidRow(
-#     column(4, imageOutput('siLogo')),
-#     column(5, ''),
-#     column(3, imageOutput('nnLogo'))
-#     )),
   inverse = TRUE,
   #-------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: VISIT ----
@@ -936,13 +927,7 @@ server <- function(input, output, session) {
   # ---- SERVER: IMAGES ----
   #-------------------------------------------------------------------------------*
   
-  # Smithsonian logo:
-  
-  output$siLogo <- renderImage({
-    list(src = 'siLogo.png',
-         width = 200, 
-         height = 134)
-  }, deleteFile = FALSE)
+  # Nestwatch logo:
   
   output$nnLogo <- renderImage({
     list(src = 'logo.jpg',
