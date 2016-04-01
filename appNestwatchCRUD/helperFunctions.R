@@ -339,3 +339,127 @@ getTableMetadataPc <- function() {
   result <- list(fields = fields)
   return (result)
 }
+
+#---------------------------------------------------------------------------------*
+# ---- Nest editable frame ----
+#=================================================================================*
+
+# This method casts from the inputs to a one-row data.frame. We use it, for instance, when the user creates a new record by typing in values into the inputs, and then clicks "Submit":
+
+castDataNest <- function(dataNest) {
+  datarNest <- data.frame(siteNest = siteNest,
+                          nestID = nestID,
+                          speciesNest = speciesNest,
+                          dateNest = dataNest["dateNest"], 
+                          timeNest = dataNest["timeNest"],
+                          stageNest = dataNest["stageNest"],
+                          adAttNest = dataNest["adAttNest"],
+                          nEggNest = dataNest["nEggNest"],
+                          nYoungNest = dataNest["nYoungNest"],
+                          notesNest = dataNest["notesNest"],
+                          observerNest = observerNest,
+                          stringsAsFactors = FALSE)
+  rownames(datarNest) <- dataNest["idNest"]
+  return (datarNest)
+}
+
+# This creates an empty record, to be used e.g. to fill the inputs with the default values when the user clicks the "New" button:
+
+createDefaultRecordNest <- function() {
+  mydefault <- castDataNest(list(idNest = '0',
+                                 siteNest = '',
+                                 nestID = '',
+                                 speciesNest = '',
+                                 dateNest = '', 
+                                 timeNest = '',
+                                 stageNest = '',
+                                 adAttNest = '',
+                                 nEggNest = '',
+                                 nYoungNest = '',
+                                 notesNest = '',
+                                 observerNest = ''
+  ))
+  return (mydefault)
+}
+
+# And this method takes the data as selected in the DataTable, and updates the inputs with the respective values:
+
+updateInputsNest <- function(dataNest, session) {
+  updateTextInput(session, "idNest", value = unname(rownames(dataNest)))
+  updateTextInput(session, "siteNest", value = siteNest)
+  updateTextInput(session, "nestID", value = nestID)
+  updateTextInput(session, "speciesNest", value = speciesNest)
+  updateTextInput(session, "dateNest", value = unname(dataNest["dateNest"]))
+  updateTextInput(session, "timeNest", value = unname(dataNest["timeNest"]))
+  updateTextInput(session, "stageNest", value = unname(dataNest["stageNest"]))
+  updateTextInput(session, "adAttNest", value = unname(dataNest["adAttNest"]))
+  updateTextInput(session, "nEggNest", value = unname(dataNest["nEggNest"]))
+  updateTextInput(session, "nYoungNest", value = unname(dataNest["nYoungNest"]))
+  updateTextInput(session, "notesNest", value = unname(dataNest["notesNest"]))
+  updateTextInput(session, "observerNest", value = observerNest)
+}
+
+# This function finds the next ID of a new record. In mysql, this could be done by an incremental index, automatically. But here, we do it manually, ourselves:
+
+getNextIdNest <- function() {
+  if (exists("responsesNest")) {
+    max(as.integer(rownames(responsesNest))) + 1
+  } else {
+    return (1)
+  }
+}
+
+# Create data:
+
+createDataNest <- function(dataNest) {
+  dataNest <- castDataNest(dataNest)
+  rownames(dataNest) <- getNextIdNest()
+  if (exists("responsesNest")) {
+    responsesNest <<- rbind(responsesNest, dataNest)
+  } else {
+    responsesNest <<- dataNest
+  }
+}
+
+# Read
+
+readDataNest <- function() {
+  if (exists("responsesNest")) {
+    responsesNest
+  }
+}
+
+# Update
+
+updateDataNest <- function(dataNest) {
+  dataNest <- castDataNest(dataNest)
+  responsesNest[row.names(responsesNest) == row.names(dataNest), ] <<- dataNest
+}
+
+
+# Delete
+
+deleteDataNest <- function(dataNest) {
+  responsesNest<<- responsesNest[row.names(responsesNest) != unname(dataNest["idNest"]), ]
+}
+
+# The only thing that might not be straight forward is the GetTableMetadata function. We'll use it as a starting point for further development, as described below. For now, it's just a method that defines the names of the columns in our table:
+
+getTableMetadataNest <- function() {
+  fields <- c(idNest = 'Id',
+              siteNest = 'Site',
+              nestID = 'Nest ID',
+              speciesNest = 'SPP',
+              dateNest = 'Date', 
+              timeNest = 'Time',
+              stageNest = 'Stage',
+              adAttNest = 'AdAtt',
+              nEggNest = 'nEgg',
+              nYoungNest = 'nYoung',
+              notesNest = 'Notes',
+              observerNest = 'Obs'
+  )
+  result <- list(fields = fields)
+  return (result)
+}
+
