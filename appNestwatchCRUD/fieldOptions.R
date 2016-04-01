@@ -70,7 +70,7 @@ colorValues <- c('', 'A', 'BU', 'BK', 'G', 'O','PK', 'P','R', 'Y', 'W')
 
 choiceNetCount <- c('', seq(0, 12, by = 1))
 
-choiceNetHours <- c('', 0:2000)
+choiceNetMinutes <- c('', 0:2000)
 
 choiceCount <- c('', 1:100)
 
