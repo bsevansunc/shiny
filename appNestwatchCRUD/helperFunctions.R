@@ -348,15 +348,15 @@ getTableMetadataPc <- function() {
 
 castDataNest <- function(dataNest) {
   datarNest <- data.frame(siteNest = siteNest,
-                          nestID = nestID,
-                          speciesNest = speciesNest,
-                          dateNest = dataNest["dateNest"], 
-                          timeNest = dataNest["timeNest"],
-                          stageNest = dataNest["stageNest"],
-                          adAttNest = dataNest["adAttNest"],
-                          nEggNest = dataNest["nEggNest"],
-                          nYoungNest = dataNest["nYoungNest"],
-                          notesNest = dataNest["notesNest"],
+#                           nestID = nestID,
+#                           speciesNest = speciesNest,
+#                           dateNest = dataNest["dateNest"], 
+#                           timeNest = dataNest["timeNest"],
+#                           stageNest = dataNest["stageNest"],
+#                           adAttNest = dataNest["adAttNest"],
+#                           nEggNest = dataNest["nEggNest"],
+#                           nYoungNest = dataNest["nYoungNest"],
+#                           notesNest = dataNest["notesNest"],
                           observerNest = observerNest,
                           stringsAsFactors = FALSE)
   rownames(datarNest) <- dataNest["idNest"]
@@ -368,15 +368,15 @@ castDataNest <- function(dataNest) {
 createDefaultRecordNest <- function() {
   mydefault <- castDataNest(list(idNest = '0',
                                  siteNest = '',
-                                 nestID = '',
-                                 speciesNest = '',
-                                 dateNest = '', 
-                                 timeNest = '',
-                                 stageNest = '',
-                                 adAttNest = '',
-                                 nEggNest = '',
-                                 nYoungNest = '',
-                                 notesNest = '',
+#                                  nestID = '',
+#                                  speciesNest = '',
+#                                  dateNest = '', 
+#                                  timeNest = '',
+#                                  stageNest = '',
+#                                  adAttNest = '',
+#                                  nEggNest = '',
+#                                  nYoungNest = '',
+#                                  notesNest = '',
                                  observerNest = ''
   ))
   return (mydefault)
@@ -387,15 +387,15 @@ createDefaultRecordNest <- function() {
 updateInputsNest <- function(dataNest, session) {
   updateTextInput(session, "idNest", value = unname(rownames(dataNest)))
   updateTextInput(session, "siteNest", value = siteNest)
-  updateTextInput(session, "nestID", value = nestID)
-  updateTextInput(session, "speciesNest", value = speciesNest)
-  updateTextInput(session, "dateNest", value = unname(dataNest["dateNest"]))
-  updateTextInput(session, "timeNest", value = unname(dataNest["timeNest"]))
-  updateTextInput(session, "stageNest", value = unname(dataNest["stageNest"]))
-  updateTextInput(session, "adAttNest", value = unname(dataNest["adAttNest"]))
-  updateTextInput(session, "nEggNest", value = unname(dataNest["nEggNest"]))
-  updateTextInput(session, "nYoungNest", value = unname(dataNest["nYoungNest"]))
-  updateTextInput(session, "notesNest", value = unname(dataNest["notesNest"]))
+#   updateTextInput(session, "nestID", value = nestID)
+#   updateTextInput(session, "speciesNest", value = speciesNest)
+#   updateTextInput(session, "dateNest", value = unname(dataNest["dateNest"]))
+#   updateTextInput(session, "timeNest", value = unname(dataNest["timeNest"]))
+#   updateTextInput(session, "stageNest", value = unname(dataNest["stageNest"]))
+#   updateTextInput(session, "adAttNest", value = unname(dataNest["adAttNest"]))
+#   updateTextInput(session, "nEggNest", value = unname(dataNest["nEggNest"]))
+#   updateTextInput(session, "nYoungNest", value = unname(dataNest["nYoungNest"]))
+#   updateTextInput(session, "notesNest", value = unname(dataNest["notesNest"]))
   updateTextInput(session, "observerNest", value = observerNest)
 }
 
@@ -448,15 +448,15 @@ deleteDataNest <- function(dataNest) {
 getTableMetadataNest <- function() {
   fields <- c(idNest = 'Id',
               siteNest = 'Site',
-              nestID = 'Nest ID',
-              speciesNest = 'SPP',
-              dateNest = 'Date', 
-              timeNest = 'Time',
-              stageNest = 'Stage',
-              adAttNest = 'AdAtt',
-              nEggNest = 'nEgg',
-              nYoungNest = 'nYoung',
-              notesNest = 'Notes',
+#               nestID = 'Nest ID',
+#               speciesNest = 'SPP',
+#               dateNest = 'Date', 
+#               timeNest = 'Time',
+#               stageNest = 'Stage',
+#               adAttNest = 'AdAtt',
+#               nEggNest = 'nEgg',
+#               nYoungNest = 'nYoung',
+#               notesNest = 'Notes',
               observerNest = 'Obs'
   )
   result <- list(fields = fields)
