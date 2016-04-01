@@ -570,7 +570,7 @@ ui <- navbarPage(
                                                    class = "btn-primary")),
                             column(3, ''))
                ),
-             width = 6, position = 'left'),
+             width = 7, position = 'left'),
              mainPanel = ''
            ),
            h3(strong('3. Data-proofing and submission of nest observation records:')),
@@ -997,7 +997,7 @@ server <- function(input, output, session) {
   # Submit encounter data from table:
   
   observeEvent(input$saveNestData, {
-    saveNestDataCounts(reactiveOutNest())
+    saveNestData(reactiveOutNest())
     shinyjs::reset("nestData")
     shinyjs::show("thankyou_msgNest")
   })
