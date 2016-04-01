@@ -1,0 +1,8 @@
+---
+title: "Protocols"
+output: word_document
+---
+
+Neighborhood Nestwatch technician data collection and submission protocols
+
+This document takes you through the steps of collecting data in the field and submitting data through the Neighborhood Nestwatch (NN) technician data submission interface (located here <https://smbc.shinyapps.io/appNestwatchCRUD/>). More information about the process of NN can be found here <citation> and educational components can be be found here <citation>.
