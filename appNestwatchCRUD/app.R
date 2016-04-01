@@ -535,7 +535,7 @@ ui <- navbarPage(
                    )
                ),
                    hr(),
-               div(id = 'observationDataNest',
+               div(id = 'nestData',
                    h3(strong('2. Add nest observation records:')),
                    strong(em('IMPORTANT! Be sure to enter nest observation records data AFTER nest location and summary data!')),
                    br(), br(),
@@ -581,7 +581,7 @@ ui <- navbarPage(
                                            "Delete nest record", 
                                            class = "btn-primary")),
                     column(3, ' '),
-                    column(4, actionButton('submitNestData', 
+                    column(4, actionButton('saveNestData', 
                                            'Submit nest data',
                                            class = "btn-primary"))
            ),
@@ -909,6 +909,96 @@ server <- function(input, output, session) {
   #-------------------------------------------------------------------------------*
   # ---- SERVER: NEST DATA ----
   #-------------------------------------------------------------------------------*
+  
+  # Link field names and data:
+  
+  formDataNest <- reactive({
+    sapply(names(getTableMetadataNest()$fields), function(x) input[[x]])
+  })
+  
+  # Click "Submit record" button to push result to table:
+  
+  observeEvent(input$submitRecordNest, {
+    siteNest <<- as.character(input$siteNest)
+    nestID <<- as.character(input$nestID)
+    specieNest <<- as.character(input$speciesNest)
+    observerNest <<- as.character(input$observerNest)
+    if (input$idNest != "0") {
+      updateDataNest(formDataNest())
+    } else {
+      createDataNest(formDataNest())
+      updateInputsNest(createDefaultRecordNest(), session)
+    }
+  }, priority = 1)
+  
+  # Click "Delete" to remove a single record:
+  
+  observeEvent(input$deleteRecordNest, {
+    siteNest <<- as.character(input$siteNest)
+    nestID <<- as.character(input$nestID)
+    specieNest <<- as.character(input$speciesNest)
+    observerNest <<- as.character(input$observerNest)
+    deleteDataNest(formDataNest())
+    updateInputsNest(createDefaultRecordNest(), session)
+  }, priority = 1)
+  
+  # Press "New record" button to display empty record:
+  
+  observeEvent(input$newRecordNest, {
+    siteNest <<- as.character(input$siteNest)
+    nestID <<- as.character(input$nestID)
+    specieNest <<- as.character(input$speciesNest)
+    observerNest <<- as.character(input$observerNest)
+    updateInputsNest(createDefaultRecordNest(), session)
+  })
+  
+  # Select row in table to show details in inputs:
+  
+  observeEvent(input$responsesNest_rows_selected, {
+    siteNest <<- as.character(input$siteNest)
+    nestID <<- as.character(input$nestID)
+    specieNest <<- as.character(input$speciesNest)
+    observerNest <<- as.character(input$observerNest)
+    if (length(input$responsesNest_rows_selected) > 0) {
+      data <- readDataNest()[input$responsesNest_rows_selected, ]
+      updateInputsNest(data, session)
+    }
+  })
+  
+  shinyjs::disable("idNest")
+  
+  # Inputs and submissions to temp data file:
+  
+  reactiveOutNest <- reactive({
+    siteNest <<- as.character(input$siteNest)
+    nestID <<- as.character(input$nestID)
+    specieNest <<- as.character(input$speciesNest)
+    observerNest <<- as.character(input$observerNest)
+    input$submitRecordNest
+    input$deleteRecordNest
+    readDataNest()
+  })
+  
+  # Display output table:
+  
+  output$responsesNest <- DT::renderDataTable({
+    siteNest <<- as.character(input$siteNest)
+    nestID <<- as.character(input$nestID)
+    specieNest <<- as.character(input$speciesNest)
+    observerNest <<- as.character(input$observerNest)
+    reactiveOutNest()
+  },
+  server = FALSE, selection = "single",
+  colnames = unname(getTableMetadataNest()$fields)[-1]
+  )
+  
+  # Submit encounter data from table:
+  
+  observeEvent(input$saveNestData, {
+    saveNestDataCounts(reactiveOutNest())
+    shinyjs::reset("nestData")
+    shinyjs::show("thankyou_msgNest")
+  })
   
   #-------------------------------------------------------------------------------*
   # ---- SERVER: IMAGES ----
