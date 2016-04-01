@@ -575,6 +575,7 @@ ui <- navbarPage(
            ),
            h3(strong('3. Data-proofing and submission of nest observation records:')),
            br(),
+           DT::dataTableOutput("responsesNest"),
            br(),
            fluidRow(column(1, ''),
                     column(4, actionButton("deleteRecordNest",
