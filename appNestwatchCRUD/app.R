@@ -472,7 +472,7 @@ ui <- navbarPage(
   tabPanel(strong('Nest data'),
            sidebarLayout(
              sidebarPanel(
-               div(id = 'nestSummaryData',
+               div(id = 'summaryDataNest',
                    h3(strong('1. Submit nest location and summary data:')),
                    strong(em('IMPORTANT! Be sure to enter nest data AFTER entering visit data!')),
                    br(), br(),
@@ -484,18 +484,18 @@ ui <- navbarPage(
                    ),
                    fluidRow(
                      column(3, selectInput('speciesNest', ' ', '')),
-                     column(3, selectInput('colorComboNestMale', 
+                     column(3, selectInput('colorComboMaleNest', 
                                            'Male:',
                                            choices = choiceColorCombos)),
-                     column(3, textInput('bandNumberNestMale', 'Male:')),
+                     column(3, textInput('bandNumberMaleNest', 'Male:')),
                      column(3, textInput('nestID', ' '))
                    ),
                    fluidRow(
                      column(3, ''),
-                     column(3, selectInput('colorComboNestFemale', 
+                     column(3, selectInput('colorComboFemaleNest', 
                                            'Female:',
                                            choices = choiceColorCombos)),
-                     column(3, textInput('bandNumberNestFemale', 'Female:')),
+                     column(3, textInput('bandNumberFemaleNest', 'Female:')),
                      column(3, '')
                    ),
                    hr(),
@@ -506,55 +506,55 @@ ui <- navbarPage(
                    fluidRow(
                      column(2, textInput('plotNest', 'Plot:', '')),
                      column(3, selectInput('siteNest', 'Grid (site):', '')),
-                     column(4, selectInput('nestFate', 'Nest Fate:',
+                     column(4, selectInput('fateNest', 'Nest Fate:',
                                            nestFateChoices)),
-                     column(3, dateInput('dateClutch',
+                     column(3, dateInput('dateClutchNest',
                                         label = 'Clutch completion:',
                                         value = ''))
                    ),
                    fluidRow(
-                     column(7, textInput('plantSp', 
+                     column(7, textInput('plantSpNest', 
                                          'Plant species (if applicable):')),
-                     column(2, selectInput('nestHeight', 'Nest ht (m):',
+                     column(2, selectInput('heightNest', 'Nest ht (m):',
                                            c('', 0:12), '')),
-                     column(3, dateInput('dateHatch',
+                     column(3, dateInput('dateHatchNest',
                                          label = 'Hatch:',
                                          value = ''))
                    ),
                    fluidRow(
-                     column(9, textInput('nestDescription', 'Nest description:')),
-                     column(3, dateInput('dateFledgeFail',
+                     column(9, textInput('descriptionNest', 'Nest description:')),
+                     column(3, dateInput('dateFledgeFailNest',
                                          label = 'Fledge/fail (date):',
                                          value = ''))
                    ),
                    fluidRow(
-                     column(3, selectInput('nestLocation', 'Nest Location',
+                     column(3, selectInput('locationNest', 'Nest Location',
                                            nestLocationChoices)),
-                     column(9, textInput('nestFateOther', 
+                     column(9, textInput('notesFateOtherNest', 
                                          'If nest fate was "other", explain:'))
                    )
                ),
                    hr(),
-               div(id = 'nestObservationData',
+               div(id = 'observationDataNest',
                    h3(strong('2. Add nest observation records:')),
                    strong(em('IMPORTANT! Be sure to enter nest observation records data AFTER nest location and summary data!')),
                    br(), br(),
                    fluidRow(
-                     column(3, dateInput('dateNestObs',
+                     column(3, dateInput('dateNest',
                                          label = 'Date:',
                                          value = '')),
-                     column(3, selectizeInput('nestTime', 'Time:',
+                     column(3, selectizeInput('timeNest', 'Time:',
                                               choices = choiceTimeOfDay)),
-                     column(3, selectInput('nestStage', 'Stage:',
+                     column(3, selectInput('stageNest', 'Stage:',
                                            choices = nestStageChoices)),
-                     column(3, selectInput('adAtt', 'Adult attending:',
+                     column(3, selectInput('adAttNest', 'Adult attending:',
                                            choices = nestAttendChoices))),
                    fluidRow(
-                     column(2, selectInput('nEgg', '# egg:',
+                     column(2, selectInput('nEggNest', '# egg:',
                                            choices = c('', 0:10))),
-                     column(2, selectInput('nYoung', '# yng:',
+                     column(2, selectInput('nYoungNest', '# yng:',
                                            choices = c('', 0:10))),
-                     column(6, textInput('nestObsNotes', 
+                     column(6, textInput('notesNest', 
                                          'Notes: Building, age, fate, behavior, etc.')),
                      column(2, textInput('observerNest', 'Obs:'))
                    ),
