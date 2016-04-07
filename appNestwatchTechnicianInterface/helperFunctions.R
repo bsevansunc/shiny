@@ -63,7 +63,8 @@ savePcDataCounts <- function(pcData) {
 # This method casts from the inputs to a one-row data.frame. We use it, for instance, when the user creates a new record by typing in values into the inputs, and then clicks "Submit":
 
 castData <- function(data) {
-  datar <- data.frame(sitev = as.character(data["sitev"]),
+  datar <- data.frame(hubv = hub,
+                      sitev = as.character(data["sitev"]),
                       datev = dateOut, #as.character(data["datev"]),
                       bandTime = as.character(data["bandTime"]),
                       bander = data["bander"],
@@ -93,7 +94,8 @@ castData <- function(data) {
 # This creates an empty record, to be used e.g. to fill the inputs with the default values when the user clicks the "New" button:
 
 createDefaultRecord <- function() {
-  mydefault <- castData(list(id = "0", 
+  mydefault <- castData(list(id = "0",
+                             hubv = '',
                              sitev = '',
                              datev = Sys.time(),
                              bandTime = '',
@@ -123,6 +125,7 @@ createDefaultRecord <- function() {
 
 updateInputs <- function(data, session) {
   updateTextInput(session, "id", value = unname(rownames(data)))
+  updateTextInput(session, "hubv", value = hub)
   updateTextInput(session, "sitev", value = unname(data['sitev']))
   updateTextInput(session, "datev", value = dateOut)#unname(as.character(data['datev'])))
   updateTextInput(session, "bandTime", value = unname(data["bandTime"]))
@@ -195,6 +198,7 @@ deleteData <- function(data) {
 
 getTableMetadata <- function() {
   fields <- c(id = "Id",
+              hubv = "Hub",
               sitev = "Site",
               datev = "Date",
               bandTime = 'Time',

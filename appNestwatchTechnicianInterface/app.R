@@ -705,6 +705,7 @@ server <- function(input, output, session) {
   # Click "Submit record" button to push result to table:
   
   observeEvent(input$submitRecord, {
+    hub <<- as.character(input$hub)
     dateOut <<- as.character(input$datev) 
     if (input$id != "0") {
       updateData(formData())
@@ -717,6 +718,7 @@ server <- function(input, output, session) {
   # Click "Delete" to remove a single record:
   
   observeEvent(input$delete, {
+    hub <<- as.character(input$hub)
     dateOut <<- as.character(input$datev) 
     deleteData(formData())
     updateInputs(createDefaultRecord(), session)
@@ -725,6 +727,7 @@ server <- function(input, output, session) {
   # Press "New record" button to display empty record:
   
   observeEvent(input$newRecord, {
+    hub <<- as.character(input$hub)
     dateOut <<- as.character(input$datev) # added mar 25
     updateInputs(createDefaultRecord(), session)
   })
@@ -732,6 +735,7 @@ server <- function(input, output, session) {
   # Select row in table to show details in inputs:
   
   observeEvent(input$responses_rows_selected, {
+    hub <<- as.character(input$hub)
     dateOut <<- as.character(input$datev) # added mar 25
     if (length(input$responses_rows_selected) > 0) {
       data <- readData()[input$responses_rows_selected, ]
@@ -744,6 +748,7 @@ server <- function(input, output, session) {
   # Inputs and submissions to temp data file:
   
   reactiveOut <- reactive({
+    hub <<- as.character(input$hub)
     dateOut <<- as.character(input$datev) # added mar 25
     input$submitRecord
     input$delete
@@ -753,6 +758,7 @@ server <- function(input, output, session) {
   # Display output table:
   
   output$responses <- DT::renderDataTable({
+    hub <<- as.character(input$hub)
     dateOut <<- as.character(input$datev) # added mar 25
     reactiveOut()
     },
@@ -1011,9 +1017,9 @@ server <- function(input, output, session) {
   
   output$nnLogo <- renderImage({
     list(src = 'logo.jpg',
-         width = 450,
-         height = 201, 
-         position = 'center')
+         width = 312,
+         height = 100, 
+         position = 'middle')
   }, deleteFile = FALSE)
   # END
 }
