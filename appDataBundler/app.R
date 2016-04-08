@@ -13,6 +13,10 @@ library(R.utils)
 library(rdrop2)
 library(DT)
 library(shinyjs)
+library(tidyr)
+
+token <- drop_auth()
+saveRDS(token, 'droptoken.rds')
 
 # Data binding function:
 
