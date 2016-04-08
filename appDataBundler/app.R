@@ -23,15 +23,17 @@ dataBundler <- function(classOfData){
   filePaths <- drop_dir(pathToFile) %>% 
     as.data.frame %>% 
     .$path
-  outList <- vector('list', length = length(filePaths))
-  for(i in 1:length(filePaths)){
-    outList[[i]] <- drop_read_csv(filePaths[i], stringsAsFactors = FALSE)
-  }
-  outFrame <- do.call(rbind, outList)
-  if(classOfData == 'encounterData'){
-    outFrame <- outFrame %>%
-      rename(hub = hubv, site = sitev)
-  }
+  if(length(filePaths >0)){
+    outList <- vector('list', length = length(filePaths))
+    for(i in 1:length(filePaths)){
+      outList[[i]] <- drop_read_csv(filePaths[i], stringsAsFactors = FALSE)
+    }
+    outFrame <- do.call(rbind, outList)
+    if(classOfData == 'encounterData'){
+      outFrame <- outFrame %>%
+        rename(hub = hubv, site = sitev)
+    }
+  } else {outFrame <- 'There do not appear to be any files!'}
   return(outFrame)
 }
 
@@ -102,30 +104,53 @@ ui <- fluidPage(
   #-------------------------------------------------------------------------------*
   # ---- UI: RIGHT PASSWORD ----
   #-------------------------------------------------------------------------------*
+  # VISIT DATA:
   hr(),
-  actionButton('bundleVisitData', 'Collect Visit Data', class = 'btn-primary'),
+  actionButton('bundleVisitData', 'Collect visit data', class = 'btn-primary'),
   br(), br(),
-  tableOutput('table'),
+  DT::dataTableOutput("vTable"),
   br(),
   shinyjs::hidden(
     downloadButton("downloadVisitData", 
                    "Download visit data", 
                    class = "btn-primary")
   ), 
+  # ENCOUNTER DATA:
+  hr(),
+  actionButton('bundleEncounterData', 
+               'Collect encounter data', class = 'btn-primary'),
+  br(), br(),
+  DT::dataTableOutput("eTable"),
   br(),
-  fluidRow(
-    column(4, ''),
-    column(4, actionButton("bundleEncounterData", 
-                           "Download encounter data", 
-                           class = "btn-primary")),
-    column(4, actionButton("bundlePointCountData", 
-                           "Download point count data", 
-                           class = "btn-primary"))
-    ),
+  shinyjs::hidden(
+    downloadButton("downloadEncounterData", 
+                   "Download encounter data", 
+                   class = "btn-primary")
+  ), 
+  # POINT COUNT DATA:
+  hr(),
+  actionButton('bundlePcData', 
+               'Collect point count data', class = 'btn-primary'),
+  br(), br(),
+  DT::dataTableOutput("pTable"),
+  br(),
+  shinyjs::hidden(
+    div(
+      id = "noFilesMessage",
+      h4('There do not appear to be any files!',
+         style = 'color:red')
+    )
+  ),
+  shinyjs::hidden(
+    downloadButton("downloadPcData", 
+                   "Download point count data", 
+                   class = "btn-primary")
+  ),
+  br(),
+  hr(),
   #-------------------------------------------------------------------------------*
   # ---- UI: LOGO ----
   #-------------------------------------------------------------------------------*
-  hr(),
   fluidRow(
     column(4, ''),
     column(4, imageOutput('nnLogo')),
@@ -134,98 +159,167 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  # Visit data:
-  visitTable <- reactive(
-    data <- dataBundler('visitData') %>%
-      dplyr::rename(date = dateOut, obs = observer, 
-                    long = longitude, lat = latitude) %>%
-      dplyr::select(hub, site, date, obs:notes)
-    #if (input$hub != 'All regions') data =  filter(data, hub == input$hub)
-    )
   
-  # Encounter data:
-  encounterTable <- reactive(dataBundler('encounterData'))
+  # Password check:
   
-  #-------------------------------------------------------------------------------*
-  # ---- SERVER: ACCESS PASSWORD CHECK ----
-  #-------------------------------------------------------------------------------*
   hubPassword <- reactive(hubPasswordFrame %>%
     filter(hub == input$hub) %>% .$password)
   
+  #-------------------------------------------------------------------------------*
+  # ---- SERVER: VISIT DATA BUNDLE, SHOW, AND DOWNLOAD ----
+  #-------------------------------------------------------------------------------*
+  
+  # Password check and visit table rendering:
+
   onclick('bundleVisitData',
           if(input$password != hubPassword()){
             shinyjs::toggle('wrongPasswordMessage')
           } else {
             shinyjs::hide('wrongPasswordMessage')
             shinyjs::show('downloadVisitData')
-            # output$table <- renderTable(visitTable())
-            output$table <- DT::renderDataTable({
-              DT::datatable(visitTable())
+            output$vTable <- DT::renderDataTable({
+              DT::datatable(visitData())
             })
           }
   )
+  
+  
+  # Bundle visit data:
+  
+  visitTable <- reactive(
+    withProgress(message = 'Collecting visit data files', dataBundler('visitData')
+    )
+  )
+  
+  # Format visit data:
+  
+  visitData <- reactive(
+    visitTable() %>%
+      distinct() %>%
+      rename(date = dateOut) %>%
+      mutate(netHours = ((netCount6 * netTime6) +
+                           (netCount9 * 1.5 * netTime9) +
+                           (netCount12 * 2 * netTime12) +
+                           (netCount18 * 3 * netTime18))/60,
+             netHours = ifelse(is.na(netHours), 'NoNets', netHours)
+             ) %>%
+      select(-c(netCount6:netTime18)) %>%
+      tidyr::gather('spUnbanded', 'countUnbanded', amroUnbanded:unchUnbanded) %>%
+      group_by(site, date) %>%
+      mutate(spUnbanded = spUnbanded %>%
+               str_replace('Unbanded', ''),
+             spUnbanded = ifelse(sum(countUnbanded, na.rm = TRUE) >= 1,
+                                 spUnbanded, 'None')
+             ) %>%
+      ungroup %>%
+      distinct %>%
+      mutate(countUnbanded = ifelse(spUnbanded == 'None', 'NA', countUnbanded))
+  )
+  
+  # Download visit data:
   
   output$downloadVisitData <- downloadHandler(
     filename =  str_c('visitData', 
                       as.Date(Sys.time()), 
                       input$hub, '.csv'),
     content = function(file){
-      write.csv(visitTable(), file)
+      write.csv(visitData(), file)
     }
   )
   
-  content = function(file) {
-    write.csv(datasetInput(), file)
-  }
-
-    downloadHandler(
-      filename = function() { paste(input$dataset, '.csv', sep='') },
-      content = function(file) {
-        write.csv(datasetInput(), file)
-      }
+  #-------------------------------------------------------------------------------*
+  # ---- SERVER: ENCOUNTER DATA BUNDLE, SHOW, AND DOWNLOAD ----
+  #-------------------------------------------------------------------------------*
+  
+  # Password check and encounter table rendering:
+  
+  onclick('bundleEncounterData',
+          if(input$password != hubPassword()){
+            shinyjs::toggle('wrongPasswordMessage')
+          } else {
+            shinyjs::hide('wrongPasswordMessage')
+            shinyjs::show('downloadEncounterData')
+            output$eTable <- DT::renderDataTable({
+              DT::datatable(encounterData())
+            })
+          }
+  )
+  
+  # Bundle visit data:
+  
+  encounterTable <- reactive(
+    withProgress(message = 'Collecting encounter data files', 
+                 dataBundler('encounterData')
     )
+  )
   
+  # Format encounter data:
   
-  # output$bundleVisitData
+  encounterData <- reactive(
+    encounterTable() %>%
+      distinct %>%
+      rename(date = datev)
+  )
   
-#   observeEvent(input$bundleVisitData, {
-#     if(input$password != hubPassword()){
-#       shinyjs::toggle('wrongPasswordMessage')
-#     } else {
-#       shinyjs::hide('wrongPasswordMessage')
-#       bundledData <- dataBundler('visitData')
-#       
-#       if(input$hub == 'All regions'){
-#         bundledData <- dataBundler('visitData')
-#       } else {
-#         bundledData <- dataBundler('visitData') %>%
-#           filter(hub == input$hub)
-#       }
-      # write.csv(bundledData,'visitData.csv')
-#     }
-#   })
+  # Download encounter data:
   
-#   observeEvent(input$accessData, {
-#     hubPassword <- hubPasswordFrame %>%
-#       filter(hub == input$hub) %>%
-#       .$password
-#     if(input$password != hubPassword){
-#       shinyjs::toggle("wrongPasswordMessage")
-#     }
-#     if(input$password == hubPassword){
-#       shinyjs::hide('wrongPasswordMessage')
-#     }
-#   })
+  output$downloadEncounterData <- downloadHandler(
+    filename =  str_c('encounterData', 
+                      as.Date(Sys.time()), 
+                      input$hub, '.csv'),
+    content = function(file){
+      write.csv(encounterData(), file)
+    }
+  )
   
-#   observe({
-#     hubPassword <- hubPasswordFrame %>%
-#       filter(hub == input$hub) %>%
-#       .$password
-#     if(input$password == hubPassword){
-#       shinyjs::disable("bundleVisitData")
-#       shinyjs::enable("bundleVisitData")
-#     }
-#   })
+  #-------------------------------------------------------------------------------*
+  # ---- SERVER: POINT COUNT DATA BUNDLE, SHOW, AND DOWNLOAD ----
+  #-------------------------------------------------------------------------------*
+  
+  # Password check and encounter table rendering:
+  
+  onclick('bundlePcData',
+          if(input$password != hubPassword()){
+            shinyjs::toggle('wrongPasswordMessage')
+          } else {
+            shinyjs::hide('wrongPasswordMessage')
+            shinyjs::show('downloadPcData')
+            if(pTable() != 'There do not appear to be any files!'){
+              output$pTable <- DT::renderDataTable({
+                DT::datatable(pData())
+                })
+            } else {
+              shinyjs::show('noFilesMessage')
+              }
+          }
+  )
+  
+  # Bundle visit data:
+  
+  pTable <- reactive(
+    withProgress(message = 'Collecting point count data files', 
+                 dataBundler('pData')
+    )
+  )
+  
+  # Format encounter data:
+  
+  pData <- reactive(
+    pTable() %>%
+      distinct %>%
+      rename(date = datev)
+  )
+  
+  # Download encounter data:
+  
+  output$downloadPcData <- downloadHandler(
+    filename =  str_c('pData', 
+                      as.Date(Sys.time()), 
+                      input$hub, '.csv'),
+    content = function(file){
+      write.csv(pData(), file)
+    }
+  )
   
   #-------------------------------------------------------------------------------*
   # ---- SERVER: IMAGES ----
