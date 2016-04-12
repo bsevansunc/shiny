@@ -10,7 +10,7 @@ visitFields <- c('hub', 'site', 'observer',
                  'cachUnbanded', 'carwUnbanded', 'eaphUnbanded','grcaUnbanded',
                  'howrUnbanded',
                  'nocaUnbanded', 'nomoUnbanded', 'sospUnbanded',
-                 'tutiUnbanded', 'unchUnbanded', 'encounteredBird','notes')
+                 'tutiUnbanded', 'unchUnbanded', 'encounteredBird','visitNotes')
 
 # Define fields for PC data conditions (site-level pc records):
 
