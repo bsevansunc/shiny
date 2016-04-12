@@ -37,12 +37,10 @@ pcDataConditionsFields <- c('sitePc', 'observerPc', 'datePc', 'startTimePc',
 
 # Visit choices
 
-choiceRegions <- c('Atlanta' = 'Atlanta',
-                   'DC' = 'DC',
-                   'Gainesville' = 'Gainesville',
-                   'Pittsburgh' = 'Pittsburgh',
-                   'Raleigh' = 'Raleigh',
-                   'Springfield' = 'Springfield')
+choiceRegions <- c('Atlanta', 'DC', 'Gainesville', 'Pittsburgh',
+                   'Raleigh', 'Springfield')
+
+names(choiceRegions) <- choiceRegions
 
 choiceSites <- c('', encounters$site %>% unique %>% sort)
 
