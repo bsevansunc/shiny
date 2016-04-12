@@ -12,6 +12,22 @@ visitFields <- c('hub', 'site', 'observer',
                  'nocaUnbanded', 'nomoUnbanded', 'sospUnbanded',
                  'tutiUnbanded', 'unchUnbanded', 'encounteredBird','visitNotes')
 
+# Define fields for encounter data:
+
+fieldCodesEnc <-  c('hubEnc', 'siteEnc', 'dateEnc', 'bandTime', 
+                      'bander','encounterType', 'speciesEnc', 
+                      'bandNumber','colorCombo', 'age', 'sex', 
+                      'breedingCond','fat', 'mass', 'wing', 'tail',
+                      'tarsus','featherID', 'toenailID', 'bloodID',
+                      'fecalID', 'attachmentID', 'notesEnc')
+
+# Define field names for encounter data table:
+
+fieldNamesEnc <- c('Hub', 'Site', 'Date', 'Time', 'Obs.', 'Encounter',
+                   'SPP', 'Band #', 'Color c.', 'Age', 'Sex', 'CP/BP',
+                   'Fat', 'Mass', 'Wing', 'Tail', 'Tarsus', 'Feather', 
+                   'Toenail','Blood','Fecal', 'Attachment', 'Notes')
+
 # Define fields for PC data conditions (site-level pc records):
 
 pcDataConditionsFields <- c('sitePc', 'observerPc', 'datePc', 'startTimePc',
