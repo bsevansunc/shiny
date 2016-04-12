@@ -257,8 +257,8 @@ ui <- navbarPage(
                br(), br(),
                fluidRow(
                  column(2, shinyjs::disabled(textInput("id", "Id", "0"))),
-                 column(5, selectInput('sitev', 'Site', '')),
-                 column(5, dateInput('datev',
+                 column(5, selectInput('siteEnc', 'Site', '')),
+                 column(5, dateInput('dateEnc',
                                      label = 'Date: yyyy-mm-dd',
                                      value = Sys.Date()
                  ))
@@ -273,7 +273,7 @@ ui <- navbarPage(
                                           selected = 'Band'))),
                br(),
                fluidRow(
-                 column(4, selectInput('species', 'Species:', '')),
+                 column(4, selectInput('speciesEnc', 'Species:', '')),
                  column(4, textInput('bandNumber', 'Band number:')),
                  column(4, selectizeInput('colorCombo', 
                                           'Color combination:',
@@ -324,13 +324,12 @@ ui <- navbarPage(
                  column(6, textInput('fecalID', label = 'Fecal ID:'))),
                br(),
                fluidRow(
-                 column(6, 
-                        textInput('attachmentID',
-                                  label = 'Attachment ID (e.g., transmitter or geolocator):')),
+                 column(6, textInput('attachmentID',
+                                     label = 'Attachment ID (e.g., transmitter or geolocator):')),
                  column(6, ' ')),
                br(),
                fluidRow(
-                 column(12, textInput('notes', label = 'Notes:'))),
+                 column(12, textInput('notesEnc', label = 'Notes:'))),
                br(),
                fluidRow(column(1, ''),
                         column(3, actionButton("newRecord", "Clear fields",
