@@ -15,22 +15,18 @@ visitFields <- c('hub', 'site', 'observer',
 # Define fields for encounter data:
 
 fieldCodesEnc <-  c('hubEnc', 'siteEnc', 'dateEnc', 'bandTime', 
-                    'bander','encounterType', 'speciesEnc', 
+                    'observerEnc','encounterType', 'speciesEnc', 
                     'bandNumber','colorCombo', 'age', 'sex', 
                     'breedingCond','fat', 'mass', 'wing', 'tail',
                     'tarsus','featherID', 'toenailID', 'bloodID',
-                    'fecalID', 'attachmentID', 
-                    # 'rsLong', 'rsLat',
-                    'notesEnc')
+                    'fecalID', 'attachmentID', 'notesEnc')
 
 # Define field names for encounter data table:
 
 fieldNamesEnc <- c('Hub', 'Site', 'Date', 'Time', 'Obs.', 'Encounter',
                    'SPP', 'Band #', 'Color c.', 'Age', 'Sex', 'CP/BP',
                    'Fat', 'Mass', 'Wing', 'Tail', 'Tarsus', 'Feather', 
-                   'Toenail','Blood','Fecal', 'Attachment', 
-                   # 'RSlong','RSlat',
-                   'Notes')
+                   'Toenail','Blood','Fecal', 'Attachment', 'Notes')
 
 # Define fields for point count data:
 
@@ -43,6 +39,31 @@ fieldCodesPc <- c('hubPc', 'sitePc', 'observerPc', 'datePc',
 fieldNamesPc <- c('Hub', 'Site', 'Observer', 'Date', 'Start time', 
                   'Time interval', 'SPP', 'Distance', 'Count', 
                   'Detection', 'Notes')
+
+# Define fields for nest data:
+
+fieldCodesNest <- c('hubNest', 'siteNest', 'nestID', 'speciesNest',
+                    'dateNest', 'timeNest', 'stageNest', 'adAttNest',
+                    'nEggNest', 'nYoungNest', 'notesNest',
+                    'observerNest')
+
+# getTableMetadataNest <- function() {
+#   fields <- c(idNest = 'Id',
+#               siteNest = 'Site',
+#               nestID = 'Nest ID',
+#               speciesNest = 'SPP',
+#               dateNest = 'Date', 
+#               timeNest = 'Time',
+#               stageNest = 'Stage',
+#               adAttNest = 'AdAtt',
+#               nEggNest = 'nEgg',
+#               nYoungNest = 'nYoung',
+#               notesNest = 'Notes',
+#               observerNest = 'Obs'
+#   )
+
+# Define field names for nest data table:
+
 
 
 # Define fields for PC data conditions (site-level pc records):
@@ -67,7 +88,7 @@ choiceDate <- c('', seq(
     as.character)
 
 timeOfDay0 <- format(seq(ISOdate(2000, 1, 1), ISOdate(2000,1,2), 
-                        by = 'min'), '%H:%M') %>% 
+                         by = 'min'), '%H:%M') %>% 
   unique %>% sort
 
 timeOfDay <- timeOfDay0[301:1321]
@@ -139,4 +160,3 @@ nestStageChoices <- c('', 'B', 'L', 'I', 'H', 'N', 'F', 'P', 'A')
 nestAttendChoices <- c('', '-', 'F', 'M', 'F+M')
 
 nestEggsYoungChoices <- c('', 0:10)
-
