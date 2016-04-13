@@ -47,22 +47,11 @@ fieldCodesNest <- c('hubNest', 'siteNest', 'nestID', 'speciesNest',
                     'nEggNest', 'nYoungNest', 'notesNest',
                     'observerNest')
 
-# getTableMetadataNest <- function() {
-#   fields <- c(idNest = 'Id',
-#               siteNest = 'Site',
-#               nestID = 'Nest ID',
-#               speciesNest = 'SPP',
-#               dateNest = 'Date', 
-#               timeNest = 'Time',
-#               stageNest = 'Stage',
-#               adAttNest = 'AdAtt',
-#               nEggNest = 'nEgg',
-#               nYoungNest = 'nYoung',
-#               notesNest = 'Notes',
-#               observerNest = 'Obs'
-#   )
-
 # Define field names for nest data table:
+
+fieldNamesNest <- c('Hub', 'Site', 'Nest ID', 'SPP',
+                    'Date', 'Time', 'Stage', 'adAtt',
+                    'nEgg', 'nYoung', 'Notes', 'Obs')
 
 
 
