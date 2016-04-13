@@ -28,12 +28,25 @@ fieldNamesEnc <- c('Hub', 'Site', 'Date', 'Time', 'Obs.', 'Encounter',
                    'Fat', 'Mass', 'Wing', 'Tail', 'Tarsus', 'Feather', 
                    'Toenail','Blood','Fecal', 'Attachment', 'Notes')
 
-# Define fields for PC data conditions (site-level pc records):
+# Define fields for point count data:
 
-pcDataConditionsFields <- c('sitePc', 'observerPc', 'datePc', 'startTimePc',
-                            'longitude', 'latitude', 'accuracy', 'locationNotes',
-                            'temperature', 'sky', 'wind', 'splN', 'splE',
-                            'splS', 'splW', 'siteLevelPcNotes')
+fieldCodesPc <- c('hubPc', 'sitePc', 'observerPc', 'datePc',
+                  'startTimePc', 'timePc', 'speciesPc', 'distancePc',
+                  'countPc', 'detectionPc','notesPc')
+
+# Define field names for point count data table:
+
+fieldNamesPc <- c('Hub', 'Site', 'Observer', 'Date', 'Start time', 
+                  'Time interval', 'SPP', 'Distance', 'Count', 
+                  'Detection', 'Notes')
+
+
+# Define fields for PC data conditions (site-level pc records):
+# 
+# pcDataConditionsFields <- c('sitePc', 'observerPc', 'datePc', 'startTimePc',
+#                             'longitude', 'latitude', 'accuracy', 'locationNotes',
+#                             'temperature', 'sky', 'wind', 'splN', 'splE',
+#                             'splS', 'splW', 'siteLevelPcNotes')
 
 # Visit choices
 
