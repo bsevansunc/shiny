@@ -4,44 +4,54 @@
 # ---- Save data to Dropbox ----
 #=================================================================================*
 
-# Save visit data to Dropbox:
-
-saveVisitData <- function(visitData) {
-  # data <- visitData 
-  # Create a unique file name
-  fileName <- sprintf("%s_%s.csv", as.integer(Sys.time()), digest::digest(data)) #! This may be a problem!
-  # Write the data to a temporary file locally
+saveData <- function(data, dataName){
+  submissionTime <- as.character(Sys.time()) %>%
+    str_replace_all(' ', '_') # %>%
+  # str_replace_all(':','|')
+  fileName <- str_c(dataName, submissionTime, '.csv')
   filePath <- file.path(tempdir(), fileName)
-  write.csv(visitData, filePath, row.names = FALSE, quote = TRUE)
-  # Upload the file to Dropbox
-  drop_upload(filePath, dest = 'nnDataStorage/visitData')
+  write.csv(data, filePath, row.names = FALSE, quote = TRUE)
+  destinationFolder <- str_c('nnDataStorage/', dataName)
 }
+
+# Save visit data to Dropbox:
+# 
+# saveVisitData <- function(visitData) {
+#   # data <- visitData 
+#   # Create a unique file name
+#   fileName <- sprintf("%s_%s.csv", as.integer(Sys.time()), digest::digest(data)) #! This may be a problem!
+#   # Write the data to a temporary file locally
+#   filePath <- file.path(tempdir(), fileName)
+#   write.csv(visitData, filePath, row.names = FALSE, quote = TRUE)
+#   # Upload the file to Dropbox
+#   drop_upload(filePath, dest = 'nnDataStorage/visitData')
+# }
 
 # Save encounter data to Dropbox:
 
-saveEncounterData <- function(encounterData) {
-  data <- encounterData
-  # Create a unique file name
-  fileName <- sprintf("%s_%s.csv", as.integer(Sys.time()), digest::digest(data))
-  # Write the data to a temporary file locally
-  filePath <- file.path(tempdir(), fileName)
-  write.csv(data, filePath, row.names = FALSE, quote = TRUE)
-  # Upload the file to Dropbox
-  drop_upload(filePath, dest = 'nnDataStorage/encounterData')
-}
+# saveEncounterData <- function(encounterData) {
+#   data <- encounterData
+#   # Create a unique file name
+#   fileName <- sprintf("%s_%s.csv", as.integer(Sys.time()), digest::digest(data))
+#   # Write the data to a temporary file locally
+#   filePath <- file.path(tempdir(), fileName)
+#   write.csv(data, filePath, row.names = FALSE, quote = TRUE)
+#   # Upload the file to Dropbox
+#   drop_upload(filePath, dest = 'nnDataStorage/encounterData')
+# }
 
 # Save point count data (counts) to Dropbox:
 
-savePcDataCounts <- function(pcData) {
-  data <- pcData
-  # Create a unique file name
-  fileName <- sprintf("%s_%s.csv", as.integer(Sys.time()), digest::digest(data))
-  # Write the data to a temporary file locally
-  filePath <- file.path(tempdir(), fileName)
-  write.csv(data, filePath, row.names = FALSE, quote = TRUE)
-  # Upload the file to Dropbox
-  drop_upload(filePath, dest = 'pcDataCounts')
-}
+# savePcDataCounts <- function(pcData) {
+#   data <- pcData
+#   # Create a unique file name
+#   fileName <- sprintf("%s_%s.csv", as.integer(Sys.time()), digest::digest(data))
+#   # Write the data to a temporary file locally
+#   filePath <- file.path(tempdir(), fileName)
+#   write.csv(data, filePath, row.names = FALSE, quote = TRUE)
+#   # Upload the file to Dropbox
+#   drop_upload(filePath, dest = 'pcDataCounts')
+# }
 
 #---------------------------------------------------------------------------------*
 # ---- Create, Read, Update, Delete ----
