@@ -372,7 +372,7 @@ ui <- navbarPage(
                         column(4, actionButton("deleteEnc", "Delete record", 
                                                class = "btn-primary")),
                         column(3, ' '),
-                        column(4, actionButton('submitEnc', 
+                        column(4, actionButton('submitEncData', 
                                                'Submit encounter data',
                                                class = "btn-primary"))
                ),
