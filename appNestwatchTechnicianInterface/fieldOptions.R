@@ -15,18 +15,22 @@ visitFields <- c('hub', 'site', 'observer',
 # Define fields for encounter data:
 
 fieldCodesEnc <-  c('hubEnc', 'siteEnc', 'dateEnc', 'bandTime', 
-                      'bander','encounterType', 'speciesEnc', 
-                      'bandNumber','colorCombo', 'age', 'sex', 
-                      'breedingCond','fat', 'mass', 'wing', 'tail',
-                      'tarsus','featherID', 'toenailID', 'bloodID',
-                      'fecalID', 'attachmentID', 'notesEnc')
+                    'bander','encounterType', 'speciesEnc', 
+                    'bandNumber','colorCombo', 'age', 'sex', 
+                    'breedingCond','fat', 'mass', 'wing', 'tail',
+                    'tarsus','featherID', 'toenailID', 'bloodID',
+                    'fecalID', 'attachmentID', 
+                    # 'rsLong', 'rsLat',
+                    'notesEnc')
 
 # Define field names for encounter data table:
 
 fieldNamesEnc <- c('Hub', 'Site', 'Date', 'Time', 'Obs.', 'Encounter',
                    'SPP', 'Band #', 'Color c.', 'Age', 'Sex', 'CP/BP',
                    'Fat', 'Mass', 'Wing', 'Tail', 'Tarsus', 'Feather', 
-                   'Toenail','Blood','Fecal', 'Attachment', 'Notes')
+                   'Toenail','Blood','Fecal', 'Attachment', 
+                   # 'RSlong','RSlat',
+                   'Notes')
 
 # Define fields for point count data:
 
