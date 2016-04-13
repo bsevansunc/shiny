@@ -1,8 +1,10 @@
-# HELPER FUNCTION JUNKYARD
+#=================================================================================*
+# ---- HELPER FUNCTION JUNKYARD ----
+#=================================================================================*
 
 # 
 # #---------------------------------------------------------------------------------*
-# # ---- The complicated path from input to editable data frame ----
+# # ---- The complicated path from input to editable data frame ----*
 # #=================================================================================*
 # 
 # # This method casts from the inputs to a one-row data.frame. We use it, for instance, when the user creates a new record by typing in values into the inputs, and then clicks "Submit":
