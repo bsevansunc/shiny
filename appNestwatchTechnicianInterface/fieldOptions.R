@@ -17,7 +17,7 @@ visitFields <- c('hub', 'site', 'observer',
 fieldCodesEnc <-  c('hubEnc', 'siteEnc', 'dateEnc', 'bandTime', 
                     'observerEnc','encounterType', 'speciesEnc', 
                     'bandNumber','colorCombo', 'age', 'sex', 
-                    'breedingCond','fat', 'mass', 'wing', 'tail',
+                    'breedingCond','fat', 'mass', 'wing', 'tl',
                     'tarsus','featherID', 'toenailID', 'bloodID',
                     'fecalID', 'attachmentID', 'notesEnc')
 
