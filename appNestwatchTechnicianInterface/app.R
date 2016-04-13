@@ -79,7 +79,7 @@ ui <- navbarPage(
     hr(),
     fluidRow(
       column(4, ''),
-      column(4, imageOutput('nnLogo')),
+      column(4, imageOutput('nnLogo', height = 293)),
       column(4, '')
     )
   ),
@@ -241,7 +241,14 @@ ui <- navbarPage(
                 ),
                 width = 6, position = 'right'),
             # ---- Visit text ----------------------------------------------------
-            mainPanel(textVisit, width = 6, position = 'left'))
+            mainPanel(
+              fluidRow(
+                column(8,''),#h3('Start by entering your visit data:')),
+                column(4, imageOutput('birdBranch', height = 55))
+                # column(4, img(src = 'nnBirdBranch.png', align = 'right'))
+              ),
+              br(), textVisit, width = 6, position = 'left')
+            )
            ),
   #-------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: ENCOUNTERS ----
@@ -1022,11 +1029,19 @@ server <- function(input, output, session) {
   # Nestwatch logo:
   
   output$nnLogo <- renderImage({
-    list(src = 'logo.jpg',
-         width = 312,
-         height = 100, 
+    list(src = 'logo.png',
+         width = 401,
+         height = 293, 
          position = 'middle')
   }, deleteFile = FALSE)
+  
+  output$birdBranch <- renderImage({
+    list(src = 'nnBirdBranchImage.png',
+         width = 300,
+         height = 116, 
+         position = 'middle')
+    }, deleteFile = FALSE)
+  
   # END
 }
 
