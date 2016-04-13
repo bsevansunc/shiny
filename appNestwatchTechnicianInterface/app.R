@@ -706,88 +706,79 @@ server <- function(input, output, session) {
     shinyjs::show("thankyou_msgVisit")
   })
   
-  #-------------------------------------------------------------------------------*
-  # ---- SERVER: ENCOUNTER DATA ----
-  #-------------------------------------------------------------------------------*
+  #----------------------------------------------------------------------*
+  # ENCOUNTER DATA
+  #----------------------------------------------------------------------*
   
-  # Link field names and data:
+  # Input fields:
   
-  # shinyServer(func = function(input, output){ 
-    formData <- reactive({
-      sapply(names(getTableMetadata()$fields), function(x) input[[x]])
-    })
+  formDataEnc <- reactive({
+    sapply(names(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields),
+           function(x) as.character(input[[x]]))
+  })
   
-  # Click "Submit record" button to push result to table:
+  # Click submit to add table or modify/add records:
   
-  observeEvent(input$submitRecord, {
-    hub <<- as.character(input$hub)
-    dateOut <<- as.character(input$datev) 
-    if (input$id != "0") {
-      updateData(formData())
+  observeEvent(input$submitEnc, {
+    fixedValues <- c('hubEnc', 'siteEnc', 'dateEnc','bander')
+    for(i in 1:length(fixedValues)){
+      globalAssign(input[[fixedValues[i]]], as.character(fixedValues[i])) 
+    }
+    # If the data table exists, modify table else create table:
+    if(exists('responseDataEnc')){
+      # If no rows are selected, add a row with the new record:
+      if(length(input$responsesEnc_rows_selected) < 1){
+        responseDataEnc[nrow(responseDataEnc) + 1,] <- castData(formDataEnc())
+      }
+      # If a row has been selected, modify the selected record:
+      if(length(input$responsesEnc_rows_selected == 1)){
+        responseDataEnc[input$responsesEnc_rows_selected,] <- castData(formDataEnc())
+      }
+      # If the table is currently blank, start table with new record:
     } else {
-      createData(formData())
-      updateInputs(createDefaultRecord(), session)
+      responseDataEnc <- castData(formDataEnc())
+    }
+    globalAssign(responseDataEnc, 'responseDataEnc')
+    
+    # After submission, clear fields to defaults:
+    updateInputs(createDefaultRecord(fieldCodesEnc), fieldCodesEnc, session)
+  }, priority = 1)
+  
+  # Press New to display empty record:
+  
+  observeEvent(input$newEnc, {
+    updateInputs(createDefaultRecord(fieldCodesEnc), fieldCodesEnc, session)
+  })
+  
+  # Delete a selected row:
+  
+  observeEvent(input$deleteEnc, {
+    if(length(input$responsesEnc_rows_selected) == 1){
+      responseDataEnc <<- responseDataEnc[-input$responsesEnc_rows_selected,]
+      updateInputs(createDefaultRecord(fieldCodesEnc), fieldCodesEnc, session)
     }
   }, priority = 1)
-  
-  # Click "Delete" to remove a single record:
-  
-  observeEvent(input$delete, {
-    hub <<- as.character(input$hub)
-    dateOut <<- as.character(input$datev) 
-    deleteData(formData())
-    updateInputs(createDefaultRecord(), session)
-  }, priority = 1)
-  
-  # Press "New record" button to display empty record:
-  
-  observeEvent(input$newRecord, {
-    hub <<- as.character(input$hub)
-    dateOut <<- as.character(input$datev) # added mar 25
-    updateInputs(createDefaultRecord(), session)
-  })
   
   # Select row in table to show details in inputs:
   
-  observeEvent(input$responses_rows_selected, {
-    hub <<- as.character(input$hub)
-    dateOut <<- as.character(input$datev) # added mar 25
-    if (length(input$responses_rows_selected) > 0) {
-      data <- readData()[input$responses_rows_selected, ]
-      updateInputs(data, session)
+  observeEvent(input$responsesEnc_rows_selected, {
+    if (length(input$responsesEnc_rows_selected) == 1) {
+      data <- responseDataEnc[input$responsesEnc_rows_selected, ]
+      updateInputs(data, fieldCodesEnc, session)
+      responseDataEnc[input$responsesEnc_rows_selected, ] 
     }
   })
   
-  shinyjs::disable("id")
+  # Display table:
   
-  # Inputs and submissions to temp data file:
-  
-  reactiveOut <- reactive({
-    hub <<- as.character(input$hub)
-    dateOut <<- as.character(input$datev) # added mar 25
-    input$submitRecord
-    input$delete
-    readData()
-  })
-  
-  # Display output table:
-  
-  output$responses <- DT::renderDataTable({
-    hub <<- as.character(input$hub)
-    dateOut <<- as.character(input$datev) # added mar 25
-    reactiveOut()
-    },
-    server = FALSE, selection = "single",
-    colnames = unname(getTableMetadata()$fields)[-1]
-    )
-  
-  # Submit encounter data from table:
-  
-  observeEvent(input$submitEncounterData, {
-    saveEncounterData(reactiveOut())
-    shinyjs::reset("encounterData")
-    shinyjs::show("thankyou_msgEncounter")
-  })
+  output$responsesEnc <- DT::renderDataTable({
+    # Update after submit is clicked
+    input$submitEnc
+    # Update after delete is clicked
+    input$deleteEnc
+    if (existCheck(responseDataEnc)) responseDataEnc    
+  }, server = FALSE, selection = "single",
+  colnames = unname(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields))
   
   #-------------------------------------------------------------------------------*
   # ---- SERVER: QUERY BANDING RECORDS ----
