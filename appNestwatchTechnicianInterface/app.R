@@ -494,6 +494,7 @@ ui <- navbarPage(
                    h3(strong('1. Submit nest location and summary data:')),
                    strong(em('IMPORTANT! Be sure to enter nest data AFTER entering visit data!')),
                    br(), br(),
+                   shinyjs::hidden(textInput('hubNest', 'hub', '')),
                    fluidRow(
                      column(3, strong('Species:')),
                      column(3, strong('Color combo:')),
@@ -924,8 +925,7 @@ server <- function(input, output, session) {
   # Click submit to add table or modify/add records:
   
   observeEvent(input$submitNest, {
-    fixedValues <- c('hubNest', 'siteNest', 'dateNest','observerNest', 
-                     'startTimeNest', 'notesNest')
+    fixedValues <- c('hubNest', 'siteNest')
     for(i in 1:length(fixedValues)){
       globalAssign(input[[fixedValues[i]]], as.character(fixedValues[i])) 
     }
