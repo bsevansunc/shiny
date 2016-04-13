@@ -914,87 +914,76 @@ server <- function(input, output, session) {
   # ---- SERVER: NEST DATA ----
   #-------------------------------------------------------------------------------*
   
-  # Link field names and data:
+  # Input fields:
   
   formDataNest <- reactive({
-    sapply(names(getTableMetadataNest()$fields), function(x) input[[x]])
+    sapply(names(getTableMetadata(fieldCodesNest, fieldNamesNest)$fields),
+           function(x) as.character(input[[x]]))
   })
   
-  # Click "Submit record" button to push result to table:
+  # Click submit to add table or modify/add records:
   
-  observeEvent(input$submitRecordNest, {
-    siteNest <<- as.character(input$siteNest)
-    nestID <<- as.character(input$nestID)
-    speciesNest <<- as.character(input$speciesNest)
-    observerNest <<- as.character(input$observerNest)
-    if (input$idNest != "0") {
-      updateDataNest(formDataNest())
+  observeEvent(input$submitNest, {
+    fixedValues <- c('hubNest', 'siteNest', 'dateNest','observerNest', 
+                     'startTimeNest', 'notesNest')
+    for(i in 1:length(fixedValues)){
+      globalAssign(input[[fixedValues[i]]], as.character(fixedValues[i])) 
+    }
+    # If the data table exists, modify table else create table:
+    if(exists('responseDataNest')){
+      # If no rows are selected, add a row with the new record:
+      if(length(input$responsesNest_rows_selected) < 1){
+        responseDataNest[nrow(responseDataNest) + 1,] <- castData(formDataNest())
+      }
+      # If a row has been selected, modify the selected record:
+      if(length(input$responsesNest_rows_selected == 1)){
+        responseDataNest[input$responsesNest_rows_selected,] <- castData(formDataNest())
+      }
+      # If the table is currently blank, start table with new record:
     } else {
-      createDataNest(formDataNest())
-      updateInputsNest(createDefaultRecordNest(), session)
+      responseDataNest <- castData(formDataNest())
+    }
+    globalAssign(responseDataNest, 'responseDataNest')
+    
+    # After submission, clear fields to defaults:
+    updateInputs(createDefaultRecord(fieldCodesNest), fieldCodesNest, session)
+  }, priority = 1)
+  
+  # Press New to display empty record:
+  
+  observeEvent(input$newNest, {
+    updateInputs(createDefaultRecord(fieldCodesNest), fieldCodesNest, session)
+  })
+  
+  # Delete a selected row:
+  
+  observeEvent(input$deleteNest, {
+    if(length(input$responsesNest_rows_selected) == 1){
+      responseDataNest <<- responseDataNest[-input$responsesNest_rows_selected,]
+      updateInputs(createDefaultRecord(fieldCodesNest), fieldCodesNest, session)
     }
   }, priority = 1)
-  
-  # Click "Delete" to remove a single record:
-  
-  observeEvent(input$deleteRecordNest, {
-    siteNest <<- as.character(input$siteNest)
-    nestID <<- as.character(input$nestID)
-    speciesNest <<- as.character(input$speciesNest)
-    observerNest <<- as.character(input$observerNest)
-    deleteDataNest(formDataNest())
-    updateInputsNest(createDefaultRecordNest(), session)
-  }, priority = 1)
-  
-  # Press "New record" button to display empty record:
-  
-  observeEvent(input$newRecordNest, {
-    siteNest <<- as.character(input$siteNest)
-    nestID <<- as.character(input$nestID)
-    speciesNest <<- as.character(input$speciesNest)
-    observerNest <<- as.character(input$observerNest)
-    updateInputsNest(createDefaultRecordNest(), session)
-  })
   
   # Select row in table to show details in inputs:
   
   observeEvent(input$responsesNest_rows_selected, {
-    siteNest <<- as.character(input$siteNest)
-    nestID <<- as.character(input$nestID)
-    speciesNest <<- as.character(input$speciesNest)
-    observerNest <<- as.character(input$observerNest)
-    if (length(input$responsesNest_rows_selected) > 0) {
-      data <- readDataNest()[input$responsesNest_rows_selected, ]
-      updateInputsNest(data, session)
+    if (length(input$responsesNest_rows_selected) == 1) {
+      data <- responseDataNest[input$responsesNest_rows_selected, ]
+      updateInputs(data, fieldCodesNest, session)
+      responseDataNest[input$responsesNest_rows_selected, ] 
     }
   })
   
-  shinyjs::disable("idNest")
-  
-  # Inputs and submissions to temp data file:
-  
-  reactiveOutNest <- reactive({
-    siteNest <<- as.character(input$siteNest)
-    nestID <<- as.character(input$nestID)
-    speciesNest <<- as.character(input$speciesNest)
-    observerNest <<- as.character(input$observerNest)
-    input$submitRecordNest
-    input$deleteRecordNest
-    readDataNest()
-  })
-  
-  # Display output table:
+  # Display table:
   
   output$responsesNest <- DT::renderDataTable({
-    siteNest <<- as.character(input$siteNest)
-    nestID <<- as.character(input$nestID)
-    speciesNest <<- as.character(input$speciesNest)
-    observerNest <<- as.character(input$observerNest)
-    reactiveOutNest()
-  },
-  server = FALSE, selection = "single",
-  colnames = unname(getTableMetadataNest()$fields)[-1]
-  )
+    # Update after submit is clicked
+    input$submitNest
+    # Update after delete is clicked
+    input$deleteNest
+    if (existCheck(responseDataNest)) responseDataNest    
+  }, server = FALSE, selection = "single",
+  colnames = unname(getTableMetadata(fieldCodesNest, fieldNamesNest)$fields))
   
   # Submit encounter data from table:
   
