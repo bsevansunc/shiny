@@ -844,7 +844,8 @@ server <- function(input, output, session) {
   # Click submit to add table or modify/add records:
   
   observeEvent(input$submitPc, {
-    fixedValues <- c('hubPc', 'sitePc', 'datePc','bander')
+    fixedValues <- c('hubPc', 'sitePc', 'datePc','observerPc', 
+                     'startTimePc', 'notesPc')
     for(i in 1:length(fixedValues)){
       globalAssign(input[[fixedValues[i]]], as.character(fixedValues[i])) 
     }
