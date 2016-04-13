@@ -468,7 +468,7 @@ ui <- navbarPage(
            DT::dataTableOutput("responsesPc"),
            br(),
            fluidRow(column(1, ''),
-                    column(4, actionButton("deleteRecordPc",
+                    column(4, actionButton("deletePc",
                                            "Delete point count record", 
                                            class = "btn-primary")),
                     column(3, ' '),
