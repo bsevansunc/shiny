@@ -394,21 +394,24 @@ ui <- navbarPage(
            sidebarLayout(
              sidebarPanel(
                div(id = 'pcData',
-                 # ---- Point count entry ------------------------------------------
+                   # ---- Point count entry ------------------------------------------
                    h3(strong('1. Add point count records:')),
                    strong(em('IMPORTANT! Be sure to enter point count data AFTER entering visit data!')),
                    br(), br(),
                    fluidRow(
-                     column(2, shinyjs::disabled(textInput("idPc", "Id", "0"))),
-                     column(5, selectInput('sitePc', 'Site:', '')),
-                     column(2, textInput('observerPc', 'Observer:')),
-                     column(3, '')
-                   ),
-                   fluidRow(
-                     column(5, dateInput('datePc',
+                     column(4,
+                            selectInput('hubPc','Regional Hub:',
+                                        choices = choiceRegions,
+                                        selected = NULL)),
+                     column(4, selectInput('sitePc', 'Site', '')),
+                     column(4, dateInput('datePc',
                                          label = 'Date: yyyy-mm-dd',
-                                         value = Sys.Date())),
-                     column(3, selectizeInput('startTimePc', 'Start time:',
+                                         value = Sys.Date()
+                     ))
+                   ), br(),
+                   fluidRow(
+                     column(4, textInput('observerPc', 'Observer:')),
+                     column(4, selectizeInput('startTimePc', 'Start time:',
                                               choices = choiceTimeOfDay)),
                      column(4, '')
                    ), 
@@ -432,49 +435,49 @@ ui <- navbarPage(
                      column(3, selectizeInput('detectionPc',
                                               'Detection:',
                                               choices = c('', 'Visual','Auditory', 'Both')))
-                     ),
-                 hr(),
-                 fluidRow(column(1, ''),
-                          column(3, actionButton("newRecordPc", "Clear fields",
-                                               class = 'btn-primary')),
-                          column(2, ''),
-                          column(3, actionButton('submitRecordPc', 'Add record to table',
-                                               class = "btn-primary")),
-                          column(3, '')),
-                 br()),
-                   width = 6, position = 'right'),
-                  # ---- PC text ----------------------------------------------------
-                 mainPanel(
-                   introTextPc,
+                   ),
                    hr(),
-                   fieldDescriptionsPc,
-                   # hr(),
-                   # textAouQuery,
-                   # fluidRow(column(11, DT::dataTableOutput('aouTable'))),
-                   width = 6, position = 'left')
-               ),
+                   fluidRow(column(1, ''),
+                            column(3, actionButton("newPc", "Clear fields",
+                                                   class = 'btn-primary')),
+                            column(2, ''),
+                            column(3, actionButton('submitPc', 'Add record to table',
+                                                   class = "btn-primary")),
+                            column(3, '')),
+                   br()),
+               width = 6, position = 'right'),
+             # ---- PC text ----------------------------------------------------
+             mainPanel(
+               introTextPc,
                hr(),
-               # ---- QC and submission ---------------------------------------------------
-               h3(strong('2. Data-proofing and submission of point count records:')),
-               br(),
-               DT::dataTableOutput("responsesPc"),
-               br(),
-               fluidRow(column(1, ''),
-                        column(4, actionButton("deleteRecordPc",
-                                               "Delete point count record", 
-                                               class = "btn-primary")),
-                        column(3, ' '),
-                        column(4, actionButton('submitPcData', 
-                                               'Submit point count data',
-                                               class = "btn-primary"))
-               ),
-               br(), shinyjs::hidden(
-                div(
-                  id = "thankyou_msgPc",
-                  h3("Thanks, your point count data have been recorded!")
-                )
-              ),
-              br()),
+               fieldDescriptionsPc,
+               # hr(),
+               # textAouQuery,
+               # fluidRow(column(11, DT::dataTableOutput('aouTable'))),
+               width = 6, position = 'left')
+           ),
+           hr(),
+           # ---- QC and submission ---------------------------------------------------
+           h3(strong('2. Data-proofing and submission of point count records:')),
+           br(),
+           DT::dataTableOutput("responsesPc"),
+           br(),
+           fluidRow(column(1, ''),
+                    column(4, actionButton("deleteRecordPc",
+                                           "Delete point count record", 
+                                           class = "btn-primary")),
+                    column(3, ' '),
+                    column(4, actionButton('submitPcData', 
+                                           'Submit point count data',
+                                           class = "btn-primary"))
+           ),
+           br(), shinyjs::hidden(
+             div(
+               id = "thankyou_msgPc",
+               h3("Thanks, your point count data have been recorded!")
+             )
+           ),
+           br()),
   #-------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: NEST DATA ----
   #-------------------------------------------------------------------------------*
@@ -831,102 +834,75 @@ server <- function(input, output, session) {
   #-------------------------------------------------------------------------------*
   # ---- SERVER: SUBMIT BIRD-LEVEL POINT COUNT DATA ----
   #-------------------------------------------------------------------------------*
-  
-  # Link field names and data:
+  # Input fields:
   
   formDataPc <- reactive({
-    sapply(names(getTableMetadataPc()$fields), function(x) input[[x]])
+    sapply(names(getTableMetadata(fieldCodesPc, fieldNamesPc)$fields),
+           function(x) as.character(input[[x]]))
   })
   
-  # Click "Submit record" button to push result to table:
+  # Click submit to add table or modify/add records:
   
-  observeEvent(input$submitRecordPc, {
-    sitePc <<- as.character(input$sitePc)
-    dateOutPc <<- as.character(input$datePc)
-    observerPc <<- as.character(input$observerPc)
-    startTimePc <<- as.character(input$startTimePc)
-    notesPc <<- as.character(input$notesPc)
-    if (input$idPc != "0") {
-      updateDataPc(formDataPc())
+  observeEvent(input$submitPc, {
+    fixedValues <- c('hubPc', 'sitePc', 'datePc','bander')
+    for(i in 1:length(fixedValues)){
+      globalAssign(input[[fixedValues[i]]], as.character(fixedValues[i])) 
+    }
+    # If the data table exists, modify table else create table:
+    if(exists('responseDataPc')){
+      # If no rows are selected, add a row with the new record:
+      if(length(input$responsesPc_rows_selected) < 1){
+        responseDataPc[nrow(responseDataPc) + 1,] <- castData(formDataPc())
+      }
+      # If a row has been selected, modify the selected record:
+      if(length(input$responsesPc_rows_selected == 1)){
+        responseDataPc[input$responsesPc_rows_selected,] <- castData(formDataPc())
+      }
+      # If the table is currently blank, start table with new record:
     } else {
-      createDataPc(formDataPc())
-      updateInputsPc(createDefaultRecordPc(), session)
+      responseDataPc <- castData(formDataPc())
+    }
+    globalAssign(responseDataPc, 'responseDataPc')
+    
+    # After submission, clear fields to defaults:
+    updateInputs(createDefaultRecord(fieldCodesPc), fieldCodesPc, session)
+  }, priority = 1)
+  
+  # Press New to display empty record:
+  
+  observeEvent(input$newPc, {
+    updateInputs(createDefaultRecord(fieldCodesPc), fieldCodesPc, session)
+  })
+  
+  # Delete a selected row:
+  
+  observeEvent(input$deletePc, {
+    if(length(input$responsesPc_rows_selected) == 1){
+      responseDataPc <<- responseDataPc[-input$responsesPc_rows_selected,]
+      updateInputs(createDefaultRecord(fieldCodesPc), fieldCodesPc, session)
     }
   }, priority = 1)
-  
-  # Click "Delete" to remove a single record:
-  
-  observeEvent(input$deleteRecordPc, {
-    sitePc <<- as.character(input$sitePc)
-    dateOutPc <<- as.character(input$datePc) 
-    observerPc <<- as.character(input$observerPc)
-    startTimePc <<- as.character(input$startTimePc)
-    notesPc <<- as.character(input$notesPc)
-    deleteDataPc(formDataPc())
-    updateInputsPc(createDefaultRecordPc(), session)
-  }, priority = 1)
-  
-  # Press "New record" button to display empty record:
-  
-  observeEvent(input$newRecordPc, {
-    sitePc <<- as.character(input$sitePc)
-    dateOutPc <<- as.character(input$datePc)
-    observerPc <<- as.character(input$observerPc)
-    startTimePc <<- as.character(input$startTimePc)
-    notesPc <<- as.character(input$notesPc)
-    updateInputsPc(createDefaultRecordPc(), session)
-  })
   
   # Select row in table to show details in inputs:
   
   observeEvent(input$responsesPc_rows_selected, {
-    sitePc <<- as.character(input$sitePc)
-    dateOutPc <<- as.character(input$datePc)
-    observerPc <<- as.character(input$observerPc)
-    startTimePc <<- as.character(input$startTimePc)
-    notesPc <<- as.character(input$notesPc)
-    if (length(input$responsesPc_rows_selected) > 0) {
-      data <- readDataPc()[input$responsesPc_rows_selected, ]
-      updateInputsPc(data, session)
+    if (length(input$responsesPc_rows_selected) == 1) {
+      data <- responseDataPc[input$responsesPc_rows_selected, ]
+      updateInputs(data, fieldCodesPc, session)
+      responseDataPc[input$responsesPc_rows_selected, ] 
     }
   })
   
-  shinyjs::disable("idPc")
-  
-  # Inputs and submissions to temp data file:
-  
-  reactiveOutPc <- reactive({
-    sitePc <<- as.character(input$sitePc)
-    dateOutPc <<- as.character(input$datePc) 
-    observerPc <<- as.character(input$observerPc)
-    startTimePc <<- as.character(input$startTimePc)
-    notesPc <<- as.character(input$notesPc)
-    input$submitRecordPc
-    input$deleteRecordPc
-    readDataPc()
-  })
-  
-  # Display output table:
+  # Display table:
   
   output$responsesPc <- DT::renderDataTable({
-    sitePc <<- as.character(input$sitePc)
-    dateOutPc <<- as.character(input$datePc) 
-    observerPc <<- as.character(input$observerPc)
-    startTimePc <<- as.character(input$startTimePc)
-    notesPc <<- as.character(input$notesPc)
-    reactiveOutPc()
-  },
-  server = FALSE, selection = "single",
-  colnames = unname(getTableMetadataPc()$fields)[-1]
-  )
-  
-  # Submit encounter data from table:
-  
-  observeEvent(input$submitPcData, {
-    savePcDataCounts(reactiveOutPc())
-    shinyjs::reset("pcData")
-    shinyjs::show("thankyou_msgPc")
-  })
+    # Update after submit is clicked
+    input$submitPc
+    # Update after delete is clicked
+    input$deletePc
+    if (existCheck(responseDataPc)) responseDataPc    
+  }, server = FALSE, selection = "single",
+  colnames = unname(getTableMetadata(fieldCodesPc, fieldNamesPc)$fields))
   
   #-------------------------------------------------------------------------------*
   # ---- SERVER: NEST DATA ----
