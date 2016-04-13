@@ -249,126 +249,129 @@ ui <- navbarPage(
   tabPanel(strong('Encounter data'),
            div(id = 'encounterData', 
                sidebarLayout(
-             # ---- Record entry -------------------------------------------------
-             sidebarPanel(
-               shinyjs::useShinyjs(),
-               h3(strong('1. Enter encounter record:')),
-               strong(em('IMPORTANT! Be sure to enter encounter data AFTER entering visit data!')),
-               br(), br(),
-               fluidRow(
-                 column(2, shinyjs::disabled(textInput("id", "Id", "0"))),
-                 column(5, selectInput('siteEnc', 'Site', '')),
-                 column(5, dateInput('dateEnc',
-                                     label = 'Date: yyyy-mm-dd',
-                                     value = Sys.Date()
-                 ))
-                 ), br(),
-               fluidRow(
-                 column(4, selectizeInput('bandTime', 'Time:',
-                                          choices = choiceTimeOfDay)),
-                 column(4, textInput('bander', 'Observer initials:')),
-                 column(4, selectizeInput('encounterType', 
-                                          'Encounter type:',
-                                          choices = choiceEncounterType, 
-                                          selected = 'Band'))),
-               br(),
-               fluidRow(
-                 column(4, selectInput('speciesEnc', 'Species:', '')),
-                 column(4, textInput('bandNumber', 'Band number:')),
-                 column(4, selectizeInput('colorCombo', 
-                                          'Color combination:',
-                                          choices = choiceColorCombos))),
+                 # ---- Record entry -------------------------------------------------*
+                 sidebarPanel(
+                   shinyjs::useShinyjs(),
+                   h3(strong('1. Enter encounter record:')),
+                   strong(em('IMPORTANT! Be sure to enter encounter data AFTER entering visit data!')),
+                   br(), br(),
+                   fluidRow(
+                     column(4,
+                            selectInput('hubEnc','Regional Hub:',
+                                        choices = choiceRegions,
+                                        selected = NULL)),
+                     column(4, selectInput('siteEnc', 'Site', '')),
+                     column(4, dateInput('dateEnc',
+                                         label = 'Date: yyyy-mm-dd',
+                                         value = Sys.Date()
+                     ))
+                   ), br(),
+                   fluidRow(
+                     column(4, selectizeInput('bandTime', 'Time:',
+                                              choices = choiceTimeOfDay)),
+                     column(4, textInput('bander', 'Observer initials:')),
+                     column(4, selectizeInput('encounterType', 
+                                              'Encounter type:',
+                                              choices = choiceEncounterType, 
+                                              selected = 'Band'))),
+                   br(),
+                   fluidRow(
+                     column(4, selectInput('speciesEnc', 'Species:', '')),
+                     column(4, textInput('bandNumber', 'Band number:')),
+                     column(4, selectizeInput('colorCombo', 
+                                              'Color combination:',
+                                              choices = choiceColorCombos))),
+                   hr(),
+                   h4(strong('Color bands:')),
+                   fluidRow(
+                     column(3, p(strong('- :'), 'No band')),
+                     column(3, p(strong('BK :'), 'Black')),
+                     column(3, p(strong('PK :'), 'Pink')),
+                     column(3, p(strong('Y :'), 'Yellow'))
+                   ),
+                   fluidRow(
+                     column(3, p(strong('A :'), 'Aluminum')),
+                     column(3, p(strong('G :'), 'Green')),
+                     column(3, p(strong('P :'), 'Purple')),
+                     column(3, p(strong('W :'), 'White'))
+                   ),
+                   fluidRow(
+                     column(3, p(strong('BU :'), 'Blue')),
+                     column(3, p(strong('O :'), 'Orange')),
+                     column(3, p(strong('R :'), 'Red')),
+                     column(3, ' ')
+                   ),
+                   hr(),
+                   fluidRow(
+                     column(3, selectizeInput('age','Age:',
+                                              choices = choiceAge)),
+                     column(3, selectizeInput('sex', label = 'Sex:',
+                                              choices = choiceSex)),
+                     column(3, selectizeInput('breedingCond', label = 'CP/BP:',
+                                              choices = choiceBreedingCond)),
+                     column(3, selectizeInput('fat',label = 'Fat:',
+                                              choices = choiceFat))),
+                   br(),
+                   fluidRow(
+                     column(3, textInput('mass',label = 'Mass (g):')),
+                     column(3, textInput('wing',label = 'Wing (mm):')),
+                     column(3, textInput('tl',label = 'Tail (mm):')),
+                     column(3, textInput('tarsus',label = 'Tarsus (mm):'))),
+                   br(),
+                   fluidRow(
+                     column(6, textInput('featherID', label = 'Feather ID:')),
+                     column(6, textInput('toenailID', label = 'Toenail ID:'))),
+                   br(),
+                   fluidRow(
+                     column(6, textInput('bloodID', label = 'Blood ID:')),
+                     column(6, textInput('fecalID', label = 'Fecal ID:'))),
+                   br(),
+                   fluidRow(
+                     column(6, textInput('attachmentID',
+                                         label = 'Attachment ID (e.g., transmitter or geolocator):')),
+                     column(6, ' ')),
+                   br(),
+                   fluidRow(
+                     column(12, textInput('notesEnc', label = 'Notes:'))),
+                   br(),
+                   fluidRow(column(1, ''),
+                            column(3, actionButton("newEnc", "Clear fields",
+                                                   class = 'btn-primary')),
+                            column(2, ''),
+                            column(3, actionButton('submitEnc', 'Add record to table',
+                                                   class = "btn-primary")),
+                            column(3, '')),
+                   br(),
+                   width = 6, position = 'right'),
+                 # ---- Encounter text ----------------------------------------------------
+                 mainPanel(
+                   introTextEncounter,
+                   hr(),
+                   fieldDescriptionsEncounter,
+                   width = 6, position = 'left')
+               ),
                hr(),
-               h4(strong('Color bands:')),
-               fluidRow(
-                 column(3, p(strong('- :'), 'No band')),
-                 column(3, p(strong('BK :'), 'Black')),
-                 column(3, p(strong('PK :'), 'Pink')),
-                 column(3, p(strong('Y :'), 'Yellow'))
-               ),
-               fluidRow(
-                 column(3, p(strong('A :'), 'Aluminum')),
-                 column(3, p(strong('G :'), 'Green')),
-                 column(3, p(strong('P :'), 'Purple')),
-                 column(3, p(strong('W :'), 'White'))
-               ),
-               fluidRow(
-                 column(3, p(strong('BU :'), 'Blue')),
-                 column(3, p(strong('O :'), 'Orange')),
-                 column(3, p(strong('R :'), 'Red')),
-                 column(3, ' ')
-               ),
-               hr(),
-               fluidRow(
-                 column(3, selectizeInput('age','Age:',
-                                          choices = choiceAge)),
-                 column(3, selectizeInput('sex', label = 'Sex:',
-                                          choices = choiceSex)),
-                 column(3, selectizeInput('breedingCond', label = 'CP/BP:',
-                                          choices = choiceBreedingCond)),
-                 column(3, selectizeInput('fat',label = 'Fat:',
-                                          choices = choiceFat))),
+               # ---- QC and submission ---------------------------------------------------
+               h3(strong('2. Data-proofing and submission of encounter records:')),
                br(),
-               fluidRow(
-                 column(3, textInput('mass',label = 'Mass (g):')),
-                 column(3, textInput('wing',label = 'Wing (mm):')),
-                 column(3, textInput('tail',label = 'Tail (mm):')),
-                 column(3, textInput('tarsus',label = 'Tarsus (mm):'))),
-               br(),
-               fluidRow(
-                 column(6, textInput('featherID', label = 'Feather ID:')),
-                 column(6, textInput('toenailID', label = 'Toenail ID:'))),
-               br(),
-               fluidRow(
-                 column(6, textInput('bloodID', label = 'Blood ID:')),
-                 column(6, textInput('fecalID', label = 'Fecal ID:'))),
-               br(),
-               fluidRow(
-                 column(6, textInput('attachmentID',
-                                     label = 'Attachment ID (e.g., transmitter or geolocator):')),
-                 column(6, ' ')),
-               br(),
-               fluidRow(
-                 column(12, textInput('notesEnc', label = 'Notes:'))),
+               DT::dataTableOutput("responsesEnc"),
                br(),
                fluidRow(column(1, ''),
-                        column(3, actionButton("newRecord", "Clear fields",
-                                               class = 'btn-primary')),
-                        column(2, ''),
-                        column(3, actionButton('submitRecord', 'Add record to table',
+                        column(4, actionButton("deleteEnc", "Delete record", 
                                                class = "btn-primary")),
-                        column(3, '')),
-               br(),
-               width = 6, position = 'right'),
-             # ---- Encounter text ----------------------------------------------------
-             mainPanel(
-               introTextEncounter,
-               hr(),
-               fieldDescriptionsEncounter,
-               width = 6, position = 'left')
-             ),
-           hr(),
-           # ---- QC and submission ---------------------------------------------------
-           h3(strong('2. Data-proofing and submission of encounter records:')),
-           br(),
-           DT::dataTableOutput("responses"),
-           br(),
-           fluidRow(column(1, ''),
-                    column(4, actionButton("delete", "Delete record", 
-                                           class = "btn-primary")),
-                    column(3, ' '),
-                    column(4, actionButton('submitEncounterData', 
-                                           'Submit encounter data',
-                                             class = "btn-primary"))
-                    ),
-           br(), 
-           shinyjs::hidden(
-             div(
-               id = "thankyou_msgEncounter",
-               h3("Thanks, your encounter data have been recorded!")
-             )
-           ),
-           br()
+                        column(3, ' '),
+                        column(4, actionButton('submitEnc', 
+                                               'Submit encounter data',
+                                               class = "btn-primary"))
+               ),
+               br(), 
+               shinyjs::hidden(
+                 div(
+                   id = "thankyou_msgEnc",
+                   h3("Thanks, your encounter data have been recorded!")
+                 )
+               ),
+               br()
            )),
   #--------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: QUERY RECORDS ----
@@ -622,9 +625,21 @@ server <- function(input, output, session) {
       arrange(site) %>%
       .$site
     updateSelectInput(session, 'site', choices = siteNames)
-    updateSelectInput(session, 'sitev', choices = siteNames)
+    updateSelectInput(session, 'siteEnc', choices = siteNames)
     updateSelectInput(session, 'sitePc', choices = siteNames)
     updateSelectInput(session, 'siteNest', choices = siteNames)
+  })
+  
+  # Once HUB is chosen on the visit page, have this be the default entry:
+  
+  observe({
+    inHub <- input$hub
+    print(inHub)
+    if(is.null(inHub))
+      return(NULL)
+    updateSelectInput(session, 'hubEnc', selected = input$hub)
+    updateSelectInput(session, 'hubPc', selected = input$hub)
+    updateSelectInput(session, 'hubNest', selected = input$hub)
   })
   
   # Once SITE is chosen on the visit page, have this be the default entry:
@@ -634,8 +649,9 @@ server <- function(input, output, session) {
     print(inSite)
     if(is.null(inSite))
       return(NULL)
-    updateSelectInput(session, 'sitev', selected = input$site)
+    updateSelectInput(session, 'siteEnc', selected = input$site)
     updateSelectInput(session, 'sitePc', selected = input$site)
+    updateSelectInput(session, 'siteNest', selected = input$site)
   })
   
   # Once DATE is chosen on the visit page, have this be the default entry:
@@ -645,7 +661,7 @@ server <- function(input, output, session) {
     print(inDate)
     if(is.null(inDate))
       return(NULL)
-    updateSelectInput(session, 'datev', selected = input$date)
+    updateSelectInput(session, 'dateEnc', selected = input$date)
     updateSelectInput(session, 'datePc', selected = input$date)
   })
   
@@ -670,7 +686,7 @@ server <- function(input, output, session) {
       filter(hub == inHub) %>%
       arrange(species) %>%
       .$species
-    updateSelectInput(session, 'species', choices = siteNames)
+    updateSelectInput(session, 'speciesEnc', choices = siteNames)
     updateSelectInput(session, 'speciesNest', choices = siteNames)
   })
   
