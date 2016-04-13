@@ -276,7 +276,7 @@ ui <- navbarPage(
                    fluidRow(
                      column(4, selectizeInput('bandTime', 'Time:',
                                               choices = choiceTimeOfDay)),
-                     column(4, textInput('bander', 'Observer initials:')),
+                     column(4, textInput('observerEnc', 'Observer initials:')),
                      column(4, selectizeInput('encounterType', 
                                               'Encounter type:',
                                               choices = choiceEncounterType, 
@@ -687,7 +687,7 @@ server <- function(input, output, session) {
     print(inObserver)
     if(is.null(inObserver))
       return(NULL)
-    updateTextInput(session, 'bander', value = input$observer)
+    updateTextInput(session, 'observerEnc', value = input$observer)
     updateTextInput(session, 'observerPc', value = input$observer)
   })
 
@@ -735,7 +735,7 @@ server <- function(input, output, session) {
   # Click submit to add table or modify/add records:
   
   observeEvent(input$submitEnc, {
-    fixedValues <- c('hubEnc', 'siteEnc', 'dateEnc','bander')
+    fixedValues <- c('hubEnc', 'siteEnc', 'dateEnc','observerEnc')
     for(i in 1:length(fixedValues)){
       globalAssign(input[[fixedValues[i]]], as.character(fixedValues[i])) 
     }
@@ -823,18 +823,18 @@ server <- function(input, output, session) {
   #-------------------------------------------------------------------------------*
   # ---- SERVER: PC DATA CONDITIONS ----
   #-------------------------------------------------------------------------------*
-  # Link fields to input:
-  pcDataConditions <- reactive({
-    dateOut <- as.character(input$datePc)
-    data <- t(sapply(pcDataConditionsFields, function(x) input[[x]]))
-    cbind(dateOut, data)
-  })
-  
-  # When the Submit button is clicked, save form data:
-  observeEvent(input$submitPcDataConditions, {
-    savePcDataConditions(pcDataConditions())
-    shinyjs::show("thankyou_msgPcDataConditions")
-  })
+#   # Link fields to input:
+#   pcDataConditions <- reactive({
+#     dateOut <- as.character(input$datePc)
+#     data <- t(sapply(pcDataConditionsFields, function(x) input[[x]]))
+#     cbind(dateOut, data)
+#   })
+#   
+#   # When the Submit button is clicked, save form data:
+#   observeEvent(input$submitPcDataConditions, {
+#     savePcDataConditions(pcDataConditions())
+#     shinyjs::show("thankyou_msgPcDataConditions")
+#   })
   
   #-------------------------------------------------------------------------------*
   # ---- SERVER: SUBMIT BIRD-LEVEL POINT COUNT DATA ----
