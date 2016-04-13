@@ -3,7 +3,7 @@
 #---------------------------------------------------------------------------------*
 
 textVisit <- p(
-  h3('Start by entering your visit data:'), 
+  h3('Start by entering your visit data:'), br(),
   p('These data only need to be entered once for each site visit. After entering data into a field, press enter and tab to the next field. When you finish entering the data for each of the fields, make sure to double-check all of your entries for accuracy then press the', em('Submit visit data'),  'button.', strong('Do not enter banding, resight, point count, nest, or habitat survey data prior to completing and submitting this form!')),
   hr(),
   p(strong('Regional Hub:'),
