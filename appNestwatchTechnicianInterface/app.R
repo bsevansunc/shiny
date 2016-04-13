@@ -487,130 +487,130 @@ ui <- navbarPage(
   # ---- UI TAB PANEL: NEST DATA ----
   #-------------------------------------------------------------------------------*
   tabPanel(strong('Nest data'),
-           h1('Coming Soon!')
-#            sidebarLayout(
-#              sidebarPanel(
-#                div(id = 'summaryDataNest',
-#                    h3(strong('1. Submit nest location and summary data:')),
-#                    strong(em('IMPORTANT! Be sure to enter nest data AFTER entering visit data!')),
-#                    br(), br(),
-#                    fluidRow(
-#                      column(3, strong('Species:')),
-#                      column(3, strong('Color combo:')),
-#                      column(3, strong('FWS Bands:')),
-#                      column(3, strong('Nest: Yr-#'))
-#                    ),
-#                    fluidRow(
-#                      column(3, selectInput('speciesNest', ' ', '')),
-#                      column(3, selectInput('colorComboMaleNest', 
-#                                            'Male:',
-#                                            choices = choiceColorCombos)),
-#                      column(3, textInput('bandNumberMaleNest', 'Male:')),
-#                      column(3, textInput('nestID', ' '))
-#                    ),
-#                    fluidRow(
-#                      column(3, ''),
-#                      column(3, selectInput('colorComboFemaleNest', 
-#                                            'Female:',
-#                                            choices = choiceColorCombos)),
-#                      column(3, textInput('bandNumberFemaleNest', 'Female:')),
-#                      column(3, '')
-#                    ),
-#                    hr(),
-#                    fluidRow(
-#                      column(9, ''),
-#                      column(3, tags$u(strong('Summary dates')))
-#                    ),
-#                    fluidRow(
-#                      column(2, textInput('plotNest', 'Plot:', '')),
-#                      column(3, selectInput('siteNest', 'Grid (site):', '')),
-#                      column(4, selectInput('fateNest', 'Nest Fate:',
-#                                            nestFateChoices)),
-#                      column(3, dateInput('dateClutchNest',
-#                                         label = 'Clutch completion:',
-#                                         value = ''))
-#                    ),
-#                    fluidRow(
-#                      column(7, textInput('plantSpNest', 
-#                                          'Plant species (if applicable):')),
-#                      column(2, selectInput('heightNest', 'Nest ht (m):',
-#                                            c('', 0:12), '')),
-#                      column(3, dateInput('dateHatchNest',
-#                                          label = 'Hatch:',
-#                                          value = ''))
-#                    ),
-#                    fluidRow(
-#                      column(9, textInput('descriptionNest', 'Nest description:')),
-#                      column(3, dateInput('dateFledgeFailNest',
-#                                          label = 'Fledge/fail (date):',
-#                                          value = ''))
-#                    ),
-#                    fluidRow(
-#                      column(3, selectInput('locationNest', 'Nest Location',
-#                                            nestLocationChoices)),
-#                      column(9, textInput('notesFateOtherNest', 
-#                                          'If nest fate was "other", explain:'))
-#                    )
-#                ),
-#                    hr(),
-#                div(id = 'nestData',
-#                    h3(strong('2. Add nest observation records:')),
-#                    strong(em('IMPORTANT! Be sure to enter nest observation records data AFTER nest location and summary data!')),
-#                    br(), br(),
-#                    fluidRow(
-#                      column(3, dateInput('dateNest',
-#                                          label = 'Date:',
-#                                          value = '')),
-#                      column(3, selectizeInput('timeNest', 'Time:',
-#                                               choices = choiceTimeOfDay)),
-#                      column(3, selectInput('stageNest', 'Stage:',
-#                                            choices = nestStageChoices)),
-#                      column(3, selectInput('adAttNest', 'Adult attending:',
-#                                            choices = nestAttendChoices))),
-#                    fluidRow(
-#                      column(2, selectInput('nEggNest', '# egg:',
-#                                            choices = c('', 0:10))),
-#                      column(2, selectInput('nYoungNest', '# yng:',
-#                                            choices = c('', 0:10))),
-#                      column(6, textInput('notesNest', 
-#                                          'Notes: Building, age, fate, behavior, etc.')),
-#                      column(2, textInput('observerNest', 'Obs:'))
-#                    ),
-#                    hr(),
-#                    br(),
-#                    fluidRow(column(1, ''),
-#                             column(3, actionButton("newRecordNest", 
-#                                                    "Clear fields",
-#                                                    class = 'btn-primary')),
-#                             column(2, ''),
-#                             column(3, actionButton('submitRecordNest', 
-#                                                    'Add record to table',
-#                                                    class = "btn-primary")),
-#                             column(3, ''))
-#                ),
-#              width = 7, position = 'left'),
-#              mainPanel = ''
-#            ),
-#            h3(strong('3. Data-proofing and submission of nest observation records:')),
-#            br(),
-#            DT::dataTableOutput("responsesNest"),
-#            br(),
-#            fluidRow(column(1, ''),
-#                     column(4, actionButton("deleteRecordNest",
-#                                            "Delete nest record", 
-#                                            class = "btn-primary")),
-#                     column(3, ' '),
-#                     column(4, actionButton('saveNestData', 
-#                                            'Submit nest data',
-#                                            class = "btn-primary"))
-#            ),
-#            br(), shinyjs::hidden(
-#              div(
-#                id = "thankyou_msgNest",
-#                h3("Thanks, your nest data have been recorded!")
-#              )
-#            ),
-#            br()
+           sidebarLayout(
+             sidebarPanel(
+               # NEST SUMMARY UI ----
+               div(id = 'summaryDataNest',
+                   h3(strong('1. Submit nest location and summary data:')),
+                   strong(em('IMPORTANT! Be sure to enter nest data AFTER entering visit data!')),
+                   br(), br(),
+                   fluidRow(
+                     column(3, strong('Species:')),
+                     column(3, strong('Color combo:')),
+                     column(3, strong('FWS Bands:')),
+                     column(3, strong('Nest: Yr-#'))
+                   ),
+                   fluidRow(
+                     column(3, selectInput('speciesNest', ' ', '')),
+                     column(3, selectInput('colorComboMaleNest', 
+                                           'Male:',
+                                           choices = choiceColorCombos)),
+                     column(3, textInput('bandNumberMaleNest', 'Male:')),
+                     column(3, textInput('nestID', ' '))
+                   ),
+                   fluidRow(
+                     column(3, ''),
+                     column(3, selectInput('colorComboFemaleNest', 
+                                           'Female:',
+                                           choices = choiceColorCombos)),
+                     column(3, textInput('bandNumberFemaleNest', 'Female:')),
+                     column(3, '')
+                   ),
+                   hr(),
+                   fluidRow(
+                     column(9, ''),
+                     column(3, tags$u(strong('Summary dates')))
+                   ),
+                   fluidRow(
+                     column(2, textInput('plotNest', 'Plot:', '')),
+                     column(3, selectInput('siteNest', 'Grid (site):', '')),
+                     column(4, selectInput('fateNest', 'Nest Fate:',
+                                           nestFateChoices)),
+                     column(3, dateInput('dateClutchNest',
+                                        label = 'Clutch completion:',
+                                        value = ''))
+                   ),
+                   fluidRow(
+                     column(7, textInput('plantSpNest', 
+                                         'Plant species (if applicable):')),
+                     column(2, selectInput('heightNest', 'Nest ht (m):',
+                                           c('', 0:12), '')),
+                     column(3, dateInput('dateHatchNest',
+                                         label = 'Hatch:',
+                                         value = ''))
+                   ),
+                   fluidRow(
+                     column(9, textInput('descriptionNest', 'Nest description:')),
+                     column(3, dateInput('dateFledgeFailNest',
+                                         label = 'Fledge/fail (date):',
+                                         value = ''))
+                   ),
+                   fluidRow(
+                     column(3, selectInput('locationNest', 'Nest Location',
+                                           nestLocationChoices)),
+                     column(9, textInput('notesFateOtherNest', 
+                                         'If nest fate was "other", explain:'))
+                   )
+               ),
+                   hr(),
+               div(id = 'nestData',
+                   h3(strong('2. Add nest observation records:')),
+                   strong(em('IMPORTANT! Be sure to enter nest observation records data AFTER nest location and summary data!')),
+                   br(), br(),
+                   fluidRow(
+                     column(3, dateInput('dateNest',
+                                         label = 'Date:',
+                                         value = '')),
+                     column(3, selectizeInput('timeNest', 'Time:',
+                                              choices = choiceTimeOfDay)),
+                     column(3, selectInput('stageNest', 'Stage:',
+                                           choices = nestStageChoices)),
+                     column(3, selectInput('adAttNest', 'Adult attending:',
+                                           choices = nestAttendChoices))),
+                   fluidRow(
+                     column(2, selectInput('nEggNest', '# egg:',
+                                           choices = c('', 0:10))),
+                     column(2, selectInput('nYoungNest', '# yng:',
+                                           choices = c('', 0:10))),
+                     column(6, textInput('notesNest', 
+                                         'Notes: Building, age, fate, behavior, etc.')),
+                     column(2, textInput('observerNest', 'Obs:'))
+                   ),
+                   hr(),
+                   br(),
+                   fluidRow(column(1, ''),
+                            column(3, actionButton("newNest", 
+                                                   "Clear fields",
+                                                   class = 'btn-primary')),
+                            column(2, ''),
+                            column(3, actionButton('submitNest', 
+                                                   'Add record to table',
+                                                   class = "btn-primary")),
+                            column(3, ''))
+               ),
+             width = 7, position = 'left'),
+             mainPanel = ''
+           ),
+           h3(strong('3. Data-proofing and submission of nest observation records:')),
+           br(),
+           DT::dataTableOutput("responsesNest"),
+           br(),
+           fluidRow(column(1, ''),
+                    column(4, actionButton("deleteNest",
+                                           "Delete nest record", 
+                                           class = "btn-primary")),
+                    column(3, ' '),
+                    column(4, actionButton('saveNestData', 
+                                           'Submit nest data',
+                                           class = "btn-primary"))
+           ),
+           br(), shinyjs::hidden(
+             div(
+               id = "thankyou_msgNest",
+               h3("Thanks, your nest data have been recorded!")
+             )
+           ),
+           br()
            ),
   #-------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: HABITAT SURVEY ----
