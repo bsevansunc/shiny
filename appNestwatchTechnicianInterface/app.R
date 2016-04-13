@@ -339,6 +339,11 @@ ui <- navbarPage(
                      column(6, ' ')),
                    br(),
                    fluidRow(
+                     column(6, textInput('rsLong', 'Resight longitude:')),
+                     column(6, textInput('rsLat', 'Resight latitude:'))
+                   ),
+                   br(),
+                   fluidRow(
                      column(12, textInput('notesEnc', label = 'Notes:'))),
                    br(),
                    fluidRow(column(1, ''),
