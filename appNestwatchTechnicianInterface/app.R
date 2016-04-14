@@ -487,27 +487,32 @@ ui <- navbarPage(
   # ---- UI TAB PANEL: NEST DATA ----
   #-------------------------------------------------------------------------------*
   tabPanel(strong('Nest data'),
-           textInput('hubNest', 'hub', ''),
-           textInput('siteNest', 'site', ''),
-           textInput('plotNest', 'plot', ''),
-           textInput('nestID', 'nestID', ''),
-           textInput('speciesNest', 'spp'),
-           textInput('dateNest', 'Date'),
-           textInput('timeNest', 'time'),
-           textInput('stageNest', 'stage'),
-           textInput('adAttNest', 'adAtt'),
-           textInput('nEggNest', 'nEgg'),
-           textInput('nYoungNest', 'nYoung'),
-           textInput('notesNest', 'notes'),
-           textInput('observerNest', 'observer'),
-           fluidRow(column(1, ''),
-                    column(3, actionButton("newNest", 
-                                           "Clear fields",
-                                           class = 'btn-primary')),
-                    column(2, ''),
-                    column(3, actionButton('submitNest', 
-                                           'Add record to table',
-                                           class = "btn-primary"))),
+           sidebarLayout(
+             sidebarPanel(
+               div(id = 'summaryDataNest',
+                   textInput('hubNest', 'hub', ''),
+                   textInput('siteNest', 'site', ''),
+                   textInput('plotNest', 'plot', ''),
+                   textInput('nestID', 'nestID', ''),
+                   textInput('speciesNest', 'spp'),
+                   textInput('dateNest', 'Date'),
+                   textInput('timeNest', 'time'),
+                   textInput('stageNest', 'stage'),
+                   textInput('adAttNest', 'adAtt'),
+                   textInput('nEggNest', 'nEgg'),
+                   textInput('nYoungNest', 'nYoung'),
+                   textInput('notesNest', 'notes'),
+                   textInput('observerNest', 'observer'),
+                   fluidRow(column(1, ''),
+                            column(3, actionButton("newNest", 
+                                                   "Clear fields",
+                                                   class = 'btn-primary')),
+                            column(2, ''),
+                            column(3, actionButton('submitNest', 
+                                                   'Add record to table',
+                                                   class = "btn-primary"))),  
+               ), width = 6, position = 'left'),
+             mainPanel = ''),
            DT::dataTableOutput("responsesNest")
            ),
 #   tabPanel(strong('Nest data'),
@@ -742,7 +747,7 @@ server <- function(input, output, session) {
   
   # When the Submit button is clicked, save form data:
   observeEvent(input$submitVisitData, {
-    saveVisitData(visitData())
+    saveData(visitData(), 'visitData') #saveVisitData(visitData())
     shinyjs::show("thankyou_msgVisit")
   })
   
@@ -819,6 +824,11 @@ server <- function(input, output, session) {
     if (existCheck(responseDataEnc)) responseDataEnc    
   }, server = FALSE, selection = "single",
   colnames = unname(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields))
+  
+  observeEvent(input$submitEncData, {
+    saveData(responsesEnc(), 'encounterData') #saveVisitData(visitData())
+    shinyjs::show("thankyou_msgEnc")
+  })
   
   #-------------------------------------------------------------------------------*
   # ---- SERVER: QUERY BANDING RECORDS ----
@@ -1012,7 +1022,7 @@ server <- function(input, output, session) {
   # Submit encounter data from table:
   
   observeEvent(input$saveNestData, {
-    saveNestData(reactiveOutNest())
+    saveNestData(responsesNest(), 'nestData')
     shinyjs::reset("nestData")
     shinyjs::show("thankyou_msgNest")
   })
