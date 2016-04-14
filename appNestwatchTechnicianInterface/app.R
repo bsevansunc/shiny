@@ -393,10 +393,10 @@ ui <- navbarPage(
                br(),
                fluidRow(
                  column(5,
-                        selectInput('hubQuery','Regional Hub:', choiceRegions)),
+                        selectInput('hubQuery','Hub:', choiceRegions)),
                  column(7,
-                        selectInput('siteQuery', 'Site', ''))),
-               br(),
+                        selectInput('siteQuery', 'Site:', ''))),
+               hr(),
                fluidRow(
                  column(7, selectInput('speciesQuery', 'Species:', '')),
                  column(5, selectInput('sexQuery', 'Sex:', choices = choiceSex, selected = ''))
