@@ -117,3 +117,32 @@ updateInputs <- function(data, fieldCodes, session) {
                     value = unname(data[fieldCodes[i]]))
   }
 }
+
+#---------------------------------------------------------------------------------*
+# ---- FILTERING FUNCTION FOR QUERY ----
+#=================================================================================*
+# Note: This function is currently ugly ... I need to improve on it. Ack.
+
+filteringFun <- function(inHub = '', inSite = '', inSpecies = '',
+                         inSex = '', inBandCombo = '', inBandNumber = ''){
+  encounters <- read.csv('encounters2.csv') %>% tbl_df
+  if(inHub != ''){
+    encounters <- filter(encounters, str_detect(hub, inHub))
+  }
+  if(inSite != ''){
+    encounters <- filter(encounters, str_detect(site, toupper(inSite)))
+  }
+  if(inSpecies != ''){
+    encounters <- filter(encounters, str_detect(species, inSpecies))
+  }
+  if(inSex != ''){
+    encounters <- filter(encounters, str_detect(sex, inSex))
+  }
+  if(inBandCombo != ''){
+    encounters <- filter(encounters, str_detect(bandCombo, inBandCombo))
+  }
+  if(inBandNumber != ''){
+    encounters <- filter(encounters, str_detect(bandNumber, inBandNumber))
+  }
+  return(encounters)
+}
