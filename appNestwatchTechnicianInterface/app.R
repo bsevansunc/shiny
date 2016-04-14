@@ -243,9 +243,8 @@ ui <- navbarPage(
             # ---- Visit text ----------------------------------------------------
             mainPanel(
               fluidRow(
-                column(8,''),#h3('Start by entering your visit data:')),
-                column(4, imageOutput('birdBranch', height = 55))
-                # column(4, img(src = 'nnBirdBranch.png', align = 'right'))
+                column(8,''),
+                column(4, imageOutput('birdBranch1', height = 55))
               ),
               br(), textVisit, width = 6, position = 'left')
             )
@@ -587,7 +586,13 @@ ui <- navbarPage(
                                                    class = "btn-primary")))
                    ),  
                width = 6, position = 'left'),
-             mainPanel = ''),
+             mainPanel(
+               fluidRow(
+                 column(8,''),
+                 column(4, imageOutput('birdBranch2', height = 55))
+               ),
+               br(), textVisit, width = 6, position = 'right')
+           ),
            DT::dataTableOutput("responsesNest"),
                       br(),
                       fluidRow(column(1, ''),
@@ -1006,12 +1011,19 @@ server <- function(input, output, session) {
          position = 'middle')
   }, deleteFile = FALSE)
   
-  output$birdBranch <- renderImage({
+  output$birdBranch1 <- renderImage({
     list(src = 'nnBirdBranchImage.png',
          width = 300,
          height = 116, 
          position = 'middle')
     }, deleteFile = FALSE)
+  
+  output$birdBranch2 <- renderImage({
+    list(src = 'nnBirdBranchImage.png',
+         width = 300,
+         height = 116, 
+         position = 'middle')
+  }, deleteFile = FALSE)
   
   # END
 }
