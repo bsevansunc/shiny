@@ -143,6 +143,8 @@ filteringFun <- function(inHub = '', inSite = '', inSpecies = '',
   }
   if(inBandNumber != ''){
     encounters <- filter(encounters, str_detect(bandNumber, inBandNumber))
+  } else {
+    encounters <- encounters
   }
   return(encounters)
 }
