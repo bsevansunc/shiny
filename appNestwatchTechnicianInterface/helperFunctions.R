@@ -125,7 +125,7 @@ updateInputs <- function(data, fieldCodes, session) {
 
 filteringFun <- function(inHub = '', inSite = '', inSpecies = '',
                          inSex = '', inBandCombo = '', inBandNumber = ''){
-  encounters <- read.csv('encounters2.csv') %>% tbl_df
+  encounters <- encounters %>% tbl_df
   if(inHub != ''){
     encounters <- filter(encounters, str_detect(hub, inHub))
   }
@@ -133,16 +133,16 @@ filteringFun <- function(inHub = '', inSite = '', inSpecies = '',
     encounters <- filter(encounters, str_detect(site, toupper(inSite)))
   }
   if(inSpecies != ''){
-    encounters <- filter(encounters, str_detect(species, inSpecies))
+    encounters <- filter(encounters, str_detect(species, toupper(inSpecies)))
   }
   if(inSex != ''){
-    encounters <- filter(encounters, str_detect(sex, inSex))
+    encounters <- filter(encounters, str_detect(sex, toupper(inSex)))
   }
   if(inBandCombo != ''){
-    encounters <- filter(encounters, str_detect(bandCombo, inBandCombo))
+    encounters <- filter(encounters, str_detect(bandCombo, toupper(inBandCombo)))
   }
   if(inBandNumber != ''){
-    encounters <- filter(encounters, str_detect(bandNumber, inBandNumber))
+    encounters <- filter(encounters, str_detect(bandNumber, toupper(inBandNumber)))
   } else {
     encounters <- encounters
   }
