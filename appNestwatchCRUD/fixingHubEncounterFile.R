@@ -109,7 +109,42 @@ read.csv('encounters.csv', stringsAsFactors = FALSE) %>%
                              bandNumber)) %>%
   write.csv('encounters.csv', row.names = FALSE)
 
+# Fixing date:
 
+read.csv('encounters.csv', stringsAsFactors = F) %>%
+  tbl_df %>%
+  mutate(date = as.Date(date)) %>%
+  distinct %>%
+  write.csv('encounters.csv', row.names = FALSE)
+
+# Add sex
+
+pathToMeasurements <- '/Users/bsevans/Dropbox/NeighborhoodNestwatch_bandingData/measures.csv'
+measurements <- read.csv(pathToMeasurements, stringsAsFactors = F) %>%
+  tbl_df %>%
+  select(bandNumber, sex) %>%
+  mutate(bandNumber = ifelse(str_detect(bandNumber, '[:digit:]'),
+                             str_c(
+                               str_sub(bandNumber, end = -6),
+                               str_sub(bandNumber, start = -5),
+                               sep = '-'),
+                             bandNumber),
+         sex = toupper(sex) %>%
+           str_replace('\n', '') %>%
+           as.factor) %>%
+  distinct %>%
+  full_join(encounters, by = 'bandNumber') %>%
+  select(hub, site, species, sex, bandNumber, bandCombo, encounterType, date) %>%
+  filter(!is.na(encounterType)) %>%
+  group_by(bandNumber) %>%
+  mutate(yearDate = lubridate::year(date),
+         bandYear = min(yearDate),
+         yearDate = ifelse(lubridate::month(date) < 4 & encounterType != 'band',
+                yearDate - 1, yearDate)) %>%
+  filter(!(encounterType != 'band' & yearDate == bandYear))
+
+setwd('/Users/bsevans/Desktop/gits/shiny/appNestwatchTechnicianInterface')
+write.csv(measurements, 'encounters2.csv', row.names = F)
 
 
 
