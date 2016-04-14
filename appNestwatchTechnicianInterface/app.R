@@ -865,14 +865,20 @@ server <- function(input, output, session) {
 #            "Pittsburgh" = filter(encounters, hub == 'Pittsburgh'),
 #            "Raleigh" = filter(encounters, hub == 'Raleigh'),
 #            "Springfield" = filter(encounters, hub == 'Springfield'))
-    inHub <- input$hubQuery
-    inSite <- input$siteQuery
-    inSpecies <- input$speciesQuery
-    encounters %>%
-      filter(if(inHub != '') hub == inHub) %>%
-      # filter(if(input$inSite != '') str_detect(site, toupper(inSite))) # %>%
-      filter(if(inSpecies != '') str_detect(species, toupper(inSpecies))) %>%
-      filter(if(input$sexQuery != '') str_detect(sex, toupper(input$sexQuery))) # %>%
+    filteringFun(input$hubQuery, input$siteQuery,
+                 input$speciesQuery, input$sexQuery, input$bandComboQuery,
+                 input$bandNumberQuery)
+#     inHub <- input$hubQuery
+#     inSite <- input$siteQuery
+#     inSpecies <- input$speciesQuery
+#     inSex <- 
+#     inBandCombo <-
+#     inBandNumber <- 
+#     encounters %>%
+#       filter(if(inHub != '') hub == inHub) %>%
+#       # filter(if(input$inSite != '') str_detect(site, toupper(inSite))) # %>%
+#       filter(if(inSpecies != '') str_detect(species, toupper(inSpecies))) %>%
+#       filter(if(input$sexQuery != '') str_detect(sex, toupper(input$sexQuery))) # %>%
 #       filter(if(input$colorComboQuery != '') str_detect(bandCombo, toupper(input$colorComboQuery))) %>%
 #       filter(if(input$bandNumberQuery != '') str_detect(bandNumber, toupper(input$bandNumberQuery)))
   })
