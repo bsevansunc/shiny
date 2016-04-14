@@ -34,8 +34,9 @@ justAlphaCode <- aouCodes %>% .$Alpha
 
 # Load encounter data:
 
-encounters <- read.csv('encounters.csv', stringsAsFactors = FALSE) %>%
-  mutate(date = as.Date(date))
+encounters <- read.csv('encounters2.csv', stringsAsFactors = FALSE) %>%
+  mutate(date = as.Date(date),
+         hub = ifelse(str_detect(site, 'MA1'), 'Springfield', hub))
 
 # Load species by hub data:
 
@@ -398,26 +399,30 @@ ui <- navbarPage(
                br(),
                fluidRow(
                  column(5,
-                        selectInput('hubQuery','Hub:', choiceRegions)),
+                        selectInput('hubQuery','Hub:', 
+                                    choiceRegions)),
                  column(7,
-                        selectInput('siteQuery', 'Site:', ''))),
+                        selectInput('siteQuery', 'Site:', ''))
+                 ),
                hr(),
                fluidRow(
                  column(7, selectInput('speciesQuery', 'Species:', '')),
-                 column(5, selectInput('sexQuery', 'Sex:', choices = choiceSex, selected = ''))
+                 column(5, selectInput('sexQuery', 'Sex:', 
+                                       choices = choiceSex, selected = ''))
                ),
                fluidRow(
                  column(6, textInput('bandNumberQuery', 'Band number:')),
                  column(6, selectizeInput('colorComboQuery', 
                                           'Color combo:',
-                                          choices = choiceColorCombos))
+                                          choices = c('', choiceColorCombos)))
                ),
                hr(),
                fluidRow(
                  selectizeInput('encounterTypeQuery', 'Encounter type:',
                                 choices = choiceEncounterType, 
                                 selected = 'Band')
-               ), width = 3, position = 'left'),
+               ),
+               width = 3, position = 'left'),
              mainPanel(textQuery, width = 4, position = 'right')
            ),
            textQuery,
@@ -669,7 +674,11 @@ server <- function(input, output, session) {
       return(NULL)
     siteNames <- encounters %>%
       select(hub, site) %>%
-      distinct %>%
+      distinct %>% 
+      bind_rows(
+        data.frame(hub = c('DC', 'Atlanta', 'Gainesville',
+                           'Pittsburgh', 'Raleigh', 'Springfield'),
+                   site = rep('', 6))) %>%
       filter(hub == inHub) %>%
       arrange(site) %>%
       .$site
@@ -849,13 +858,23 @@ server <- function(input, output, session) {
   #-------------------------------------------------------------------------------*
   
   dataEncountersSubset <- reactive({
-    switch(input$hub,
-           "Atlanta" = filter(encounters, hub == 'Atlanta'),
-           "DC" = filter(encounters, hub == 'DC'),
-           "Gainesville" = filter(encounters, hub == 'Gainesville'),
-           "Pittsburgh" = filter(encounters, hub == 'Pittsburgh'),
-           "Raleigh" = filter(encounters, hub == 'Raleigh'),
-           "Springfield" = filter(encounters, hub == 'Springfield'))
+#     switch(input$hubQuery,
+#            "Atlanta" = filter(encounters, hub == 'Atlanta'),
+#            "DC" = filter(encounters, hub == 'DC'),
+#            "Gainesville" = filter(encounters, hub == 'Gainesville'),
+#            "Pittsburgh" = filter(encounters, hub == 'Pittsburgh'),
+#            "Raleigh" = filter(encounters, hub == 'Raleigh'),
+#            "Springfield" = filter(encounters, hub == 'Springfield'))
+    inHub <- input$hubQuery
+    inSite <- input$siteQuery
+    inSpecies <- input$speciesQuery
+    encounters %>%
+      filter(if(inHub != '') hub == inHub) %>%
+      # filter(if(input$inSite != '') str_detect(site, toupper(inSite))) # %>%
+      filter(if(inSpecies != '') str_detect(species, toupper(inSpecies))) %>%
+      filter(if(input$sexQuery != '') str_detect(sex, toupper(input$sexQuery))) # %>%
+#       filter(if(input$colorComboQuery != '') str_detect(bandCombo, toupper(input$colorComboQuery))) %>%
+#       filter(if(input$bandNumberQuery != '') str_detect(bandNumber, toupper(input$bandNumberQuery)))
   })
   
   output$encounterTable <- DT::renderDataTable({
