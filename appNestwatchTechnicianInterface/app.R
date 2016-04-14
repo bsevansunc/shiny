@@ -388,6 +388,33 @@ ui <- navbarPage(
   # ---- UI TAB PANEL: QUERY RECORDS ----
   #--------------------------------------------------------------------------------*
   tabPanel(strong('Query encounter records'),
+           sidebarLayout(
+             sidebarPanel(
+               br(),
+               fluidRow(
+                 column(5,
+                        selectInput('hubQuery','Regional Hub:', choiceRegions)),
+                 column(7,
+                        selectInput('siteQuery', 'Site', ''))),
+               br(),
+               fluidRow(
+                 column(7, selectInput('speciesQuery', 'Species:', '')),
+                 column(5, selectInput('sexQuery', 'Sex:', choices = choiceSex, selected = ''))
+               ),
+               fluidRow(
+                 column(6, textInput('bandNumberQuery', 'Band number:')),
+                 column(6, selectizeInput('colorComboQuery', 
+                                          'Color combo:',
+                                          choices = choiceColorCombos))
+               ),
+               hr(),
+               fluidRow(
+                 selectizeInput('encounterTypeQuery', 'Encounter type:',
+                                choices = choiceEncounterType, 
+                                selected = 'Band')
+               ), width = 3, position = 'left'),
+             mainPanel(textQuery, width = 4, position = 'right')
+           ),
            textQuery,
            fluidRow(column(11, DT::dataTableOutput('encounterTable')))
   ),
