@@ -40,7 +40,12 @@ encounters <- read.csv('encounters.csv', stringsAsFactors = FALSE) %>%
 # Load species by hub data:
 
 hubSpecies <- read.csv('hubSpecies.csv', stringsAsFactors = FALSE) %>%
-  tbl_df
+  tbl_df %>%
+  bind_rows(
+    data.frame(hub = c('DC', 'Atlanta', 'Gainesville',
+                       'Pittsburgh', 'Raleigh', 'Springfield'),
+               species = rep('', 6))) %>%
+  arrange(species)
 
 # Load color combinations:
 
@@ -672,6 +677,7 @@ server <- function(input, output, session) {
     updateSelectInput(session, 'siteEnc', choices = siteNames)
     updateSelectInput(session, 'sitePc', choices = siteNames)
     updateSelectInput(session, 'siteNest', choices = siteNames)
+    updateSelectInput(session, 'siteQuery', choices = siteNames)
   })
   
   # Once HUB is chosen on the visit page, have this be the default entry:
@@ -684,6 +690,7 @@ server <- function(input, output, session) {
     updateSelectInput(session, 'hubEnc', selected = input$hub)
     updateSelectInput(session, 'hubPc', selected = input$hub)
     updateSelectInput(session, 'hubNest', selected = input$hub)
+    updateSelectInput(session, 'hubQuery', selected = input$hub)
   })
   
   # Once SITE is chosen on the visit page, have this be the default entry:
@@ -696,6 +703,7 @@ server <- function(input, output, session) {
     updateSelectInput(session, 'siteEnc', selected = input$site)
     updateSelectInput(session, 'sitePc', selected = input$site)
     updateSelectInput(session, 'siteNest', selected = input$site)
+    updateSelectInput(session, 'siteQuery', selected = input$site)
   })
   
   # Once DATE is chosen on the visit page, have this be the default entry:
@@ -732,6 +740,7 @@ server <- function(input, output, session) {
       .$species
     updateSelectInput(session, 'speciesEnc', choices = siteNames)
     updateSelectInput(session, 'speciesNest', choices = siteNames)
+    updateSelectInput(session, 'speciesQuery', choices = siteNames)
   })
   
   # Create reactive site so that site can be included in the file name:
