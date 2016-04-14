@@ -796,7 +796,7 @@ server <- function(input, output, session) {
   colnames = unname(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields))
   
   observeEvent(input$submitEncData, {
-    saveData(responsesEnc(), 'encounterData') #saveVisitData(visitData())
+    saveData(formDataEnc(), 'encounterData') #saveVisitData(visitData())
     shinyjs::show("thankyou_msgEnc")
   })
   
