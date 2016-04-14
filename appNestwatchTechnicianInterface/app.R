@@ -35,8 +35,12 @@ justAlphaCode <- aouCodes %>% .$Alpha
 # Load encounter data:
 
 encounters <- read.csv('encounters2.csv', stringsAsFactors = FALSE) %>%
+  tbl_df %>%
   mutate(date = as.Date(date),
-         hub = ifelse(str_detect(site, 'MA1'), 'Springfield', hub))
+         hub = ifelse(str_detect(site, 'MA1'), 'Springfield', hub)) %>%
+  mutate(encounterType = ifelse(encounterType == 'band'|encounterType == 'recap', 
+                  capitalize(encounterType),
+                  encounterType))
 
 # Load species by hub data:
 
