@@ -591,8 +591,10 @@ ui <- navbarPage(
                  column(8,''),
                  column(4, imageOutput('birdBranch2', height = 55))
                ),
-               br(), textVisit, width = 6, position = 'right')
+               br(), textNest, width = 6, position = 'right')
            ),
+           h3(strong('3. Data-proofing and submission of nest records:')),
+           br(),
            DT::dataTableOutput("responsesNest"),
                       br(),
                       fluidRow(column(1, ''),
