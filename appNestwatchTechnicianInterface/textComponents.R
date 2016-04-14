@@ -157,3 +157,26 @@ fieldDescriptionsPc <- p(
 )
 
 textAouQuery <- p(strong('Query, AOU codes:'), 'If you do not know the 4-letter AOU alpha code for a species that you observed during your point count, you can use this simple query table to find it. To search for a species, just type the common or scientific name in the search box. Search entries are not case-sensitive.')
+
+#---------------------------------------------------------------------------------*
+# ---- PAGE TEXT, NEST ----
+#---------------------------------------------------------------------------------*
+
+# Introductory text for encounter page:
+
+textNest <- p(
+  h3('Nest data are entered in three steps:'),
+  br(),
+  p('This component of the data entry interface is intended to mirror that of the nest cards currently used across Smithsonian Migratory Bird Center projects. To download these cards for use in the field, please click on this link (link currently unavailable). Please follow each of the steps below (in order) to enter nest data.'),
+  tags$ol(
+    tags$li(strong('Enter nest summary data:'), p(' These data are to be entered once for every nest. If you do not currently have nest fate data (e.g., you observed a nest during a Nestwatch visit that may or may not be monitored by a participant), simply enter the site information, nest ID, and observation data from the Step 2. With the exception of site information and nest ID, summary data are not shown in the data-proofing table below.' )),
+    tags$li(p(strong('Enter nest observation records:'), 
+            ' Here you will enter data for nest observations separately for each observation date (the bottom section of the nest card). After entering data for a given date, click', 
+            em('Add record to table.'))),
+    tags$li(strong('Data-proofing and submission of nest records:'),
+            tags$ul(
+              tags$li('After entering all of the nest records, compare table values with your nest card.'),
+              tags$li('If you find mistakes, select the record with your mouse -- you will notice that the fields above will be filled with this record. Simply fix and re-submit the record.'),
+              tags$li('If you need to remove the entire record, simply select that record with your mouse and click', em('Delete record.')),
+              tags$li('After you are confident of the quality of data provided, press the ', em('Submit nest data'), 'button.'))
+    )))
