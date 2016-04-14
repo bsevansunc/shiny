@@ -705,6 +705,12 @@ server <- function(input, output, session) {
     updateSelectInput(session, 'speciesNest', choices = siteNames)
   })
   
+  # Create reactive site so that site can be included in the file name:
+  
+  siteName <- reactive({
+    as.character(input$site)
+  })
+  
   #-------------------------------------------------------------------------------*
   # ---- SERVER: VISIT DATA ----
   #-------------------------------------------------------------------------------*
@@ -717,7 +723,7 @@ server <- function(input, output, session) {
   
   # When the Submit button is clicked, save form data:
   observeEvent(input$submitVisitData, {
-    saveData(visitData(), 'visitData') #saveVisitData(visitData())
+    saveData(visitData(), 'visitData', siteName()) #saveVisitData(visitData())
     shinyjs::show("thankyou_msgVisit")
   })
   
@@ -796,7 +802,7 @@ server <- function(input, output, session) {
   colnames = unname(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields))
   
   observeEvent(input$submitEncData, {
-    saveData(formDataEnc(), 'encounterData') #saveVisitData(visitData())
+    saveData(formDataEnc(), 'encounterData', siteName()) #saveVisitData(visitData())
     shinyjs::show("thankyou_msgEnc")
   })
   
@@ -824,22 +830,6 @@ server <- function(input, output, session) {
   output$aouTable = DT::renderDataTable(
     datatable(aouCodes, filter = 'none', rownames = FALSE,
               options = list(pageLength = 1)))
-  
-  #-------------------------------------------------------------------------------*
-  # ---- SERVER: PC DATA CONDITIONS ----
-  #-------------------------------------------------------------------------------*
-#   # Link fields to input:
-#   pcDataConditions <- reactive({
-#     dateOut <- as.character(input$datePc)
-#     data <- t(sapply(pcDataConditionsFields, function(x) input[[x]]))
-#     cbind(dateOut, data)
-#   })
-#   
-#   # When the Submit button is clicked, save form data:
-#   observeEvent(input$submitPcDataConditions, {
-#     savePcDataConditions(pcDataConditions())
-#     shinyjs::show("thankyou_msgPcDataConditions")
-#   })
   
   #-------------------------------------------------------------------------------*
   # ---- SERVER: SUBMIT BIRD-LEVEL POINT COUNT DATA ----
@@ -914,6 +904,13 @@ server <- function(input, output, session) {
     if (existCheck(responseDataPc)) responseDataPc    
   }, server = FALSE, selection = "single",
   colnames = unname(getTableMetadata(fieldCodesPc, fieldNamesPc)$fields))
+  
+  # Upload data to dropbox
+  
+  observeEvent(input$submitPcData, {
+    saveData(formDataPc(), 'pointCountData', siteName()) #saveVisitData(visitData())
+    shinyjs::show("thankyou_msgPc")
+  })
   
   #-------------------------------------------------------------------------------*
   # ---- SERVER: NEST DATA ----
@@ -993,7 +990,7 @@ server <- function(input, output, session) {
   # Submit encounter data from table:
   
   observeEvent(input$saveNestData, {
-    saveData(formDataNest(), 'nestData')
+    saveData(formDataNest(), 'nestData', siteName())
     shinyjs::reset("nestData")
     shinyjs::show("thankyou_msgNest")
   })
