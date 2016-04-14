@@ -4,12 +4,14 @@
 # ---- Save data to Dropbox ----
 #=================================================================================*
 
-saveData <- function(data, dataName){
+saveData <- function(data, dataName, siteName){
+  data <- t(data)
   submissionTime <- as.character(Sys.time()) %>%
     str_replace_all(' ', '_') %>%
-    str_replace_all(':','|')
+    str_replace_all(':','-')
   randomNumber <- sample(1:1000, 1)
-  fileName <- str_c(dataName, 'time',submissionTime, 'rNum', randomNumber,'.csv')
+  fileName <- str_c(dataName, siteName,'_',submissionTime,
+                    '_', randomNumber,'.csv')
   filePath <- file.path(tempdir(), fileName)
   write.csv(data, filePath, row.names = FALSE, quote = TRUE)
   destinationFolder <- str_c('nnDataStorage/', dataName)
