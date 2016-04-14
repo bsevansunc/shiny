@@ -993,7 +993,7 @@ server <- function(input, output, session) {
   # Submit encounter data from table:
   
   observeEvent(input$saveNestData, {
-    saveNestData(responsesNest(), 'nestData')
+    saveData(formDataNest(), 'nestData')
     shinyjs::reset("nestData")
     shinyjs::show("thankyou_msgNest")
   })
