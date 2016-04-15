@@ -402,27 +402,59 @@ ui <- navbarPage(
              sidebarPanel(
                br(),
                fluidRow(
-                 column(10, selectInput('hubQuery','Hub:', choiceRegions)),
-                 column(2, '')),
+                 column(7, h5(strong('Hub:'))),
+                 column(5, '')),
                fluidRow(
-                 column(10, selectInput('siteQuery', 'Site:', '')),
+                 column(10, selectInput('hubQuery',label = NULL, choiceRegions)),
                  column(2, '')),
                hr(),
                fluidRow(
-                 column(6, selectInput('speciesQuery', 'Species:', '')),
-                 column(6, selectInput('sexQuery', 'Sex:', 
-                                       choices = c('ALL', choiceSex),
-                                       selected = 'ALL'))
-               ),
+                 column(7, h5(strong('Site:'))),
+                 column(5, checkboxInput('showAllSite',
+                                         'Show all',
+                                         value = TRUE))),
                fluidRow(
-                 column(6, textInput('bandNumberQuery', 'Band number:', 'ALL')),
-                 column(6, textInput('bandComboQuery','Color combo:',  'ALL'))
-               ),
+                 column(10, selectInput('siteQuery', '', '')),
+                 column(2, '')),
                hr(),
+               fluidRow(
+                 column(7, h5(strong('Species:'))),
+                 column(5, checkboxInput('showAllSpecies',
+                                         'Show all',
+                                         value = TRUE))),
+               fluidRow(
+                 column(10, selectInput('speciesQuery', '', '')),
+                 column(2, '')),
+               hr(),
+               fluidRow(
+                 column(7, h5(strong('Sex:'))),
+                 column(5, checkboxInput('showAllSex',
+                                         'Show all',
+                                         value = TRUE))),
+               fluidRow(
+                 column(10, selectInput('sexQuery', '', 
+                                       choices = choiceSex,
+                                       selected = 'ALL')),
+                 column(2, '')),
+               hr(),
+               fluidRow(
+                 column(7, h5(strong('Color combo:'))),
+                 column(5, checkboxInput('showAllBandCombo',
+                                         'Show all',
+                                         value = TRUE))),
+               fluidRow(
+                 column(10, textInput('bandComboQuery','',  'ALL')),
+                 column(2, '')),
+               hr(),
+               fluidRow(
+                 column(7, h5(strong('Encounter type:'))),
+                 column(5, checkboxInput('showAllEncounterType',
+                                         'Show all',
+                                         value = TRUE))),
                fluidRow(
                  column(10, 
-                        selectizeInput('encounterTypeQuery', 'Encounter type:',
-                                       choices = c('ALL', choiceEncounterType))),
+                        selectizeInput('encounterTypeQuery', '',
+                                       choices = choiceEncounterType)),
                  column(2, '')),
                width = 3, position = 'left'),
              mainPanel(
@@ -848,7 +880,9 @@ server <- function(input, output, session) {
     input$submitEnc
     # Update after delete is clicked
     input$deleteEnc
-    if (existCheck(responseDataEnc)) responseDataEnc    
+    if (existCheck(responseDataEnc)){
+      responseDataEnc %>%
+        filter(siteEnc == input$siteEnc)}
   }, server = FALSE, selection = "single",
   colnames = unname(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields))
   
@@ -946,27 +980,23 @@ server <- function(input, output, session) {
   output$encounterTable <- DT::renderDataTable(
     DT::datatable({
       encounters <- encounters[encounters$hub == input$hubQuery,]
-      if(input$siteQuery != 'ALL' & input$siteQuery != ''){
+      if(input$showAllSite == 'FALSE'  & input$siteQuery != ''){
         encounters <- encounters %>%
           filter(str_detect(site, toupper(input$siteQuery)))
       }
-      if(input$speciesQuery != 'ALL' & input$speciesQuery != ''){
+      if(input$showAllSpecies == 'FALSE'  & input$speciesQuery != ''){
         encounters <- encounters %>%
           filter(str_detect(species, toupper(input$speciesQuery)))
       }
-      if(input$sexQuery != 'ALL' & input$sexQuery != ''){
+      if(input$showAllSex == 'FALSE'  & input$sexQuery != ''){
         encounters <- encounters %>%
           filter(str_detect(sex, toupper(input$sexQuery)))
       }
-      if(input$bandComboQuery != 'ALL' & input$bandComboQuery != ''){
+      if(input$showAllBandCombo == 'FALSE'  & input$bandComboQuery != ''){
         encounters <- encounters %>%
           filter(str_detect(bandCombo, toupper(input$bandComboQuery)))
       }
-      if(input$bandNumberQuery != 'ALL' & input$bandNumberQuery != ''){
-        encounters <- encounters %>%
-          filter(str_detect(bandNumber, toupper(input$bandNumberQuery)))
-      }
-      if(input$encounterTypeQuery != 'ALL' & input$encounterTypeQuery != ''){
+      if(input$showAllEncounterType == 'FALSE'  & input$encounterTypeQuery != ''){
         encounters <- encounters %>%
           filter(str_detect(toupper(encounterType), toupper(input$encounterTypeQuery)))
       }
@@ -1053,7 +1083,10 @@ server <- function(input, output, session) {
     input$submitPc
     # Update after delete is clicked
     input$deletePc
-    if (existCheck(responseDataPc)) responseDataPc    
+    if (existCheck(responseDataPc)) {
+      responseDataPc %>%
+        filter(sitePc == input$sitePc)
+      }    
   }, server = FALSE, selection = "single",
   colnames = unname(getTableMetadata(fieldCodesPc, fieldNamesPc)$fields))
   
