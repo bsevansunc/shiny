@@ -926,33 +926,33 @@ server <- function(input, output, session) {
   
   output$encounterTable <- DT::renderDataTable(
     DT::datatable({
-      encounters <- encounters %>%
-        filter(str_detect(hub, input$hubQuery))
-      if(inSite != 'ALL'){
+      encounters <- encounters[encounters$hub == input$hubQuery,]
+      if(input$siteQuery != 'ALL'){
         encounters <- encounters %>%
           filter(str_detect(site, toupper(input$siteQuery)))
       }
-      if(inSpecies != 'ALL'){
+      if(input$speciesQuery != 'ALL'){
         encounters <- encounters %>%
           filter(str_detect(species, toupper(input$speciesQuery)))
       }
-      if(inSex != 'ALL'){
+      if(input$sexQuery != 'ALL'){
         encounters <- encounters %>%
           filter(str_detect(sex, toupper(input$sexQuery)))
       }
-      if(inBandCombo != 'ALL'){
+      if(input$bandComboQuery != 'ALL'){
         encounters <- encounters %>%
           filter(str_detect(bandCombo, toupper(input$bandComboQuery)))
       }
-      if(inBandNumber != 'ALL'){
+      if(input$bandNumberQuery != 'ALL'){
         encounters <- encounters %>%
           filter(str_detect(bandNumber, toupper(input$bandNumberQuery)))
       }
-      if(inEncounterType != 'ALL'){
+      if(input$encounterTypeQuery != 'ALL'){
         encounters <- encounters %>%
           filter(str_detect(toupper(encounterType), toupper(input$encounterTypeQuery)))
       }
-      encounters
+      encounters %>%
+        select(hub:bandCombo, date, encounterType)
     })
     # DT::datatable(dataEncountersSubset(), filter = 'bottom')
   )
