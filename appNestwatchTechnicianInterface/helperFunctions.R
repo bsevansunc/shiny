@@ -123,9 +123,7 @@ updateInputs <- function(data, fieldCodes, session) {
 #=================================================================================*
 # Note: This function is currently ugly ... I need to improve on it. Ack.
 
-filteringFun <- function(inHub = '', inSite = '', inSpecies = '',
-                         inSex = '', inBandCombo = '', inBandNumber = '',
-                         inEncounterType = 'band'){
+filteringFun <- function(){
   encounters <- encounters %>% tbl_df
   if(inHub != ''){
     encounters <- filter(encounters, 
