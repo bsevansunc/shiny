@@ -417,7 +417,7 @@ ui <- navbarPage(
                ),
                fluidRow(
                  column(6, textInput('bandNumberQuery', 'Band number:', 'ALL')),
-                 column(6, selectizeInput('colorComboQuery', 
+                 column(6, selectizeInput('bandComboQuery', 
                                           'Color combo:',
                                           choices = c('ALL', choiceColorCombos),
                                           selected = 'ALL'))
@@ -899,7 +899,7 @@ server <- function(input, output, session) {
     updateSelectInput(session, 'speciesQuery', choices = spNames)
   })
   
-  dataEncountersSubset <- reactive({
+  # dataEncountersSubset <- reactive({
 #     switch(input$hubQuery,
 #            "Atlanta" = filter(encounters, hub == 'Atlanta'),
 #            "DC" = filter(encounters, hub == 'DC'),
@@ -922,20 +922,40 @@ server <- function(input, output, session) {
 #       filter(if(input$sexQuery != '') str_detect(sex, toupper(input$sexQuery))) # %>%
 #       filter(if(input$colorComboQuery != '') str_detect(bandCombo, toupper(input$colorComboQuery))) %>%
 #       filter(if(input$bandNumberQuery != '') str_detect(bandNumber, toupper(input$bandNumberQuery)))
-  })
+  # })
   
-  output$encounterTable <- DT::renderDataTable({
-    inHub <<- input$hubQuery
-    inSite <<- input$siteQuery
-    inSpecies <<- input$speciesQuery
-    inSex <<- input$sexQuery
-    inBandCombo <<- input$bandComboQuery
-    inBandNumber <<- input$bandNumberQuery
-    inEncounterType <<- input$encounterType
-    filteringFun()
-    DT::datatable(filteringFun(), filter = 'bottom')
+  output$encounterTable <- DT::renderDataTable(
+    DT::datatable({
+      encounters <- encounters %>%
+        filter(str_detect(hub, input$hubQuery))
+      if(inSite != 'ALL'){
+        encounters <- encounters %>%
+          filter(str_detect(site, toupper(input$siteQuery)))
+      }
+      if(inSpecies != 'ALL'){
+        encounters <- encounters %>%
+          filter(str_detect(species, toupper(input$speciesQuery)))
+      }
+      if(inSex != 'ALL'){
+        encounters <- encounters %>%
+          filter(str_detect(sex, toupper(input$sexQuery)))
+      }
+      if(inBandCombo != 'ALL'){
+        encounters <- encounters %>%
+          filter(str_detect(bandCombo, toupper(input$bandComboQuery)))
+      }
+      if(inBandNumber != 'ALL'){
+        encounters <- encounters %>%
+          filter(str_detect(bandNumber, toupper(input$bandNumberQuery)))
+      }
+      if(inEncounterType != 'ALL'){
+        encounters <- encounters %>%
+          filter(str_detect(toupper(encounterType), toupper(input$encounterTypeQuery)))
+      }
+      encounters
+    })
     # DT::datatable(dataEncountersSubset(), filter = 'bottom')
-  })
+  )
 
   #-------------------------------------------------------------------------------*
   # ---- SERVER: QUERY AOU names ----
