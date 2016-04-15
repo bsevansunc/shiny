@@ -431,9 +431,7 @@ ui <- navbarPage(
              mainPanel(DT::dataTableOutput('encounterTable'),
                        width = 8, position = 'right')
            ),
-           textQuery,
-           fluidRow(column(11, DT::dataTableOutput('encounterTable')))
-  ),
+           textQuery),
   #--------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: POINT COUNT ----
   #--------------------------------------------------------------------------------*
@@ -900,44 +898,19 @@ server <- function(input, output, session) {
     updateSelectInput(session, 'speciesQuery', choices = spNames)
   })
   
-  # dataEncountersSubset <- reactive({
-#     switch(input$hubQuery,
-#            "Atlanta" = filter(encounters, hub == 'Atlanta'),
-#            "DC" = filter(encounters, hub == 'DC'),
-#            "Gainesville" = filter(encounters, hub == 'Gainesville'),
-#            "Pittsburgh" = filter(encounters, hub == 'Pittsburgh'),
-#            "Raleigh" = filter(encounters, hub == 'Raleigh'),
-#            "Springfield" = filter(encounters, hub == 'Springfield'))
-#     inHub <<- input$hubQuery
-#     inSite <<- input$siteQuery
-#     inSpecies <<- input$speciesQuery
-#     inSex <<- input$sexQuery
-#     inBandCombo <<- input$bandComboQuery
-#     inBandNumber <<- input$bandNumberQuery
-#     inEncounterType <<- input$encounterType
-#     filteringFun()
-#     encounters %>%
-#       filter(if(inHub != '') hub == inHub) %>%
-#       # filter(if(input$inSite != '') str_detect(site, toupper(inSite))) # %>%
-#       filter(if(inSpecies != '') str_detect(species, toupper(inSpecies))) %>%
-#       filter(if(input$sexQuery != '') str_detect(sex, toupper(input$sexQuery))) # %>%
-#       filter(if(input$colorComboQuery != '') str_detect(bandCombo, toupper(input$colorComboQuery))) %>%
-#       filter(if(input$bandNumberQuery != '') str_detect(bandNumber, toupper(input$bandNumberQuery)))
-  # })
-  
   output$encounterTable <- DT::renderDataTable(
     DT::datatable({
-      encounters <- encounters[encounters$hub == input$hubQuery,]
+      encounters2 <- encounters[encounters$hub == input$hubQuery,]
       if(input$siteQuery != 'ALL'){
-        encounters <- encounters %>%
+        encounters2 <- encounters2 %>%
           filter(str_detect(site, toupper(input$siteQuery)))
       }
       if(input$speciesQuery != 'ALL'){
-        encounters <- encounters %>%
+        encounters2 <- encounters2 %>%
           filter(str_detect(species, toupper(input$speciesQuery)))
       }
       if(input$sexQuery != 'ALL'){
-        encounters <- encounters %>%
+        encounters2 <- encounters2 %>%
           filter(str_detect(sex, toupper(input$sexQuery)))
       }
       if(input$bandComboQuery != 'ALL'){
@@ -945,14 +918,14 @@ server <- function(input, output, session) {
           filter(str_detect(bandCombo, toupper(input$bandComboQuery)))
       }
       if(input$bandNumberQuery != 'ALL'){
-        encounters <- encounters %>%
+        encounters2 <- encounters2 %>%
           filter(str_detect(bandNumber, toupper(input$bandNumberQuery)))
       }
       if(input$encounterTypeQuery != 'ALL'){
-        encounters <- encounters %>%
+        encounters2 <- encounters2 %>%
           filter(str_detect(toupper(encounterType), toupper(input$encounterTypeQuery)))
       }
-      encounters %>%
+      encounters2 %>%
         select(hub:bandCombo, date, encounterType)
     })
     # DT::datatable(dataEncountersSubset(), filter = 'bottom')
