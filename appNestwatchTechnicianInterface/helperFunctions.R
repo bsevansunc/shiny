@@ -124,36 +124,32 @@ updateInputs <- function(data, fieldCodes, session) {
 # Note: This function is currently ugly ... I need to improve on it. Ack.
 
 filteringFun <- function(){
-  encounters <- encounters %>% tbl_df
-  if(inHub != ''){
-    encounters <- filter(encounters, 
-                         str_detect(hub, inHub))
-  }
-  if(inSite != ''){
+  encounters <- encounters %>% tbl_df %>%
+    filter(str_detect(hub, inHub))
+  if(inSite != 'ALL'){
     encounters <- filter(encounters,
                          str_detect(site, toupper(inSite)))
   }
-  if(inSpecies != ''){
+  if(inSpecies != 'ALL'){
     encounters <- filter(encounters,
                          str_detect(species, toupper(inSpecies)))
   }
-  if(inSex != ''){
+  if(inSex != 'ALL'){
     encounters <- filter(encounters,
                          str_detect(sex, toupper(inSex)))
   }
-  if(inBandCombo != ''){
+  if(inBandCombo != 'ALL'){
     encounters <- filter(encounters,
                          str_detect(bandCombo, toupper(inBandCombo)))
   }
-  if(inBandNumber != ''){
+  if(inBandNumber != 'ALL'){
     encounters <- filter(encounters,
                          str_detect(bandNumber, toupper(inBandNumber)))
   }
-  if(inEncounterType != ''){
+  if(inEncounterType != 'ALL'){
     encounters <- filter(encounters,
                          str_detect(toupper(encounterType), toupper(inEncounterType)))
-  } 
-  else {
+  } else {
     encounters <- encounters
   }
   return(encounters)
