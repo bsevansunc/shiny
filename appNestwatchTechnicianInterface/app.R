@@ -671,6 +671,7 @@ server <- function(input, output, session) {
   # ---- SERVER: REACTIVE INPUTS ----
   #-------------------------------------------------------------------------------*
   # Update site drop-down menu as a function of the hub:
+  
   observe({
     inHub <- input$hub
     print(inHub)
@@ -690,8 +691,28 @@ server <- function(input, output, session) {
     updateSelectInput(session, 'siteEnc', choices = siteNames)
     updateSelectInput(session, 'sitePc', choices = siteNames)
     updateSelectInput(session, 'siteNest', choices = siteNames)
+  })
+  
+  # For the sites in the query, make this reactive on that page's hub:
+  
+  observe({
+    inHub <- input$hubQuery
+    print(inHub)
+    if(is.null(inHub))
+      return(NULL)
+    siteNames <- encounters %>%
+      select(hub, site) %>%
+      distinct %>% 
+      bind_rows(
+        data.frame(hub = c('DC', 'Atlanta', 'Gainesville',
+                           'Pittsburgh', 'Raleigh', 'Springfield'),
+                   site = rep('', 6))) %>%
+      filter(hub == inHub) %>%
+      arrange(site) %>%
+      .$site
     updateSelectInput(session, 'siteQuery', choices = siteNames)
   })
+
   
   # Once HUB is chosen on the visit page, have this be the default entry:
   
