@@ -930,6 +930,17 @@ server <- function(input, output, session) {
     updateTextInput(session, 'sexQuery', value = input$sex)
   })
   
+  # Once bandCombo has been written on the encounter page, have this be the default entry:
+  
+  observe({
+    inCombo <- input$colorCombo
+    print(inCombo)
+    if(is.null(inCombo))
+      return(NULL)
+    updateTextInput(session, 'bandComboQuery', value = input$colorCombo)
+  })
+  
+  
   # Render table with queries
   
   output$encounterTable <- DT::renderDataTable(
