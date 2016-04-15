@@ -94,12 +94,13 @@ fieldDescriptionsEncounter <- p(
 # ---- PAGE TEXT, QUERY ----
 #---------------------------------------------------------------------------------*
           
-textQuery <- p('Query the Nestwatch database using the table below. Query fields are at the bottom of each column. Use any number of these fields to subset the data table. While only 5 rows of data are shown, the table includes the initial record (band encounter) across all Neighborhood Nestwatch banding records and regional hubs. You can adjust the number of rows viewed using the "Show __ entries" drop-down button. You can sort the data table by column by clicking the column header. For example, to sort the data table by date, you would click on the "Date" column header. A couple of important things to note on querying records:',
+textQuery <- p('Query the Nestwatch database using the search fields to the left. Use any number of these fields to subset the data table. A couple of important things to note on querying records:',
                tags$ul(
-                 tags$li('Using the search tool on the upper-right to query all fields simultaneously. For example, if you use this tool to query "R" for red color bands you will also get every site and species that contains the letter "R"!'),
-                 tags$li('Queries are dependent on the regional hub entered on the "Visit" pane. Atlanta is  the default hub. Be sure to enter visit data', em('first.'), ' If you are using this table for data exploration rather than data entry, simply choose the regional hub on the visit pane, perform queries, and do not submit any data.'),
+                 tags$li('You can sort the data table by column by clicking the column header.'),
+                 tags$li('You can adjust the number of rows viewed using the "Show __ entries" drop-down button.'),
+                 tags$li('Use the search tool on the upper-right to query all fields simultaneously. For example, if you use this tool to query "R" for red color bands you will also get every site and species that contains the letter "R"!'),
                  tags$li('To reset a query, simply delete any entries in the query boxes.'),
-                 tags$li('Query fields are not case-sensitive and will subset data using partial matching.'))
+                 tags$li('Query fields are not case-sensitive and uses partial matching. For example, if you type "bu" in the color band search field, all color band combinations that include the color blue will be shown.'))
 )
   
 #---------------------------------------------------------------------------------*
