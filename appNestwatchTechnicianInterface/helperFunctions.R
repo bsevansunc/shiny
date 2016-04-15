@@ -118,39 +118,3 @@ updateInputs <- function(data, fieldCodes, session) {
   }
 }
 
-#---------------------------------------------------------------------------------*
-# ---- FILTERING FUNCTION FOR QUERY ----
-#=================================================================================*
-# Note: This function is currently ugly ... I need to improve on it. Ack.
-
-filteringFun <- function(){
-  encounters <- encounters %>% tbl_df %>%
-    filter(str_detect(hub, inHub))
-  if(inSite != 'ALL'){
-    encounters <- filter(encounters,
-                         str_detect(site, toupper(inSite)))
-  }
-  if(inSpecies != 'ALL'){
-    encounters <- filter(encounters,
-                         str_detect(species, toupper(inSpecies)))
-  }
-  if(inSex != 'ALL'){
-    encounters <- filter(encounters,
-                         str_detect(sex, toupper(inSex)))
-  }
-  if(inBandCombo != 'ALL'){
-    encounters <- filter(encounters,
-                         str_detect(bandCombo, toupper(inBandCombo)))
-  }
-  if(inBandNumber != 'ALL'){
-    encounters <- filter(encounters,
-                         str_detect(bandNumber, toupper(inBandNumber)))
-  }
-  if(inEncounterType != 'ALL'){
-    encounters <- filter(encounters,
-                         str_detect(toupper(encounterType), toupper(inEncounterType)))
-  } else {
-    encounters <- encounters
-  }
-  return(encounters)
-}
