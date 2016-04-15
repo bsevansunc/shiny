@@ -427,6 +427,7 @@ ui <- navbarPage(
                width = 3, position = 'left'),
              mainPanel(
                textQuery,
+               hr(),
                DT::dataTableOutput('encounterTable'),
                        width = 9, position = 'right')
            )),
@@ -925,7 +926,7 @@ server <- function(input, output, session) {
       }
       encounters %>%
         select(hub:bandCombo, date, encounterType)
-    })
+    }, rownames = FALSE, selection = 'none')
     # DT::datatable(dataEncountersSubset(), filter = 'bottom')
   )
 
