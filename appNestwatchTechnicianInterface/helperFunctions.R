@@ -124,26 +124,38 @@ updateInputs <- function(data, fieldCodes, session) {
 # Note: This function is currently ugly ... I need to improve on it. Ack.
 
 filteringFun <- function(inHub = '', inSite = '', inSpecies = '',
-                         inSex = '', inBandCombo = '', inBandNumber = ''){
+                         inSex = '', inBandCombo = '', inBandNumber = '',
+                         inEncounterType = 'band'){
   encounters <- encounters %>% tbl_df
   if(inHub != ''){
-    encounters <- filter(encounters, str_detect(hub, inHub))
+    encounters <- filter(encounters, 
+                         str_detect(hub, inHub))
   }
   if(inSite != ''){
-    encounters <- filter(encounters, str_detect(site, toupper(inSite)))
+    encounters <- filter(encounters,
+                         str_detect(site, toupper(inSite)))
   }
   if(inSpecies != ''){
-    encounters <- filter(encounters, str_detect(species, toupper(inSpecies)))
+    encounters <- filter(encounters,
+                         str_detect(species, toupper(inSpecies)))
   }
   if(inSex != ''){
-    encounters <- filter(encounters, str_detect(sex, toupper(inSex)))
+    encounters <- filter(encounters,
+                         str_detect(sex, toupper(inSex)))
   }
   if(inBandCombo != ''){
-    encounters <- filter(encounters, str_detect(bandCombo, toupper(inBandCombo)))
+    encounters <- filter(encounters,
+                         str_detect(bandCombo, toupper(inBandCombo)))
   }
   if(inBandNumber != ''){
-    encounters <- filter(encounters, str_detect(bandNumber, toupper(inBandNumber)))
-  } else {
+    encounters <- filter(encounters,
+                         str_detect(bandNumber, toupper(inBandNumber)))
+  }
+  if(inEncounterType != ''){
+    encounters <- filter(encounters,
+                         str_detect(toupper(encounterType), toupper(inEncounterType)))
+  } 
+  else {
     encounters <- encounters
   }
   return(encounters)
