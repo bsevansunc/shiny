@@ -417,10 +417,7 @@ ui <- navbarPage(
                ),
                fluidRow(
                  column(6, textInput('bandNumberQuery', 'Band number:', 'ALL')),
-                 column(6, selectizeInput('bandComboQuery', 
-                                          'Color combo:',
-                                          choices = c('ALL', choiceColorCombos),
-                                          selected = 'ALL'))
+                 column(6, textInput('bandComboQuery','Color combo:',  'ALL'))
                ),
                hr(),
                fluidRow(
