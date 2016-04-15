@@ -402,16 +402,15 @@ ui <- navbarPage(
              sidebarPanel(
                br(),
                fluidRow(
-                 column(5,
-                        selectInput('hubQuery','Hub:', 
-                                    choiceRegions)),
-                 column(7,
-                        selectInput('siteQuery', 'Site:', ''))
-                 ),
+                 column(10, selectInput('hubQuery','Hub:', choiceRegions)),
+                 column(2, '')),
+               fluidRow(
+                 column(10, selectInput('siteQuery', 'Site:', '')),
+                 column(2, '')),
                hr(),
                fluidRow(
-                 column(7, selectInput('speciesQuery', 'Species:', '')),
-                 column(5, selectInput('sexQuery', 'Sex:', 
+                 column(6, selectInput('speciesQuery', 'Species:', '')),
+                 column(6, selectInput('sexQuery', 'Sex:', 
                                        choices = c('ALL', choiceSex),
                                        selected = 'ALL'))
                ),
@@ -421,14 +420,16 @@ ui <- navbarPage(
                ),
                hr(),
                fluidRow(
-                 selectizeInput('encounterTypeQuery', 'Encounter type:',
-                                choices = c('ALL', choiceEncounterType))
-               ),
-               width = 4, position = 'left'),
-             mainPanel(DT::dataTableOutput('encounterTable'),
-                       width = 8, position = 'right')
-           ),
-           textQuery),
+                 column(10, 
+                        selectizeInput('encounterTypeQuery', 'Encounter type:',
+                                       choices = c('ALL', choiceEncounterType))),
+                 column(2, '')),
+               width = 3, position = 'left'),
+             mainPanel(
+               textQuery,
+               DT::dataTableOutput('encounterTable'),
+                       width = 9, position = 'right')
+           )),
   #--------------------------------------------------------------------------------*
   # ---- UI TAB PANEL: POINT COUNT ----
   #--------------------------------------------------------------------------------*
@@ -898,27 +899,27 @@ server <- function(input, output, session) {
   output$encounterTable <- DT::renderDataTable(
     DT::datatable({
       encounters <- encounters[encounters$hub == input$hubQuery,]
-      if(input$siteQuery != 'ALL'){
+      if(input$siteQuery != 'ALL' & input$siteQuery != ''){
         encounters <- encounters %>%
           filter(str_detect(site, toupper(input$siteQuery)))
       }
-      if(input$speciesQuery != 'ALL'){
+      if(input$speciesQuery != 'ALL' & input$speciesQuery != ''){
         encounters <- encounters %>%
           filter(str_detect(species, toupper(input$speciesQuery)))
       }
-      if(input$sexQuery != 'ALL'){
+      if(input$sexQuery != 'ALL' & input$sexQuery != ''){
         encounters <- encounters %>%
           filter(str_detect(sex, toupper(input$sexQuery)))
       }
-      if(input$bandComboQuery != 'ALL'){
+      if(input$bandComboQuery != 'ALL' & input$bandComboQuery != ''){
         encounters <- encounters %>%
           filter(str_detect(bandCombo, toupper(input$bandComboQuery)))
       }
-      if(input$bandNumberQuery != 'ALL'){
+      if(input$bandNumberQuery != 'ALL' & input$bandNumberQuery != ''){
         encounters <- encounters %>%
           filter(str_detect(bandNumber, toupper(input$bandNumberQuery)))
       }
-      if(input$encounterTypeQuery != 'ALL'){
+      if(input$encounterTypeQuery != 'ALL' & input$encounterTypeQuery != ''){
         encounters <- encounters %>%
           filter(str_detect(toupper(encounterType), toupper(input$encounterTypeQuery)))
       }
