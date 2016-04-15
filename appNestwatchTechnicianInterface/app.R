@@ -428,7 +428,8 @@ ui <- navbarPage(
                                 choices = c('ALL', choiceEncounterType))
                ),
                width = 4, position = 'left'),
-             mainPanel(textQuery, width = 8, position = 'right')
+             mainPanel(DT::dataTableOutput('encounterTable'),
+                       width = 8, position = 'right')
            ),
            textQuery,
            fluidRow(column(11, DT::dataTableOutput('encounterTable')))
