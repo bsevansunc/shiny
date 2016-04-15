@@ -741,6 +741,7 @@ server <- function(input, output, session) {
   })
 
   # Update species drop-down menu by hub:
+  
   observe({
     inHub <- input$hub
     print(inHub)
@@ -880,7 +881,19 @@ server <- function(input, output, session) {
     updateSelectInput(session, 'siteQuery', choices = siteNames)
   })
   
+  # Once site has been written in the visit tab, make this default:
+  
+  observe({
+    inSite <- input$site
+    print(inSite)
+    if(is.null(inSite))
+      return(NULL)
+    updateTextInput(session, 'siteQuery', value = input$siteEnc)
+  })
+  
+  
   # Update species drop-down menu by hub:
+  
   observe({
     inHub <- input$hub
     print(inHub)
@@ -896,6 +909,28 @@ server <- function(input, output, session) {
         .$species 
     updateSelectInput(session, 'speciesQuery', choices = spNames)
   })
+  
+  # Once species has been written on the encounter page, have this be the default entry:
+  
+  observe({
+    inSpecies <- input$speciesEnc
+    print(inSpecies)
+    if(is.null(inSpecies))
+      return(NULL)
+    updateTextInput(session, 'speciesQuery', value = input$speciesEnc)
+  })
+  
+  # Once species has been written on the encounter page, have this be the default entry:
+  
+  observe({
+    inSex <- input$sex
+    print(inSex)
+    if(is.null(inSex))
+      return(NULL)
+    updateTextInput(session, 'sexQuery', value = input$sex)
+  })
+  
+  # Render table with queries
   
   output$encounterTable <- DT::renderDataTable(
     DT::datatable({
