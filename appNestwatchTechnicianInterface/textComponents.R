@@ -94,11 +94,11 @@ fieldDescriptionsEncounter <- p(
 # ---- PAGE TEXT, QUERY ----
 #---------------------------------------------------------------------------------*
           
-textQuery <- p('Query the Nestwatch database using the search fields to the left. Use any number of these fields to subset the data table. Query fields are not case-sensitive and use partial matching. For example, if you type "bu" in the color band search field, all color band combinations that include the color blue will be shown. Note that:',
+textQuery <- p('Query the Nestwatch database using the search fields to the left. Use any number of these fields to subset the data table. By default, "Show all" is checked -- to initiate a query, uncheck "show all" next to the desired field heading and type your query or select search options from the drop-down menu. Query fields are not case-sensitive and use partial matching. For example, if you type "bu" in the color band search field, all color band combinations that include the color blue will be shown. Note that:',
                tags$ul(
                  tags$li('You can sort the data table by column by clicking the column header and adjust the number of rows viewed using the "Show __ entries" drop-down button.'),
                  tags$li('The search tool on the upper-right can be used to query all fields simultaneously. For example, if you use this tool to query "R" for red color bands you will also get every site and species that contains the letter "R"!'),
-                 tags$li('To reset a query field, select "ALL" from the drop-down menu.')))
+                 tags$li('You can reset a query field at any point by selecting "Show all" to the right ofthe field heading.')))
   
 #---------------------------------------------------------------------------------*
 # ---- PAGE TEXT, POINT COUNT ----
