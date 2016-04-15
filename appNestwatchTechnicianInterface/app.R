@@ -671,7 +671,7 @@ server <- function(input, output, session) {
   #-------------------------------------------------------------------------------*
   # ---- SERVER: REACTIVE INPUTS ----
   #-------------------------------------------------------------------------------*
-  # Update site drop-down menu as a function of the hub:
+  # Update SITE drop-down menu as a function of the hub:
   
   observe({
     inHub <- input$hub
@@ -880,6 +880,23 @@ server <- function(input, output, session) {
       filter(hub == inHub) %>%
       .$site
     updateSelectInput(session, 'siteQuery', choices = siteNames)
+  })
+  
+  # Update species drop-down menu by hub:
+  observe({
+    inHub <- input$hub
+    print(inHub)
+    if(is.null(inHub))
+      return(NULL)
+    spNames <- bind_rows(
+      data.frame(hub = c('DC', 'Atlanta', 'Gainesville',
+                         'Pittsburgh', 'Raleigh', 'Springfield'),
+                 species = rep('ALL', 6)),
+      hubSpecies %>%
+        filter(hub == inHub) %>%
+        arrange(species)) %>%
+        .$species 
+    updateSelectInput(session, 'speciesQuery', choices = spNames)
   })
   
   dataEncountersSubset <- reactive({
