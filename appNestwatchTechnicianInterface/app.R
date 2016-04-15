@@ -412,22 +412,23 @@ ui <- navbarPage(
                fluidRow(
                  column(7, selectInput('speciesQuery', 'Species:', '')),
                  column(5, selectInput('sexQuery', 'Sex:', 
-                                       choices = choiceSex, selected = ''))
+                                       choices = c('ALL', choiceSex),
+                                       selected = 'ALL'))
                ),
                fluidRow(
-                 column(6, textInput('bandNumberQuery', 'Band number:')),
+                 column(6, textInput('bandNumberQuery', 'Band number:', 'ALL')),
                  column(6, selectizeInput('colorComboQuery', 
                                           'Color combo:',
-                                          choices = c('', choiceColorCombos)))
+                                          choices = c('ALL', choiceColorCombos),
+                                          selected = 'ALL'))
                ),
                hr(),
                fluidRow(
                  selectizeInput('encounterTypeQuery', 'Encounter type:',
-                                choices = choiceEncounterType, 
-                                selected = 'Band')
+                                choices = c('ALL', choiceEncounterType))
                ),
-               width = 3, position = 'left'),
-             mainPanel(textQuery, width = 4, position = 'right')
+               width = 4, position = 'left'),
+             mainPanel(textQuery, width = 8, position = 'right')
            ),
            textQuery,
            fluidRow(column(11, DT::dataTableOutput('encounterTable')))
@@ -693,27 +694,6 @@ server <- function(input, output, session) {
     updateSelectInput(session, 'siteNest', choices = siteNames)
   })
   
-  # For the sites in the query, make this reactive on that page's hub:
-  
-  observe({
-    inHub <- input$hubQuery
-    print(inHub)
-    if(is.null(inHub))
-      return(NULL)
-    siteNames <- encounters %>%
-      select(hub, site) %>%
-      distinct %>% 
-      bind_rows(
-        data.frame(hub = c('DC', 'Atlanta', 'Gainesville',
-                           'Pittsburgh', 'Raleigh', 'Springfield'),
-                   site = rep('', 6))) %>%
-      filter(hub == inHub) %>%
-      arrange(site) %>%
-      .$site
-    updateSelectInput(session, 'siteQuery', choices = siteNames)
-  })
-
-  
   # Once HUB is chosen on the visit page, have this be the default entry:
   
   observe({
@@ -882,6 +862,26 @@ server <- function(input, output, session) {
   # ---- SERVER: QUERY BANDING RECORDS ----
   #-------------------------------------------------------------------------------*
   
+  # For the sites in the query, make this reactive on that page's hub:
+  
+  observe({
+    inHub <- input$hubQuery
+    print(inHub)
+    if(is.null(inHub))
+      return(NULL)
+    siteNames <- bind_rows(
+      data.frame(hub = c('DC', 'Atlanta', 'Gainesville',
+                         'Pittsburgh', 'Raleigh', 'Springfield'),
+                 site = rep('ALL', 6)),
+      encounters %>%
+        select(hub, site) %>%
+        distinct %>%
+        arrange(site)) %>%
+      filter(hub == inHub) %>%
+      .$site
+    updateSelectInput(session, 'siteQuery', choices = siteNames)
+  })
+  
   dataEncountersSubset <- reactive({
 #     switch(input$hubQuery,
 #            "Atlanta" = filter(encounters, hub == 'Atlanta'),
@@ -890,15 +890,14 @@ server <- function(input, output, session) {
 #            "Pittsburgh" = filter(encounters, hub == 'Pittsburgh'),
 #            "Raleigh" = filter(encounters, hub == 'Raleigh'),
 #            "Springfield" = filter(encounters, hub == 'Springfield'))
-    filteringFun(input$hubQuery, input$siteQuery,
-                 input$speciesQuery, input$sexQuery, input$bandComboQuery,
-                 input$bandNumberQuery)
-#     inHub <- input$hubQuery
-#     inSite <- input$siteQuery
-#     inSpecies <- input$speciesQuery
-#     inSex <- 
-#     inBandCombo <-
-#     inBandNumber <- 
+#     inHub <<- input$hubQuery
+#     inSite <<- input$siteQuery
+#     inSpecies <<- input$speciesQuery
+#     inSex <<- input$sexQuery
+#     inBandCombo <<- input$bandComboQuery
+#     inBandNumber <<- input$bandNumberQuery
+#     inEncounterType <<- input$encounterType
+#     filteringFun()
 #     encounters %>%
 #       filter(if(inHub != '') hub == inHub) %>%
 #       # filter(if(input$inSite != '') str_detect(site, toupper(inSite))) # %>%
@@ -909,7 +908,16 @@ server <- function(input, output, session) {
   })
   
   output$encounterTable <- DT::renderDataTable({
-    DT::datatable(dataEncountersSubset(), filter = 'bottom')
+    inHub <<- input$hubQuery
+    inSite <<- input$siteQuery
+    inSpecies <<- input$speciesQuery
+    inSex <<- input$sexQuery
+    inBandCombo <<- input$bandComboQuery
+    inBandNumber <<- input$bandNumberQuery
+    inEncounterType <<- input$encounterType
+    filteringFun()
+    DT::datatable(filteringFun(), filter = 'bottom')
+    # DT::datatable(dataEncountersSubset(), filter = 'bottom')
   })
 
   #-------------------------------------------------------------------------------*
