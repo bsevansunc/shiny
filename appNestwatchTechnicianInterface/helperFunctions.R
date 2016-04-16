@@ -1,5 +1,23 @@
 # FUNCTIONS
 
+
+#---------------------------------------------------------------------------------*
+# ---- Site list update ----
+#=================================================================================*
+
+siteNameSubsetter <- function(inHub){
+  encounters %>%
+    select(inHub, site) %>%
+    distinct %>% 
+    bind_rows(
+      data.frame(hub = c('DC', 'Atlanta', 'Gainesville',
+                         'Pittsburgh', 'Raleigh', 'Springfield'),
+                 site = rep('', 6))) %>%
+    filter(hub == inHub) %>%
+    arrange(site) %>%
+    .$site
+}
+
 #---------------------------------------------------------------------------------*
 # ---- Save data to Dropbox ----
 #=================================================================================*
