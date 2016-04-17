@@ -705,25 +705,7 @@ server <- function(input, output, session) {
   # Update SITE drop-down menu as a function of the hub:
   
   observe({
-    # inHub <- input$hub
-#     print(inHub)
-#     if(is.null(inHub))
-#       return(NULL)
-#     siteNames <- encounters %>%
-#       select(hub, site) %>%
-#       distinct %>% 
-#       bind_rows(
-#         data.frame(hub = c('DC', 'Atlanta', 'Gainesville',
-#                            'Pittsburgh', 'Raleigh', 'Springfield'),
-#                    site = rep('', 6))) %>%
-#       filter(hub == inHub) %>%
-#       arrange(site) %>%
-#       .$site
     updateSelectInput(session, 'site', choices = siteNameSubsetter(input$hub))
-    # updateSelectInput(session, 'site', choices = siteNames)
-#     updateSelectInput(session, 'siteEnc', choices = siteNames)
-#     updateSelectInput(session, 'sitePc', choices = siteNames)
-#     updateSelectInput(session, 'siteNest', choices = siteNames)
   })
   
   observe({
