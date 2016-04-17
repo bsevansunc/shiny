@@ -7,7 +7,7 @@
 
 siteNameSubsetter <- function(inHub){
   encounters %>%
-    select(inHub, site) %>%
+    select(hub, site) %>%
     distinct %>% 
     bind_rows(
       data.frame(hub = c('DC', 'Atlanta', 'Gainesville',
