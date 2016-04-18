@@ -26,8 +26,9 @@ shinyApp(
     hr(),
     fluidRow(
       column(1, ''),
-      column(5, selectInput('hubForm', 'Regional hub:', hubChoices)),
-      column(6, selectInput('siteForm', 'site', ' '))
+      column(3, selectInput('hubForm', 'Regional hub:', hubChoices)),
+      column(3, selectInput('siteForm', 'site', ' ')),
+      column(5, '')
     ),
     hr(),
     br(),
@@ -37,17 +38,17 @@ shinyApp(
       column(1, ''),
       column(5, p(strong('Observer(s) initials:', ' _________________________')))
     ),
-    hr(),
     # DT::dataTableOuput('t1'),
     hr(),
     fluidRow(
       column(1, ''),
-      column(11, h3('Banding summary:'))
+      column(3, h3('Banded birds summary:')),
+      column(8, '')
     ),
     fluidRow(
       column(1, ''),
       column(6, DT::dataTableOutput('t1')),
-      column(5, '')
+      column(5, imageOutput('birdBranch', height = 55))
     ),
     hr(),
     fluidRow(
@@ -56,8 +57,8 @@ shinyApp(
     ),
     fluidRow(
       column(1, ''),
-      column(10, DT::dataTableOutput('tbl')),
-      column(1, '')
+      column(7, DT::dataTableOutput('tbl')),
+      column(4, '')
     )
   ),
   
@@ -101,11 +102,24 @@ shinyApp(
                     options = list(dom = 't',
                                  pageLength = nrow(summaryTable()),
                                  columnDefs = list(
-                                   list(className = 'dt-center', targets = '_all')
-                                 )),
+                                   list(
+                                     width = '.5in', targets = '_all'
+                                   ),
+                                   list(
+                                     className = 'dt-center', targets = '_all'
+                                   )
+                                 )
+                                 ),
                                  rownames = FALSE
                   )
     )
+    
+    output$birdBranch <- renderImage({
+      list(src = 'nnBirdBranchImage.png',
+           width = 300,
+           height = 116, 
+           position = 'middle')
+    }, deleteFile = FALSE)
 
     
     output$tbl = DT::renderDataTable(
@@ -114,17 +128,17 @@ shinyApp(
                              Longitude = ' ',
                              Latitude = ' ',
                              Accuracy = ' '),
-                    class = 'cell-border stripe',
+                    class = 'table-bordered', # 'cell-border stripe',
                     rownames = FALSE,
                     options = list(dom = 't',
                                    pageLength = nrow(encountersSubset()),
                                    autoWidth = TRUE,
                                    columnDefs = list(
                                      list(
-                                       width = '20px', targets = c(1:6)
+                                       width = '.5in', targets = '_all'
                                        ),
 #                                      list(
-#                                        width = '40px', targets = c(7:8)
+#                                        width = '3.5in', targets = c(2)
 #                                      ),
                                      list(
                                        className = 'dt-center', targets = '_all'
