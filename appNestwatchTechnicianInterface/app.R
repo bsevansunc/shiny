@@ -40,7 +40,8 @@ encounters <- read.csv('encounters2.csv', stringsAsFactors = FALSE) %>%
          hub = ifelse(str_detect(site, 'MA1'), 'Springfield', hub)) %>%
   mutate(encounterType = ifelse(encounterType == 'band'|encounterType == 'recap', 
                   capitalize(encounterType),
-                  encounterType))
+                  encounterType)) %>%
+  filter(!is.na(hub))
 
 # Load species by hub data:
 
@@ -114,7 +115,7 @@ ui <- navbarPage(
                   column(6,
                          dateInput('date',
                                    label = 'Date: yyyy-mm-dd',
-                                   value = Sys.Date()
+                                   value = NULL #Sys.Date()
                          )),
                   column(6,
                          textInput("observer", "Observer initials:"))),
@@ -702,90 +703,100 @@ server <- function(input, output, session) {
   # ---- SERVER: REACTIVE INPUTS ----
   #-------------------------------------------------------------------------------*
   
-  # Update SITE drop-down menu as a function of the hub:
-  
-  observe({
-    updateSelectInput(session, 'site', choices = siteNameSubsetter(input$hub))
-    updateSelectInput(session, 'siteEnc', choices = siteNameSubsetter(input$hubEnc))
-    updateSelectInput(session, 'siteEnc', choices = siteNameSubsetter(input$hubEnc))
-    updateSelectInput(session, 'siteNest', choices = siteNameSubsetter(input$hubNest))
-  })
-  
-#   observe({
-#     updateSelectInput(session, 'siteEnc', choices = siteNameSubsetter(input$hubEnc))
-#   })
-#   
-#   observe({
-#     updateSelectInput(session, 'siteEnc', choices = siteNameSubsetter(input$hubEnc))
-#   })
-#   
-#   observe({
-#     updateSelectInput(session, 'siteNest', choices = siteNameSubsetter(input$hubNest))
-#   })
+  # HUB --> Dependent on visit and self dependent across pages
   
   # Once HUB is chosen on the visit page, have this be the default entry:
   
   observe({
-    inHub <- input$hub
-    print(inHub)
-    if(is.null(inHub))
-      return(NULL)
-    updateSelectInput(session, 'hubEnc', selected = input$hub)
-    updateSelectInput(session, 'hubPc', selected = input$hub)
-    updateSelectInput(session, 'hubNest', selected = input$hub)
-    updateSelectInput(session, 'hubQuery', selected = input$hub)
+    hubInputs <- c('hubEnc', 'hubPc', 'hubNest', 'hubQuery')
+    for(i in 1:length(hubInputs)){
+      updateSelectInput(session, hubInputs[i], selected = input$hub)
+    }
   })
   
-  # Once SITE is chosen on the visit page, have this be the default entry:
+  # Once HUB is chosen on a subsequent panel, have this be the chosen entry on that panel:
   
   observe({
-    inSite <- input$site
-    print(inSite)
-    if(is.null(inSite))
-      return(NULL)
-    updateSelectInput(session, 'siteEnc', selected = input$site)
-    updateSelectInput(session, 'sitePc', selected = input$site)
-    updateSelectInput(session, 'siteNest', selected = input$site)
-    updateSelectInput(session, 'siteQuery', selected = input$site)
+    hubInputs <- c('hubEnc', 'hubPc', 'hubNest', 'hubQuery')
+    for(i in 1:length(hubInputs)){
+      updateSelectInput(session, hubInputs[i], selected = input[[hubInputs[i]]])
+    }
   })
   
-  # Once DATE is chosen on the visit page, have this be the default entry:
+  # SITE --> hub dependent (choices), visit dependent, self-dependent
+  
+  # Update SITE drop-down menu (choices) as a function of the hub:
   
   observe({
-    inDate <- input$date
-    print(inDate)
-    if(is.null(inDate))
-      return(NULL)
-    updateSelectInput(session, 'dateEnc', selected = input$date)
-    updateSelectInput(session, 'datePc', selected = input$date)
+    siteInputs <- c('site', 'siteEnc', 'siteQuery', 'sitePc', 'siteNest')
+    hubInputs <- c('hub', 'hubEnc', 'hubPc', 'hubNest', 'hubQuery')
+    for(i in 1:length(siteInputs)){
+      updateSelectInput(session, siteInputs[i], 
+                        choices = siteNameSubsetter(input[[hubInputs[i]]]))
+    }
+  })
+  
+  # Once SITE is chosen on the visit page, have this be the default entry across panels:
+  
+  observe({
+    siteInputs <- c('siteEnc', 'siteQuery', 'sitePc', 'siteNest')
+    for(i in 1:length(siteInputs)){
+      updateSelectInput(session, siteInputs[i], selected = input$site)
+    }
+  })
+  
+  # Update SITE input IF a different site is chosen on pc, nest, or encounter pages:
+  
+  observe({
+    siteInputs <- c('siteEnc', 'siteQuery', 'sitePc', 'siteNest')
+    for(i in 1:length(siteInputs)){
+      updateSelectInput(session, siteInputs[i], selected = input[[siteInputs[i]]])
+    }
+  })
+  
+  # Once DATE is chosen on the visit page, have this be the default entry for encounter and point count:
+  
+  observe({
+    dateInputs <- c('dateEnc', 'datePc')
+    for(i in 1:length(dateInputs)){
+      updateSelectInput(session, dateInputs[i], selected = input$date)
+    }
+  })
+  
+  # Update DATE input IF a different date is chosen on pc, nest, or encounter pages:
+  
+  observe({
+    dateInputs <- c('dateEnc', 'datePc', 'dateNest')
+    for(i in 1:length(dateInputs)){
+      updateDateInput(session, dateInputs[i], value = input[[dateInputs[i]]])
+    }
   })
   
   # Once observers are written on the visit page, have this be the default entry:
   
   observe({
-    inObserver <- input$observer
-    print(inObserver)
-    if(is.null(inObserver))
-      return(NULL)
-    updateTextInput(session, 'observerEnc', value = input$observer)
-    updateTextInput(session, 'observerPc', value = input$observer)
+    observerInputs <- c('observerEnc', 'observerPc')
+    for(i in 1:length(observerInputs)){
+      updateTextInput(session, observerInputs[i], value = input[[observerInputs[i]]])
+    }
   })
+  
 
   # Update species drop-down menu by hub:
   
-  observe({
-    inHub <- input$hub
-    print(inHub)
-    if(is.null(inHub))
-      return(NULL)
-    siteNames <- hubSpecies %>%
-      filter(hub == inHub) %>%
-      arrange(species) %>%
-      .$species
-    updateSelectInput(session, 'speciesEnc', choices = siteNames)
-    updateSelectInput(session, 'speciesNest', choices = siteNames)
-    updateSelectInput(session, 'speciesQuery', choices = siteNames)
-  })
+#   observe({
+# #     inHub <- input$hub
+# #     print(inHub)
+# #     if(is.null(inHub))
+# #       return(NULL)
+#     siteNames <- hubSpecies %>%
+#       filter(hub == input$hub) %>%
+#       arrange(species) %>%
+#       .$species
+#     updateSelectInput(session, 'speciesEnc', choices = siteNames)
+#     updateSelectInput(session, 'speciesNest', choices = siteNames)
+#     updateSelectInput(session, 'speciesQuery', choices = siteNames)
+#   })
   
   # Create reactive site so that site can be included in the file name:
   
@@ -797,6 +808,7 @@ server <- function(input, output, session) {
   # ---- SERVER: VISIT DATA ----
   #-------------------------------------------------------------------------------*
   # Link fields to input:
+  
   visitData <- reactive({
     dateOut <- as.character(input$date)
     data <- t(sapply(visitFields, function(x) input[[x]]))
@@ -804,6 +816,7 @@ server <- function(input, output, session) {
   })
   
   # When the Submit button is clicked, save form data:
+  
   observeEvent(input$submitVisitData, {
     saveData(visitData(), 'visitData', siteName()) #saveVisitData(visitData())
     shinyjs::show("thankyou_msgVisit")
