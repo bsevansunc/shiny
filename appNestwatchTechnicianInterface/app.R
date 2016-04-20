@@ -706,19 +706,22 @@ server <- function(input, output, session) {
   
   observe({
     updateSelectInput(session, 'site', choices = siteNameSubsetter(input$hub))
-  })
-  
-  observe({
     updateSelectInput(session, 'siteEnc', choices = siteNameSubsetter(input$hubEnc))
-  })
-  
-  observe({
-    updateSelectInput(session, 'sitePc', choices = siteNameSubsetter(input$hubPc))
-  })
-  
-  observe({
+    updateSelectInput(session, 'siteEnc', choices = siteNameSubsetter(input$hubEnc))
     updateSelectInput(session, 'siteNest', choices = siteNameSubsetter(input$hubNest))
   })
+  
+#   observe({
+#     updateSelectInput(session, 'siteEnc', choices = siteNameSubsetter(input$hubEnc))
+#   })
+#   
+#   observe({
+#     updateSelectInput(session, 'siteEnc', choices = siteNameSubsetter(input$hubEnc))
+#   })
+#   
+#   observe({
+#     updateSelectInput(session, 'siteNest', choices = siteNameSubsetter(input$hubNest))
+#   })
   
   # Once HUB is chosen on the visit page, have this be the default entry:
   
