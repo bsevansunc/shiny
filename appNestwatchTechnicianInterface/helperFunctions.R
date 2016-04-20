@@ -23,7 +23,7 @@ siteNameSubsetter <- function(inHub){
 #=================================================================================*
 
 saveData <- function(data, dataName, siteName){
-  data <- t(data)
+  if(dataName != 'visitData') data <- t(data)
   submissionTime <- as.character(Sys.time()) %>%
     str_replace_all(' ', '_') %>%
     str_replace_all(':','-')
