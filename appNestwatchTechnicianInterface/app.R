@@ -883,7 +883,7 @@ server <- function(input, output, session) {
   colnames = unname(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields))
   
   observeEvent(input$submitEncData, {
-    saveData(formDataEnc(), 'encounterData', siteName()) #saveVisitData(visitData())
+    saveData(t(responseDataEnc), 'encounterData', siteName()) #saveVisitData(visitData())
     shinyjs::show("thankyou_msgEnc")
   })
   
@@ -1010,7 +1010,7 @@ server <- function(input, output, session) {
               options = list(pageLength = 1)))
   
   #-------------------------------------------------------------------------------*
-  # ---- SERVER: SUBMIT BIRD-LEVEL POINT COUNT DATA ----
+  # ---- SERVER: SUBMIT POINT COUNT DATA ----
   #-------------------------------------------------------------------------------*
   # Input fields:
   
@@ -1071,9 +1071,7 @@ server <- function(input, output, session) {
       responseDataPc[input$responsesPc_rows_selected, ] 
     }
   })
-  
-  # Display table:
-  
+
   output$responsesPc <- DT::renderDataTable({
     # Update after submit is clicked
     input$submitPc
@@ -1082,16 +1080,22 @@ server <- function(input, output, session) {
     if (existCheck(responseDataPc)) {
       responseDataPc %>%
         filter(sitePc == input$sitePc)
-      }    
-  }, server = FALSE, selection = "single",
+      }
+  }, 
+  options = list(dom = 't'), server = FALSE, selection = "single",
   colnames = unname(getTableMetadata(fieldCodesPc, fieldNamesPc)$fields))
   
   # Upload data to dropbox
   
   observeEvent(input$submitPcData, {
-    saveData(formDataPc(), 'pointCountData', siteName()) #saveVisitData(visitData())
+    saveData(t(responseDataPc), 'pointCountData', siteName()) #saveVisitData(visitData())
     shinyjs::show("thankyou_msgPc")
   })
+  
+#   observeEvent(input$submitPcData, {
+#     saveData(formDataPc(), 'pointCountData', siteName()) #saveVisitData(visitData())
+#     shinyjs::show("thankyou_msgPc")
+#   })
   
   #-------------------------------------------------------------------------------*
   # ---- SERVER: NEST DATA ----
@@ -1171,7 +1175,7 @@ server <- function(input, output, session) {
   # Submit encounter data from table:
   
   observeEvent(input$saveNestData, {
-    saveData(formDataNest(), 'nestData', siteName())
+    saveData(t(responseDataNest), 'nestData', siteName())
     shinyjs::reset("nestData")
     shinyjs::show("thankyou_msgNest")
   })
