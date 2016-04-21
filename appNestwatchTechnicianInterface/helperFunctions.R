@@ -101,7 +101,7 @@ getTableMetadata <- function(fieldCodes, fieldNames) {
   return (result)
 }
 
-# Function takes values of inputs, if there are any and puts them in a 1-row data frame:
+# Function takes values of inputs, if there are any, and puts them in a 1-row data frame:
 
 castData <- function(fieldValues){
   data <- as.list(fieldValues)
@@ -127,6 +127,14 @@ createDefaultRecord <- function(fieldCodes){
   castData(defaultFieldValues)
 }
 
+# Make some submissions blank:
+
+createBlankInputs <- function(fieldCodes, session){
+  for(i in 1:length(fieldCodes)){
+    updateTextInput(session, fieldCodes[i], value = '')
+  }
+}
+
 # Update the field inputs on the ui:
 
 updateInputs <- function(data, fieldCodes, session) {
@@ -135,4 +143,19 @@ updateInputs <- function(data, fieldCodes, session) {
                     value = unname(data[fieldCodes[i]]))
   }
 }
+
+# Update vector of select inputs based on input value:
+# 
+# updateSelectInputVector <- function(selectInputVector, input, session){
+#   siteInputs <- c('siteEnc', 'siteQuery', 'sitePc', 'siteNest')
+#   for(i in 1:length(selectInputVector)){
+#     updateSelectInput(session, 
+#                       selectInputVector[i],
+#                       selected = input[[selectInputVector[i]]])
+#   }
+# }
+
+# Update input selections:
+
+# updateSelectedInputs <- function(inputsToUpdate, )
 
