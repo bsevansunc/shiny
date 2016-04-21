@@ -33,7 +33,8 @@ fieldCodesEnc <-  c('hubEnc', 'siteEnc', 'dateEnc', 'bandTime',
 fieldNamesEnc <- c('Hub', 'Site', 'Date', 'Time', 'Obs.', 'Encounter',
                    'SPP', 'Band #', 'Color c.', 'Age', 'Sex', 'CP/BP',
                    'Fat', 'Mass', 'Wing', 'Tail', 'Tarsus', 'Feather', 
-                   'Toenail','Blood','Fecal', 'Attachment', 'Notes')
+                   'Toenail','Blood','Fecal', 'Attachment', 'rsLong',
+                   'rsLat', 'Notes')
 
 # Define fields for encounter data that will be blank between records:
 
@@ -41,7 +42,7 @@ blankFieldsEnc <- c('bandTime', 'encounterType', 'speciesEnc',
                     'bandNumber','colorCombo', 'age', 'sex', 
                     'breedingCond','fat', 'mass', 'wing', 'tl',
                     'tarsus','featherID', 'toenailID', 'bloodID',
-                    'fecalID', 'attachmentID', 'notesEnc')
+                    'fecalID', 'attachmentID', 'rslong', 'rslat', 'notesEnc')
 
 #---------------------------------------------------------------------------------*
 # ---- POINT COUNTS ----
