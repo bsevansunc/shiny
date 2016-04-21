@@ -833,75 +833,152 @@ server <- function(input, output, session) {
            function(x) as.character(input[[x]]))
   })
   
-  # Click submit to add table or modify/add records:
+  # Create an empty reactive values container to hold the table:
+  
+  valuesEnc <- reactiveValues()
+  
+  valuesEnc$outTable <- matrix(nrow = 0, ncol = length(fieldCodesEnc)) %>%
+    as.data.frame
+  
+  # Adding data to the table or modifying existing data:
   
   observeEvent(input$submitEnc, {
-    fixedValues <- c('hubEnc', 'siteEnc', 'dateEnc','observerEnc')
-    for(i in 1:length(fixedValues)){
-      globalAssign(input[[fixedValues[i]]], as.character(fixedValues[i])) 
-    }
-    # If the data table exists, modify table else create table:
-    if(exists('responseDataEnc')){
-      # If no rows are selected, add a row with the new record:
-      if(length(input$responsesEnc_rows_selected) < 1){
-        responseDataEnc[nrow(responseDataEnc) + 1,] <- castData(formDataEnc())
-      }
-      # If a row has been selected, modify the selected record:
-      if(length(input$responsesEnc_rows_selected == 1)){
-        responseDataEnc[input$responsesEnc_rows_selected,] <- castData(formDataEnc())
-      }
-      # If the table is currently blank, start table with new record:
+    # I'm calling the table values "df" to shorten the inputs:
+    df <- valuesEnc$outTable
+    names(df) <-fieldCodesEnc
+    # If a row has not been selected, add row:
+    if(length(input$responsesEnc_rows_selected) < 1){
+      df[nrow(df) + 1,] <- castData(formDataEnc())
+      # If a row has been selected replace row:
     } else {
-      responseDataEnc <- castData(formDataEnc())
+      df[input$responsesEnc_rows_selected,] <- castData(formDataEnc())
     }
-    globalAssign(responseDataEnc, 'responseDataEnc')
-    
-    # After submission, clear fields to defaults:
-    updateInputs(createDefaultRecord(fieldCodesEnc), fieldCodesEnc, session)
-  }, priority = 1)
-  
-  # Press New to display empty record:
-  
-  observeEvent(input$newEnc, {
-    updateInputs(createDefaultRecord(fieldCodesEnc), fieldCodesEnc, session)
-  })
-  
-  # Delete a selected row:
-  
-  observeEvent(input$deleteEnc, {
-    if(length(input$responsesEnc_rows_selected) == 1){
-      responseDataEnc <<- responseDataEnc[-input$responsesEnc_rows_selected,]
-      updateInputs(createDefaultRecord(fieldCodesEnc), fieldCodesEnc, session)
-    }
+    valuesEnc$outTable <- df
+    # After submission, make certain inputs blank:
+    createBlankInputs(blankFieldsEnc, session)
   }, priority = 1)
   
   # Select row in table to show details in inputs:
   
   observeEvent(input$responsesEnc_rows_selected, {
     if (length(input$responsesEnc_rows_selected) == 1) {
-      data <- responseDataEnc[input$responsesEnc_rows_selected, ]
+      df <- valuesEnc$outTable
+      data <- df[input$responsesEnc_rows_selected, ]
       updateInputs(data, fieldCodesEnc, session)
-      responseDataEnc[input$responsesEnc_rows_selected, ] 
+      df[input$responsesEnc_rows_selected, ] 
     }
   })
   
-  # Display table:
+  # When "clear inputs" is pressed, make some of the inputs blank:
+  
+  observeEvent(input$newEnc, {
+    createBlankInputs(blankFieldsEnc, session)
+  })
+  
+  # Delete a selected row:
+  
+  observeEvent(input$deleteEnc, {
+    df <- valuesEnc$outTable
+    if(length(input$responsesEnc_rows_selected) == 1){
+      df <- df[-input$responsesEnc_rows_selected,]
+      createBlankInputs(blankFieldsEnc, session)
+      valuesEnc$outTable <- df
+    }}, priority = 1)
+  
+  # Table output:
   
   output$responsesEnc <- DT::renderDataTable({
     # Update after submit is clicked
     input$submitEnc
     # Update after delete is clicked
     input$deleteEnc
-    if (existCheck(responseDataEnc)){
-      responseDataEnc %>%
-        filter(siteEnc == input$siteEnc)}
+    valuesEnc$outTable
   }, server = FALSE, selection = "single",
   colnames = unname(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields))
   
+  # Save data:
+  
   observeEvent(input$submitEncData, {
-    saveData(t(responseDataEnc), 'encounterData', siteName()) #saveVisitData(visitData())
+    saveData(t(valuesEnc$outTable), 'encounterData', siteName())
     shinyjs::show("thankyou_msgEnc")
   })
+  
+#   # Input fields:
+#   
+#   formDataEnc <- reactive({
+#     sapply(names(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields),
+#            function(x) as.character(input[[x]]))
+#   })
+#   
+#   # Click submit to add table or modify/add records:
+#   
+#   observeEvent(input$submitEnc, {
+#     fixedValues <- c('hubEnc', 'siteEnc', 'dateEnc','observerEnc')
+#     for(i in 1:length(fixedValues)){
+#       globalAssign(input[[fixedValues[i]]], as.character(fixedValues[i])) 
+#     }
+#     # If the data table exists, modify table else create table:
+#     if(exists('responseDataEnc')){
+#       # If no rows are selected, add a row with the new record:
+#       if(length(input$responsesEnc_rows_selected) < 1){
+#         responseDataEnc[nrow(responseDataEnc) + 1,] <- castData(formDataEnc())
+#       }
+#       # If a row has been selected, modify the selected record:
+#       if(length(input$responsesEnc_rows_selected == 1)){
+#         responseDataEnc[input$responsesEnc_rows_selected,] <- castData(formDataEnc())
+#       }
+#       # If the table is currently blank, start table with new record:
+#     } else {
+#       responseDataEnc <- castData(formDataEnc())
+#     }
+#     globalAssign(responseDataEnc, 'responseDataEnc')
+#     
+#     # After submission, clear fields to defaults:
+#     updateInputs(createDefaultRecord(fieldCodesEnc), fieldCodesEnc, session)
+#   }, priority = 1)
+#   
+#   # Press New to display empty record:
+#   
+#   observeEvent(input$newEnc, {
+#     updateInputs(createDefaultRecord(fieldCodesEnc), fieldCodesEnc, session)
+#   })
+#   
+#   # Delete a selected row:
+#   
+#   observeEvent(input$deleteEnc, {
+#     if(length(input$responsesEnc_rows_selected) == 1){
+#       responseDataEnc <<- responseDataEnc[-input$responsesEnc_rows_selected,]
+#       updateInputs(createDefaultRecord(fieldCodesEnc), fieldCodesEnc, session)
+#     }
+#   }, priority = 1)
+#   
+#   # Select row in table to show details in inputs:
+#   
+#   observeEvent(input$responsesEnc_rows_selected, {
+#     if (length(input$responsesEnc_rows_selected) == 1) {
+#       data <- responseDataEnc[input$responsesEnc_rows_selected, ]
+#       updateInputs(data, fieldCodesEnc, session)
+#       responseDataEnc[input$responsesEnc_rows_selected, ] 
+#     }
+#   })
+#   
+#   # Display table:
+#   
+#   output$responsesEnc <- DT::renderDataTable({
+#     # Update after submit is clicked
+#     input$submitEnc
+#     # Update after delete is clicked
+#     input$deleteEnc
+#     if (existCheck(responseDataEnc)){
+#       responseDataEnc %>%
+#         filter(siteEnc == input$siteEnc)}
+#   }, server = FALSE, selection = "single",
+#   colnames = unname(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields))
+#   
+#   observeEvent(input$submitEncData, {
+#     saveData(t(responseDataEnc), 'encounterData', siteName()) #saveVisitData(visitData())
+#     shinyjs::show("thankyou_msgEnc")
+#   })
   
   #-------------------------------------------------------------------------------*
   # ---- SERVER: QUERY BANDING RECORDS ----
