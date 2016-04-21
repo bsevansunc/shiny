@@ -1,3 +1,6 @@
+#---------------------------------------------------------------------------------*
+# ---- VISIT ----
+#---------------------------------------------------------------------------------*
 
 # Define fields for visit data:
 
@@ -11,6 +14,10 @@ visitFields <- c('hub', 'site', 'observer',
                  'howrUnbanded',
                  'nocaUnbanded', 'nomoUnbanded', 'sospUnbanded',
                  'tutiUnbanded', 'unchUnbanded', 'encounteredBird','visitNotes')
+
+#---------------------------------------------------------------------------------*
+# ---- ENCOUNTERS ----
+#---------------------------------------------------------------------------------*
 
 # Define fields for encounter data:
 
@@ -28,6 +35,18 @@ fieldNamesEnc <- c('Hub', 'Site', 'Date', 'Time', 'Obs.', 'Encounter',
                    'Fat', 'Mass', 'Wing', 'Tail', 'Tarsus', 'Feather', 
                    'Toenail','Blood','Fecal', 'Attachment', 'Notes')
 
+# Define fields for encounter data that will be blank between records:
+
+blankFieldsEnc <- c('bandTime', 'encounterType', 'speciesEnc', 
+                    'bandNumber','colorCombo', 'age', 'sex', 
+                    'breedingCond','fat', 'mass', 'wing', 'tl',
+                    'tarsus','featherID', 'toenailID', 'bloodID',
+                    'fecalID', 'attachmentID', 'notesEnc')
+
+#---------------------------------------------------------------------------------*
+# ---- POINT COUNTS ----
+#---------------------------------------------------------------------------------*
+
 # Define fields for point count data:
 
 fieldCodesPc <- c('hubPc', 'sitePc', 'observerPc', 'datePc',
@@ -39,6 +58,10 @@ fieldCodesPc <- c('hubPc', 'sitePc', 'observerPc', 'datePc',
 fieldNamesPc <- c('Hub', 'Site', 'Observer', 'Date', 'Start time', 
                   'Time interval', 'SPP', 'Distance', 'Count', 
                   'Detection', 'Notes')
+
+#---------------------------------------------------------------------------------*
+# ---- NESTS ----
+#---------------------------------------------------------------------------------*
 
 # Define fields for nest data:
 
@@ -53,14 +76,6 @@ fieldNamesNest <- c('Hub', 'Site', 'Nest ID', 'SPP',
                     'Date', 'Time', 'Stage', 'adAtt',
                     'nEgg', 'nYoung', 'Notes', 'Obs')
 
-
-
-# Define fields for PC data conditions (site-level pc records):
-# 
-# pcDataConditionsFields <- c('sitePc', 'observerPc', 'datePc', 'startTimePc',
-#                             'longitude', 'latitude', 'accuracy', 'locationNotes',
-#                             'temperature', 'sky', 'wind', 'splN', 'splE',
-#                             'splS', 'splW', 'siteLevelPcNotes')
 
 # Visit choices
 
