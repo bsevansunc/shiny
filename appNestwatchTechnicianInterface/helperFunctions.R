@@ -1,6 +1,5 @@
 # FUNCTIONS
 
-
 #---------------------------------------------------------------------------------*
 # ---- Site list update ----
 #=================================================================================*
@@ -82,15 +81,15 @@ saveData <- function(data, dataName, siteName){
 
 # Existence check
 
-existCheck <- function(dataObjectToCheck){
-  deparse(substitute(dataObjectToCheck)) %>% exists
-}
+# existCheck <- function(dataObjectToCheck){
+#   deparse(substitute(dataObjectToCheck)) %>% exists
+# }
 
 # Assign an object to the global environment (more flexible than <<- as it allows the user to specify the name of the object inside the function)
-
-globalAssign <- function(data, dataName){
-  assign(dataName, data, envir = .GlobalEnv )
-}
+# 
+# globalAssign <- function(data, dataName){
+#   assign(dataName, data, envir = .GlobalEnv )
+# }
 
 # Function assigns fancy column headers to the field codes:
 
@@ -110,22 +109,22 @@ castData <- function(fieldValues){
 
 # Cast a blank record:
 
-createDefaultRecord <- function(fieldCodes){
-  # Empty list for field code storage:
-  defaultFieldValues <- vector('list', length = length(fieldCodes))
-  for(i in 1:length(fieldCodes)){
-    # If the field is already defined, provide definition:
-    if(exists(fieldCodes[i])){
-      defaultFieldValues[[i]] <- get(fieldCodes[i])
-      # If the field is undefined, set default as blank:
-    } else {
-      defaultFieldValues[[i]] <- ''
-    }
-  }
-  # Provide object names and cast data:
-  names(defaultFieldValues) <- fieldCodes
-  castData(defaultFieldValues)
-}
+# createDefaultRecord <- function(fieldCodes){
+#   # Empty list for field code storage:
+#   defaultFieldValues <- vector('list', length = length(fieldCodes))
+#   for(i in 1:length(fieldCodes)){
+#     # If the field is already defined, provide definition:
+#     if(exists(fieldCodes[i])){
+#       defaultFieldValues[[i]] <- get(fieldCodes[i])
+#       # If the field is undefined, set default as blank:
+#     } else {
+#       defaultFieldValues[[i]] <- ''
+#     }
+#   }
+#   # Provide object names and cast data:
+#   names(defaultFieldValues) <- fieldCodes
+#   castData(defaultFieldValues)
+# }
 
 # Make some submissions blank:
 
