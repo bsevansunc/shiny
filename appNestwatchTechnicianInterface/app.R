@@ -275,9 +275,9 @@ ui <- navbarPage(
                  sidebarPanel(
                    shinyjs::useShinyjs(),
                    h3(strong('1. What would you like to do?')),
-                   radioButtons('newOrExistingEnc', '', 
-                                choices = c('Create new record' = 'createNewEnc',
-                                            'Query or modify existing record' = 'modEnc'),
+                   radioButtons('newOrModEnc', '', 
+                                choices = c('Create new record' = 'newEnc',
+                                            'Query or modify existing records' = 'modEnc'),
                                 inline = TRUE
                                 ),
                    h3(strong('2. Enter encounter record:')),
@@ -837,91 +837,212 @@ server <- function(input, output, session) {
   #----------------------------------------------------------------------*
   # ENCOUNTER DATA
   #----------------------------------------------------------------------*
-  # Load previous encounter and measurements file:
-  
-  encounterMeasurements <- drop_read_csv('nnDataStorage/encounterData.csv',
-                                         stringsAsFactors = FALSE) %>% tbl_df
-  
-  # Input fields:
-  
-  formDataEnc <- reactive({
-    sapply(names(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields),
-           function(x) as.character(input[[x]]))
-  })
-  
-  # Create an empty reactive values container to hold the table:
-  
-  valuesEnc <- reactiveValues()
-  
-  valuesEnc$outTable <- encounterMeasurements
-  
+    # Input fields:
+    
+    formDataEnc <- reactive({
+      sapply(names(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields),
+             function(x) as.character(input[[x]]))
+    })
+    
+    # Create an empty reactive values container to hold the table:
+    
+    valuesEnc <- reactiveValues()
+    
+#     valuesEnc$outTable <- matrix(nrow = 0, ncol = length(fieldCodesEnc)) %>%
+#       as.data.frame
+    
+    valuesEnc$outTable <-  drop_read_csv(
+              'nnDataStorage/encounterData.csv',
+              stringsAsFactors = FALSE)
+    
+  #   newOrModEnc <- reactive({
+  #     as.character(input$newOrModEnc)
+  #   })
+    
+  #   valuesEnc$outTable <- observe({
+  #     if(input$newOrModEnc != 'newEnc'){
+  #       # Load previous encounter and measurements file:
+  # #       encounterMeasurements <- drop_read_csv(
+  # #         'nnDataStorage/encounterData.csv',
+  # #         stringsAsFactors = FALSE)
+  # #       encounterMeasurements # values$outTable <- encounterMeasurements
+  #       o1 <- drop_read_csv('nnDataStorage/encounterData.csv', stringsAsFactors = FALSE)
+  #     } else {
+  #       o1 <- matrix(nrow = 0, ncol = length(fieldCodesEnc)) %>%
+  #         as.data.frame
+  #     }
+  #     o1
+  # })
+    
+    # Adding data to the table or modifying existing data:
+    # note -- adding == rownames(df)
+    
+    observeEvent(input$submitEnc, {
+      # I'm calling the table values "df" to shorten the inputs:
+      df <- valuesEnc$outTable
+      names(df) <-fieldCodesEnc
+      # If a row has not been selected, add row:
+      if(length(input$responsesEnc_rows_selected) < 1){
+        df[nrow(df) + 1,] <- castData(formDataEnc())
+        # If a row has been selected replace row:
+      } else {
+        df[input$responsesEnc_rows_selected == rownames(df),] <- castData(formDataEnc())
+      }
+      valuesEnc$outTable <- df
+      # After submission, make certain inputs blank:
+      createBlankInputs(blankFieldsEnc, session)
+    }, priority = 1)
+    
+    # Select row in table to show details in inputs:
+    # note -- adding == rownames(df)
+    
+    observeEvent(input$responsesEnc_rows_selected, {
+      if (length(input$responsesEnc_rows_selected) == 1) {
+        df <- valuesEnc$outTable
+        data <- df[input$responsesEnc_rows_selected == rownames(df), ]
+        updateInputs(data, fieldCodesEnc, session)
+        df[input$responsesEnc_rows_selected, ] 
+      }
+    })
+    
+    # When "clear inputs" is pressed, make some of the inputs blank:
+    
+    observeEvent(input$newEnc, {
+      createBlankInputs(blankFieldsEnc, session)
+    })
+    
+    # Delete a selected row:
+    
+    observeEvent(input$deleteEnc, {
+      df <- valuesEnc$outTable
+      if(length(input$responsesEnc_rows_selected) == 1){
+        df <- df[-input$responsesEnc_rows_selected,]
+        createBlankInputs(blankFieldsEnc, session)
+        valuesEnc$outTable <- df
+      }}, priority = 1)
+    
+    # Table output:
+    
+    output$responsesEnc <- DT::renderDataTable({
+      # Update after submit is clicked
+      input$submitEnc
+      # Update after delete is clicked
+      input$deleteEnc
+      valuesEnc$outTable
+      valuesEnc$outTable %>%
+        filter(siteEnc == input$siteEnc)
+    }, server = FALSE, selection = "single",
+    colnames = unname(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields))
+    
+    # Save data:
+    
+    observeEvent(input$submitEncData, {
+      saveData(t(valuesEnc$outTable), 'encounterData', siteName())
+      shinyjs::show("thankyou_msgEnc")
+    })
+    
+  #####################################################################################
+#   # Input fields:
+#   
+#   formDataEnc <- reactive({
+#     sapply(names(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields),
+#            function(x) as.character(input[[x]]))
+#   })
+#   
+#   # Create an empty reactive values container to hold the table:
+#   
+#   valuesEnc <- reactiveValues()
+#   
 #   valuesEnc$outTable <- matrix(nrow = 0, ncol = length(fieldCodesEnc)) %>%
 #     as.data.frame
-  
-  # Adding data to the table or modifying existing data:
-  
-  observeEvent(input$submitEnc, {
-    # I'm calling the table values "df" to shorten the inputs:
-    df <- valuesEnc$outTable
-    names(df) <-fieldCodesEnc
-    # If a row has not been selected, add row:
-    if(length(input$responsesEnc_rows_selected) < 1){
-      df[nrow(df) + 1,] <- castData(formDataEnc())
-      # If a row has been selected replace row:
-    } else {
-      df[input$responsesEnc_rows_selected,] <- castData(formDataEnc())
-    }
-    valuesEnc$outTable <- df
-    # After submission, make certain inputs blank:
-    createBlankInputs(blankFieldsEnc, session)
-  }, priority = 1)
-  
-  # Select row in table to show details in inputs:
-  
-  observeEvent(input$responsesEnc_rows_selected, {
-    if (length(input$responsesEnc_rows_selected) == 1) {
-      df <- valuesEnc$outTable
-      data <- df[input$responsesEnc_rows_selected, ]
-      updateInputs(data, fieldCodesEnc, session)
-      df[input$responsesEnc_rows_selected, ] 
-    }
-  })
-  
-  # When "clear inputs" is pressed, make some of the inputs blank:
-  
-  observeEvent(input$newEnc, {
-    createBlankInputs(blankFieldsEnc, session)
-  })
-  
-  # Delete a selected row:
-  
-  observeEvent(input$deleteEnc, {
-    df <- valuesEnc$outTable
-    if(length(input$responsesEnc_rows_selected) == 1){
-      df <- df[-input$responsesEnc_rows_selected,]
-      createBlankInputs(blankFieldsEnc, session)
-      valuesEnc$outTable <- df
-    }}, priority = 1)
-  
-  # Table output:
-  
-  output$responsesEnc <- DT::renderDataTable({
-    # Update after submit is clicked
-    input$submitEnc
-    # Update after delete is clicked
-    input$deleteEnc
-    valuesEnc$outTable %>%
-      filter(siteEnc == input$siteEnc)
-  }, server = FALSE, selection = "single",
-  colnames = unname(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields))
-  
-  # Save data:
-  
-  observeEvent(input$submitEncData, {
-    saveData(t(valuesEnc$outTable), 'encounterData', siteName())
-    shinyjs::show("thankyou_msgEnc")
-  })
-  
+#   
+# #   newOrModEnc <- reactive({
+# #     as.character(input$newOrModEnc)
+# #   })
+#   
+# #   valuesEnc$outTable <- observe({
+# #     if(input$newOrModEnc != 'newEnc'){
+# #       # Load previous encounter and measurements file:
+# # #       encounterMeasurements <- drop_read_csv(
+# # #         'nnDataStorage/encounterData.csv',
+# # #         stringsAsFactors = FALSE)
+# # #       encounterMeasurements # values$outTable <- encounterMeasurements
+# #       o1 <- drop_read_csv('nnDataStorage/encounterData.csv', stringsAsFactors = FALSE)
+# #     } else {
+# #       o1 <- matrix(nrow = 0, ncol = length(fieldCodesEnc)) %>%
+# #         as.data.frame
+# #     }
+# #     o1
+# # })
+#   
+#   
+#   # Adding data to the table or modifying existing data:
+#   
+#   observeEvent(input$submitEnc, {
+#     # I'm calling the table values "df" to shorten the inputs:
+#     df <- valuesEnc$outTable
+#     names(df) <-fieldCodesEnc
+#     # If a row has not been selected, add row:
+#     if(length(input$responsesEnc_rows_selected) < 1){
+#       df[nrow(df) + 1,] <- castData(formDataEnc())
+#       # If a row has been selected replace row:
+#     } else {
+#       df[input$responsesEnc_rows_selected,] <- castData(formDataEnc())
+#     }
+#     valuesEnc$outTable <- df
+#     # After submission, make certain inputs blank:
+#     createBlankInputs(blankFieldsEnc, session)
+#   }, priority = 1)
+#   
+#   # Select row in table to show details in inputs:
+#   
+#   observeEvent(input$responsesEnc_rows_selected, {
+#     if (length(input$responsesEnc_rows_selected) == 1) {
+#       df <- valuesEnc$outTable
+#       data <- df[input$responsesEnc_rows_selected, ]
+#       updateInputs(data, fieldCodesEnc, session)
+#       df[input$responsesEnc_rows_selected, ] 
+#     }
+#   })
+#   
+#   # When "clear inputs" is pressed, make some of the inputs blank:
+#   
+#   observeEvent(input$newEnc, {
+#     createBlankInputs(blankFieldsEnc, session)
+#   })
+#   
+#   # Delete a selected row:
+#   
+#   observeEvent(input$deleteEnc, {
+#     df <- valuesEnc$outTable
+#     if(length(input$responsesEnc_rows_selected) == 1){
+#       df <- df[-input$responsesEnc_rows_selected,]
+#       createBlankInputs(blankFieldsEnc, session)
+#       valuesEnc$outTable <- df
+#     }}, priority = 1)
+#   
+#   # Test:
+#   
+#   
+#   
+#   # Table output:
+#   
+#   output$responsesEnc <- DT::renderDataTable({
+#     # Update after submit is clicked
+#     input$submitEnc
+#     # Update after delete is clicked
+#     input$deleteEnc
+#     valuesEnc$outTable
+#   }, server = FALSE, selection = "single",
+#   colnames = unname(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields))
+#   
+#   # Save data:
+#   
+#   observeEvent(input$submitEncData, {
+#     saveData(t(valuesEnc$outTable), 'encounterData', siteName())
+#     shinyjs::show("thankyou_msgEnc")
+#   })
+#   
   #-------------------------------------------------------------------------------*
   # ---- SERVER: QUERY BANDING RECORDS ----
   #-------------------------------------------------------------------------------*
