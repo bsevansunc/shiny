@@ -1021,82 +1021,82 @@ server <- function(input, output, session) {
   # ---- SERVER: SUBMIT POINT COUNT DATA ----
   #-------------------------------------------------------------------------------*
   
-#   # Input fields:
-#   
-#   formDataPc <- reactive({
-#     sapply(names(getTableMetadata(fieldCodesPc, fieldNamesPc)$fields),
-#            function(x) as.character(input[[x]]))
-#   })
-#   
-#   # Create an empty reactive values container to hold the table:
-#   
-#   valuesPc <- reactiveValues()
-#   
-#   valuesPc$outTable <- matrix(nrow = 0, ncol = length(fieldCodesPc)) %>%
-#     as.data.frame
-#   
-#   # Adding data to the table or modifying existing data:
-#   
-#   observeEvent(input$submitPc, {
-#     # I'm calling the table values "df" to shorten the inputs:
-#     df <- valuesPc$outTable
-#     names(df) <-fieldCodesPc
-#     # If a row has not been selected, add row:
-#     if(length(input$responsesPc_rows_selected) < 1){
-#       df[nrow(df) + 1,] <- castData(formDataPc())
-#       # If a row has been selected replace row:
-#     } else {
-#       df[input$responsesPc_rows_selected,] <- castData(formDataPc())
-#     }
-#     valuesPc$outTable <- df
-#     # After submission, make certain inputs blank:
-#     createBlankInputs(blankFieldsPc, session)
-#   }, priority = 1)
-#   
-#   # Select row in table to show details in inputs:
-#   
-#   observeEvent(input$responsesPc_rows_selected, {
-#     if (length(input$responsesPc_rows_selected) == 1) {
-#       df <- valuesPc$outTable
-#       data <- df[input$responsesPc_rows_selected, ]
-#       updateInputs(data, fieldCodesPc, session)
-#       df[input$responsesPc_rows_selected, ] 
-#     }
-#   })
-#   
-#   # When "clear inputs" is pressed, make some of the inputs blank:
-#   
-#   observeEvent(input$newPc, {
-#     createBlankInputs(blankFieldsPc, session)
-#   })
-#   
-#   # Delete a selected row:
-#   
-#   observeEvent(input$deletePc, {
-#     df <- valuesPc$outTable
-#     if(length(input$responsesPc_rows_selected) == 1){
-#       df <- df[-input$responsesPc_rows_selected,]
-#       createBlankInputs(blankFieldsPc, session)
-#       valuesPc$outTable <- df
-#     }}, priority = 1)
-#   
-#   # Table output:
-#   
-#   output$responsesPc <- DT::renderDataTable({
-#     # Update after submit is clicked
-#     input$submitPc
-#     # Update after delete is clicked
-#     input$deletePc
-#     valuesPc$outTable
-#   }, server = FALSE, selection = "single",
-#   colnames = unname(getTableMetadata(fieldCodesPc, fieldNamesPc)$fields))
-#   
-#   # Save data:
-#   
-#   observeEvent(input$submitPcData, {
-#     saveData(t(valuesPc$outTable), 'pointCountData', siteName())
-#     shinyjs::show("thankyou_msgPc")
-#   })
+  # Input fields:
+  
+  formDataPc <- reactive({
+    sapply(names(getTableMetadata(fieldCodesPc, fieldNamesPc)$fields),
+           function(x) as.character(input[[x]]))
+  })
+  
+  # Create an empty reactive values container to hold the table:
+  
+  valuesPc <- reactiveValues()
+  
+  valuesPc$outTable <- matrix(nrow = 0, ncol = length(fieldCodesPc)) %>%
+    as.data.frame
+  
+  # Adding data to the table or modifying existing data:
+  
+  observeEvent(input$submitPc, {
+    # I'm calling the table values "df" to shorten the inputs:
+    df <- valuesPc$outTable
+    names(df) <-fieldCodesPc
+    # If a row has not been selected, add row:
+    if(length(input$responsesPc_rows_selected) < 1){
+      df[nrow(df) + 1,] <- castData(formDataPc())
+      # If a row has been selected replace row:
+    } else {
+      df[input$responsesPc_rows_selected,] <- castData(formDataPc())
+    }
+    valuesPc$outTable <- df
+    # After submission, make certain inputs blank:
+    createBlankInputs(blankFieldsPc, session)
+  }, priority = 1)
+  
+  # Select row in table to show details in inputs:
+  
+  observeEvent(input$responsesPc_rows_selected, {
+    if (length(input$responsesPc_rows_selected) == 1) {
+      df <- valuesPc$outTable
+      data <- df[input$responsesPc_rows_selected, ]
+      updateInputs(data, fieldCodesPc, session)
+      df[input$responsesPc_rows_selected, ] 
+    }
+  })
+  
+  # When "clear inputs" is pressed, make some of the inputs blank:
+  
+  observeEvent(input$newPc, {
+    createBlankInputs(blankFieldsPc, session)
+  })
+  
+  # Delete a selected row:
+  
+  observeEvent(input$deletePc, {
+    df <- valuesPc$outTable
+    if(length(input$responsesPc_rows_selected) == 1){
+      df <- df[-input$responsesPc_rows_selected,]
+      createBlankInputs(blankFieldsPc, session)
+      valuesPc$outTable <- df
+    }}, priority = 1)
+  
+  # Table output:
+  
+  output$responsesPc <- DT::renderDataTable({
+    # Update after submit is clicked
+    input$submitPc
+    # Update after delete is clicked
+    input$deletePc
+    valuesPc$outTable
+  }, server = FALSE, selection = "single",
+  colnames = unname(getTableMetadata(fieldCodesPc, fieldNamesPc)$fields))
+  
+  # Save data:
+  
+  observeEvent(input$submitPcData, {
+    saveData(t(valuesPc$outTable), 'pointCountData', siteName())
+    shinyjs::show("thankyou_msgPc")
+  })
   
   #-------------------------------------------------------------------------------*
   # ---- SERVER: NEST DATA ----
