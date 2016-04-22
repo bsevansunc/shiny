@@ -111,10 +111,10 @@ fieldNamesPc <- c('Hub', 'Site', 'Observer', 'Date', 'Start time',
                   'Time interval', 'SPP', 'Distance', 'Count', 
                   'Detection', 'Notes')
 
-# Define fields for point count data that will be blank between records:
+# Define fields for point count data that WILL be blank between records:
 
-blankFieldsPc <- c('hubPc', 'sitePc', 'observerPc', 'datePc',
-                  'startTimePc', 'notesPc')
+blankFieldsPc <- c('timePc', 'speciesPc', 'distancePc',
+                   'countPc', 'detectionPc','notesPc')
 
 #---------------------------------------------------------------------------------*
 # ---- NESTS ----
@@ -135,7 +135,9 @@ fieldNamesNest <- c('Hub', 'Site', 'Nest ID', 'SPP',
 
 # Define fields for nest data that will be blank between records:
 
-blankFieldsPc <- c('hubNest', 'siteNest', 'nestID', 'speciesNest')
+blankFieldsNest <- c('dateNest', 'timeNest', 'stageNest', 'adAttNest',
+                     'nEggNest', 'nYoungNest', 'notesNest',
+                     'observerNest')
 
 # Nest choices:
 
