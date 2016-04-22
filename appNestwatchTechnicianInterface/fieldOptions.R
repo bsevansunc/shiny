@@ -15,6 +15,40 @@ visitFields <- c('hub', 'site', 'observer',
                  'nocaUnbanded', 'nomoUnbanded', 'sospUnbanded',
                  'tutiUnbanded', 'unchUnbanded', 'encounteredBird','visitNotes')
 
+# Visit choices
+
+choiceRegions <- c('Atlanta', 'DC', 'Gainesville', 'Pittsburgh',
+                   'Raleigh', 'Springfield')
+
+names(choiceRegions) <- choiceRegions
+
+choiceSites <- c('', encounters$site %>% unique %>% sort)
+
+choiceDate <- c('', seq(
+  as.Date(ISOdate(2000, 1, 15)),
+  as.Date(ISOdate(2030, 1, 1)), 1) %>%
+    as.character)
+
+timeOfDay0 <- format(seq(ISOdate(2000, 1, 1), ISOdate(2000,1,2), 
+                         by = 'min'), '%H:%M') %>% 
+  unique %>% sort
+
+timeOfDay <- timeOfDay0[301:1321]
+
+choiceTimeOfDay <- c('',timeOfDay)
+
+choiceSpecies <- c('', 'AMRO', 'BCCH', 'BRTH', 'CACH', 'CARW', 
+                   'EAPH','GRCA','HOWR','NOCA','NOMO','SOSP',
+                   'TUTI','UNCH')
+
+colorValues <- c('', 'A', 'BU', 'BK', 'G', 'O','PK', 'P','R', 'Y', 'W')
+
+choiceNetCount <- c('', seq(0, 12, by = 1))
+
+choiceNetMinutes <- c('', 0:2000)
+
+choiceCount <- c('', 1:100)
+
 #---------------------------------------------------------------------------------*
 # ---- ENCOUNTERS ----
 #---------------------------------------------------------------------------------*
@@ -43,6 +77,23 @@ blankFieldsEnc <- c('bandTime', 'encounterType', 'speciesEnc',
                     'breedingCond','fat', 'mass', 'wing', 'tl',
                     'tarsus','featherID', 'toenailID', 'bloodID',
                     'fecalID', 'attachmentID', 'rslong', 'rslat', 'notesEnc')
+
+# Band choices:
+
+choiceAge <- c('', 'HY', 'AHY', 'SY', 'ASY', 'UNK')
+
+choiceEncounterType <- c('','Band', 'Recap',
+                         'Resight-incidental','Resight-targeted', 'Resight-participant')
+
+choiceSex <- c('', 'M', 'F', 'UNK')
+
+choiceBreedingCond <-  c('','CP', 'BP','CP-', 'BP-','CP+', 'BP+')
+
+choiceFat <- c('', 0, 0.5, seq(1:5))
+
+choiceDistance <- c('', '0-10', '11-20', '21-30', '31-40', '41-50')
+
+choiceTime <- c('', 3, 2, 5)
 
 #---------------------------------------------------------------------------------*
 # ---- POINT COUNTS ----
@@ -85,57 +136,6 @@ fieldNamesNest <- c('Hub', 'Site', 'Nest ID', 'SPP',
 # Define fields for nest data that will be blank between records:
 
 fieldCodesNest <- c('hubNest', 'siteNest', 'nestID', 'speciesNest')
-
-
-# Visit choices
-
-choiceRegions <- c('Atlanta', 'DC', 'Gainesville', 'Pittsburgh',
-                   'Raleigh', 'Springfield')
-
-names(choiceRegions) <- choiceRegions
-
-choiceSites <- c('', encounters$site %>% unique %>% sort)
-
-choiceDate <- c('', seq(
-  as.Date(ISOdate(2000, 1, 15)),
-  as.Date(ISOdate(2030, 1, 1)), 1) %>%
-    as.character)
-
-timeOfDay0 <- format(seq(ISOdate(2000, 1, 1), ISOdate(2000,1,2), 
-                         by = 'min'), '%H:%M') %>% 
-  unique %>% sort
-
-timeOfDay <- timeOfDay0[301:1321]
-
-choiceTimeOfDay <- c('',timeOfDay)
-
-choiceSpecies <- c('', 'AMRO', 'BCCH', 'BRTH', 'CACH', 'CARW', 
-                   'EAPH','GRCA','HOWR','NOCA','NOMO','SOSP',
-                   'TUTI','UNCH')
-
-colorValues <- c('', 'A', 'BU', 'BK', 'G', 'O','PK', 'P','R', 'Y', 'W')
-
-choiceNetCount <- c('', seq(0, 12, by = 1))
-
-choiceNetMinutes <- c('', 0:2000)
-
-choiceCount <- c('', 1:100)
-
-# Band choices:
-
-choiceAge <- c('', 'HY', 'AHY', 'SY', 'ASY', 'UNK')
-
-choiceEncounterType <- c('Band', 'Recap', 'Resight-incidental','Resight-targeted', 'Resight-participant')
-
-choiceSex <- c('', 'M', 'F', 'UNK')
-
-choiceBreedingCond <-  c('','CP', 'BP','CP-', 'BP-','CP+', 'BP+')
-
-choiceFat <- c('', 0, 0.5, seq(1:5))
-
-choiceDistance <- c('', '0-10', '11-20', '21-30', '31-40', '41-50')
-
-choiceTime <- c('', 3, 2, 5)
 
 # Nest choices:
 
