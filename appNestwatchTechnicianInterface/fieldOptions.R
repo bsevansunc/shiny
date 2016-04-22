@@ -60,7 +60,7 @@ fieldCodesEnc <-  c('hubEnc', 'siteEnc', 'dateEnc', 'bandTime',
                     'bandNumber','colorCombo', 'age', 'sex', 
                     'breedingCond','fat', 'mass', 'wing', 'tl',
                     'tarsus','featherID', 'toenailID', 'bloodID',
-                    'fecalID', 'attachmentID', 'notesEnc')
+                    'fecalID', 'attachmentID', 'rsLong', 'rsLat', 'notesEnc')
 
 # Define field names for encounter data table:
 
