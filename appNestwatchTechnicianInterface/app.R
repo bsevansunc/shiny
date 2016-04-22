@@ -59,6 +59,11 @@ choiceColorCombos <- read.csv('choiceColorCombos.csv',
                               stringsAsFactors = FALSE) %>%
   .$choiceColorCombos
 
+# Load new encounter data with measurements:
+# 
+# encounterMeasurements <- drop_read_csv('nnDataStorage/encounterData.csv',
+#                                        stringsAsFactors = FALSE) %>% tbl_df
+  
 #---------------------------------------------------------------------------------*
 # ---- Source functions ----
 #---------------------------------------------------------------------------------*
@@ -269,7 +274,13 @@ ui <- navbarPage(
                  # ---- Record entry -------------------------------------------------*
                  sidebarPanel(
                    shinyjs::useShinyjs(),
-                   h3(strong('1. Enter encounter record:')),
+                   h3(strong('1. What would you like to do?')),
+                   radioButtons('newOrExistingEnc', '', 
+                                choices = c('Create new record' = 'createNewEnc',
+                                            'Query or modify existing record' = 'modEnc'),
+                                inline = TRUE
+                                ),
+                   h3(strong('2. Enter encounter record:')),
                    strong(em('IMPORTANT! Be sure to enter encounter data AFTER entering visit data!')),
                    br(), br(),
                    fluidRow(
@@ -374,7 +385,7 @@ ui <- navbarPage(
                ),
                hr(),
                # ---- QC and submission ---------------------------------------------------
-               h3(strong('2. Data-proofing and submission of encounter records:')),
+               h3(strong('3. Data-proofing and submission of encounter records:')),
                br(),
                DT::dataTableOutput("responsesEnc"),
                br(),
@@ -826,6 +837,10 @@ server <- function(input, output, session) {
   #----------------------------------------------------------------------*
   # ENCOUNTER DATA
   #----------------------------------------------------------------------*
+  # Load previous encounter and measurements file:
+  
+  encounterMeasurements <- drop_read_csv('nnDataStorage/encounterData.csv',
+                                         stringsAsFactors = FALSE) %>% tbl_df
   
   # Input fields:
   
@@ -838,8 +853,10 @@ server <- function(input, output, session) {
   
   valuesEnc <- reactiveValues()
   
-  valuesEnc$outTable <- matrix(nrow = 0, ncol = length(fieldCodesEnc)) %>%
-    as.data.frame
+  valuesEnc$outTable <- encounterMeasurements
+  
+#   valuesEnc$outTable <- matrix(nrow = 0, ncol = length(fieldCodesEnc)) %>%
+#     as.data.frame
   
   # Adding data to the table or modifying existing data:
   
@@ -893,7 +910,8 @@ server <- function(input, output, session) {
     input$submitEnc
     # Update after delete is clicked
     input$deleteEnc
-    valuesEnc$outTable
+    valuesEnc$outTable %>%
+      filter(siteEnc == input$siteEnc)
   }, server = FALSE, selection = "single",
   colnames = unname(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields))
   
