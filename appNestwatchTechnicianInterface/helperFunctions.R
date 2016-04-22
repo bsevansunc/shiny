@@ -36,6 +36,22 @@ saveData <- function(data, dataName, siteName){
   drop_upload(filePath, dest = destinationFolder)
 }
 
+saveData <- function(data, dataName, siteName){
+  if(dataName != 'visitData') data <- t(data)
+#   submissionTime <- as.character(Sys.time()) %>%
+#     str_replace_all(' ', '_') %>%
+#     str_replace_all(':','-')
+  # randomNumber <- sample(1:1000, 1)
+#   fileName <- str_c(dataName, siteName,'_',submissionTime,
+#                     '_', randomNumber,'.csv')
+  fileName <- str_c(dataName, '.csv')
+  filePath <- file.path(tempdir(), fileName)
+  write.csv(data, filePath, row.names = FALSE, quote = TRUE)
+  destinationFolder <- str_c('nnDataStorage/', dataName)
+  # Upload file to Dropbox:
+  drop_upload(filePath, dest = destinationFolder)
+}
+
 #---------------------------------------------------------------------------------*
 # ---- Create, Read, Update, Delete ----
 #=================================================================================*
