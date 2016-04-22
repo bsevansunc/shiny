@@ -135,7 +135,7 @@ fieldNamesNest <- c('Hub', 'Site', 'Nest ID', 'SPP',
 
 # Define fields for nest data that will be blank between records:
 
-fieldCodesNest <- c('hubNest', 'siteNest', 'nestID', 'speciesNest')
+blankFieldsPc <- c('hubNest', 'siteNest', 'nestID', 'speciesNest')
 
 # Nest choices:
 
