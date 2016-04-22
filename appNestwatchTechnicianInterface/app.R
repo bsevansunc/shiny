@@ -565,7 +565,13 @@ ui <- navbarPage(
                    h3(strong('1. Submit nest location and summary data:')),
                    strong(em('IMPORTANT! Be sure to enter nest data AFTER entering visit data!')),
                    br(), br(),
-                   shinyjs::hidden(textInput('hubNest', 'hub')),
+                   fluidRow(
+                     column(4,
+                            selectInput('hubNest','Regional Hub:',
+                                        choices = choiceRegions,
+                                        selected = NULL)),
+                     column(8, '')
+                   ),
                    fluidRow(
                      column(3, strong('Species:')),
                      column(3, strong('Color combo:')),
@@ -729,7 +735,7 @@ server <- function(input, output, session) {
   
   observe({
     siteInputs <- c('site', 'siteEnc', 'siteQuery', 'sitePc', 'siteNest')
-    hubInputs <- c('hub', 'hubEnc', 'hubPc', 'hubNest', 'hubQuery')
+    hubInputs <- c('hub', 'hubEnc', 'hubQuery', 'hubPc', 'hubNest')
     for(i in 1:length(siteInputs)){
       updateSelectInput(session, siteInputs[i], 
                         choices = siteNameSubsetter(input[[hubInputs[i]]]))
