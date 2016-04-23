@@ -837,6 +837,7 @@ server <- function(input, output, session) {
   #----------------------------------------------------------------------*
   # ENCOUNTER DATA
   #----------------------------------------------------------------------*
+  
     # Input fields:
     
     formDataEnc <- reactive({
@@ -886,7 +887,8 @@ server <- function(input, output, session) {
         df[nrow(df) + 1,] <- castData(formDataEnc())
         # If a row has been selected replace row:
       } else {
-        df[input$responsesEnc_rows_selected == rownames(df),] <- castData(formDataEnc())
+        # df <- df[df$siteEnc == input$siteEnc,]# df %>% filter(siteEnc == input$siteEnc)
+        df[input$responsesEnc_rows_selected == rownames(df) & df$siteEnc == input$siteEnc,] <- castData(formDataEnc())
       }
       valuesEnc$outTable <- df
       # After submission, make certain inputs blank:
@@ -898,8 +900,10 @@ server <- function(input, output, session) {
     
     observeEvent(input$responsesEnc_rows_selected, {
       if (length(input$responsesEnc_rows_selected) == 1) {
-        df <- valuesEnc$outTable
-        data <- df[input$responsesEnc_rows_selected == rownames(df), ]
+        # df <- valuesEnc$outTable 
+        df <- valuesEnc$outTable %>% filter(siteEnc == input$siteEnc)
+        # data <- df[input$responsesEnc_rows_selected == rownames(df), ]
+        data <- df[rownames(df)[input$responsesEnc_rows_selected] == rownames(df), ]
         updateInputs(data, fieldCodesEnc, session)
         df[input$responsesEnc_rows_selected, ] 
       }
@@ -928,16 +932,20 @@ server <- function(input, output, session) {
       input$submitEnc
       # Update after delete is clicked
       input$deleteEnc
-      valuesEnc$outTable
-      valuesEnc$outTable %>%
-        filter(siteEnc == input$siteEnc)
+      # Table display:
+      # valuesEnc$outTable
+      # df <- valuesEnc$outTable
+      valuesEnc$outTable[valuesEnc$outTable$siteEnc == input$siteEnc,]
+#       valuesEnc
+#       valuesEnc$outTable %>%
+#         filter(siteEnc == input$siteEnc)
     }, server = FALSE, selection = "single",
     colnames = unname(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields))
     
     # Save data:
     
     observeEvent(input$submitEncData, {
-      saveData(t(valuesEnc$outTable), 'encounterData', siteName())
+      saveData(valuesEnc$outTable, 'encounterData', siteName())
       shinyjs::show("thankyou_msgEnc")
     })
     
