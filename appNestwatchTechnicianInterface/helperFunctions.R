@@ -52,6 +52,8 @@ saveData <- function(data, dataName, siteName){
   destinationFolder <- str_c('nnDataStorage/', dataName)
   # Upload file to Dropbox:
   drop_upload(filePath, dest = destinationFolder)
+  # Upload unique file to Dropbox:
+  write.csv(data, filePathUnique, row.names = FALSE, quote = TRUE)
   drop_upload(filePathUnique, dest = destinationFolder)
 }
 
