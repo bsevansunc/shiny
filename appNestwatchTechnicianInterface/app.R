@@ -63,6 +63,28 @@ choiceColorCombos <- read.csv('choiceColorCombos.csv',
 # 
 # encounterMeasurements <- drop_read_csv('nnDataStorage/encounterData.csv',
 #                                        stringsAsFactors = FALSE) %>% tbl_df
+
+# drop_read_csv('nnDataStorage/encounterData.csv',stringsAsFactors = FALSE) %>% tbl_df
+# 
+# nd <- drop_read_csv('nnDataStorage/nestData/nestData.csv',stringsAsFactors = FALSE) %>% tbl_df
+# 
+# nd[,5] <- c('2016-04-22')
+# 
+# pc <- drop_read_csv('nnDataStorage/pointCountData/pointCountData.csv',stringsAsFactors = FALSE) %>% tbl_df
+# 
+# pc <- pc[-2,]
+# 
+# pc[,4] <- '2016-04-20'
+# 
+# write.csv(nd, '/Users/bsevans/Dropbox/nnDataStorage/nestData/nestData.csv', row.names = F)
+# 
+# write.csv(pc, '/Users/bsevans/Dropbox/nnDataStorage/pointCountData/pointCountData.csv', row.names = F)
+# 
+# 
+# list.files('/Users/bsevans/Dropbox/nnDataStorage/pointCountData')
+
+# test <- drop_read_csv('nnDataStorage/pointCountData.csv',
+#                                        stringsAsFactors = FALSE) %>% tbl_df
   
 #---------------------------------------------------------------------------------*
 # ---- Source functions ----
@@ -692,7 +714,7 @@ ui <- navbarPage(
                                                       "Delete nest record", 
                                                       class = "btn-primary")),
                                column(3, ' '),
-                               column(4, actionButton('saveNestData', 
+                               column(4, actionButton('submitNestData', 
                                                       'Submit nest data',
                                                       class = "btn-primary"))
                       ),
@@ -850,7 +872,7 @@ server <- function(input, output, session) {
     valuesEnc <- reactiveValues()
     
     valuesEnc$outTable <-  drop_read_csv(
-              'nnDataStorage/encounterData.csv',
+              'nnDataStorage/encounterData/encounterData.csv',
               stringsAsFactors = FALSE)
     
     observeEvent(input$submitEnc, {
@@ -911,7 +933,15 @@ server <- function(input, output, session) {
     # Save data:
     
     observeEvent(input$submitEncData, {
-      saveData(valuesEnc$outTable, 'encounterData', siteName())
+      dataForSaving <- bind_rows(
+        drop_read_csv(
+        'nnDataStorage/encounterData/encounterData.csv',
+        stringsAsFactors = FALSE),
+        valuesEnc$outTable %>%
+          filter(siteEnc == input$siteEnc)
+      )
+      saveData(dataForSaving, 'encounterData', siteName())
+#       saveData(valuesEnc$outTable, 'encounterData', siteName())
       shinyjs::show("thankyou_msgEnc")
     })
     
@@ -1050,7 +1080,7 @@ server <- function(input, output, session) {
   valuesPc <- reactiveValues()
   
   valuesPc$outTable <-  drop_read_csv(
-    'nnDataStorage/pointCountData.csv',
+    'nnDataStorage/pointCountData/pointCountData.csv',
     stringsAsFactors = FALSE)
   
   observeEvent(input$submitPc, {
@@ -1110,8 +1140,21 @@ server <- function(input, output, session) {
   
   # Save data:
   
+#   observeEvent(input$submitPcData, {
+#     saveData(valuesPc$outTable, 'pointCountData', siteName())
+#     shinyjs::show("thankyou_msgPc")
+#   })
+  
   observeEvent(input$submitPcData, {
-    saveData(valuesPc$outTable, 'pointCountData', siteName())
+    dataForSaving <- bind_rows(
+      drop_read_csv(
+        'nnDataStorage/pointCountData/pointCountData.csv',
+        stringsAsFactors = FALSE),
+      valuesPc$outTable %>%
+        filter(sitePc == input$sitePc)
+    )
+    saveData(dataForSaving, 'pointCountData', siteName())
+    #       saveData(valuesEnc$outTable, 'encounterData', siteName())
     shinyjs::show("thankyou_msgPc")
   })
   
@@ -1208,7 +1251,7 @@ server <- function(input, output, session) {
   valuesNest <- reactiveValues()
   
   valuesNest$outTable <-  drop_read_csv(
-    'nnDataStorage/nestData.csv',
+    'nnDataStorage/nestData/nestData.csv',
     stringsAsFactors = FALSE)
   
   observeEvent(input$submitNest, {
@@ -1268,8 +1311,20 @@ server <- function(input, output, session) {
   
   # Save data:
   
+#   observeEvent(input$submitNestData, {
+#     saveData(valuesNest$outTable, 'nestData', siteName())
+#     shinyjs::show("thankyou_msgNest")
+#   })
+  
   observeEvent(input$submitNestData, {
-    saveData(valuesNest$outTable, 'nestData', siteName())
+    dataForSaving <- bind_rows(
+      drop_read_csv(
+        'nnDataStorage/pointCountData/nestData.csv',
+        stringsAsFactors = FALSE),
+      valuesNest$outTable %>%
+        filter(siteNest == input$siteNest)
+    )
+    saveData(dataForSaving, 'nestData', siteName())
     shinyjs::show("thankyou_msgNest")
   })
   
