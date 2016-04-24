@@ -1040,80 +1040,81 @@ server <- function(input, output, session) {
   
   # Input fields:
   
-  formDataEnc <- reactive({
-    sapply(names(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields),
+  formDataPc <- reactive({
+    sapply(names(getTableMetadata(fieldCodesPc, fieldNamesPc)$fields),
            function(x) as.character(input[[x]]))
   })
   
   # Create an empty reactive values container to hold the table:
   
-  valuesEnc <- reactiveValues()
+  valuesPc <- reactiveValues()
   
-  valuesEnc$outTable <-  drop_read_csv(
-    'nnDataStorage/encounterData.csv',
+  valuesPc$outTable <-  drop_read_csv(
+    'nnDataStorage/pointCountData.csv',
     stringsAsFactors = FALSE)
   
-  observeEvent(input$submitEnc, {
+  observeEvent(input$submitPc, {
     # I'm calling the table values "df" to shorten the inputs:
-    df <- valuesEnc$outTable
-    names(df) <-fieldCodesEnc
+    df <- valuesPc$outTable
+    names(df) <-fieldCodesPc
     # If a row has not been selected, add row:
-    if(length(input$responsesEnc_rows_selected) < 1){
-      df[nrow(df) + 1,] <- castData(formDataEnc())
+    if(length(input$responsesPc_rows_selected) < 1){
+      df[nrow(df) + 1,] <- castData(formDataPc())
       # If a row has been selected replace row:
     } else {
-      df[input$responsesEnc_rows_selected == rownames(df) & df$siteEnc == input$siteEnc,] <- castData(formDataEnc())
+      df[input$responsesPc_rows_selected == rownames(df) & df$sitePc == input$sitePc,] <- castData(formDataPc())
     }
-    valuesEnc$outTable <- df
+    valuesPc$outTable <- df
     # After submission, make certain inputs blank:
-    createBlankInputs(blankFieldsEnc, session)
+    createBlankInputs(blankFieldsPc, session)
   }, priority = 1)
   
   # Select row in table to show details in inputs:
   
-  observeEvent(input$responsesEnc_rows_selected, {
-    if (length(input$responsesEnc_rows_selected) == 1) {
-      df <- valuesEnc$outTable %>% filter(siteEnc == input$siteEnc)
-      data <- df[rownames(df)[input$responsesEnc_rows_selected] == rownames(df), ]
-      updateInputs(data, fieldCodesEnc, session)
-      df[input$responsesEnc_rows_selected, ] 
+  observeEvent(input$responsesPc_rows_selected, {
+    if (length(input$responsesPc_rows_selected) == 1) {
+      df <- valuesPc$outTable %>% filter(sitePc == input$sitePc)
+      data <- df[rownames(df)[input$responsesPc_rows_selected] == rownames(df), ]
+      updateInputs(data, fieldCodesPc, session)
+      df[input$responsesPc_rows_selected, ] 
     }
   })
   
   # When "clear inputs" is pressed, make some of the inputs blank:
   
-  observeEvent(input$newEnc, {
-    createBlankInputs(blankFieldsEnc, session)
+  observeEvent(input$newPc, {
+    createBlankInputs(blankFieldsPc, session)
   })
   
   # Delete a selected row:
   
-  observeEvent(input$deleteEnc, {
-    df <- valuesEnc$outTable
-    if(length(input$responsesEnc_rows_selected) == 1){
-      df <- df[-input$responsesEnc_rows_selected,]
-      createBlankInputs(blankFieldsEnc, session)
-      valuesEnc$outTable <- df
+  observeEvent(input$deletePc, {
+    df <- valuesPc$outTable
+    if(length(input$responsesPc_rows_selected) == 1){
+      df <- df[-input$responsesPc_rows_selected,]
+      createBlankInputs(blankFieldsPc, session)
+      valuesPc$outTable <- df
     }}, priority = 1)
   
   # Table output:
   
-  output$responsesEnc <- DT::renderDataTable({
+  output$responsesPc <- DT::renderDataTable({
     # Update after submit is clicked
-    input$submitEnc
+    input$submitPc
     # Update after delete is clicked
-    input$deleteEnc
+    input$deletePc
     # Table display & site filter:
-    valuesEnc$outTable[valuesEnc$outTable$siteEnc == input$siteEnc,]
+    valuesPc$outTable[valuesPc$outTable$sitePc == input$sitePc,]
   }, server = FALSE, selection = "single",
-  colnames = unname(getTableMetadata(fieldCodesEnc, fieldNamesEnc)$fields))
+  colnames = unname(getTableMetadata(fieldCodesPc, fieldNamesPc)$fields))
   
   # Save data:
   
-  observeEvent(input$submitEncData, {
-    saveData(valuesEnc$outTable, 'encounterData', siteName())
-    shinyjs::show("thankyou_msgEnc")
+  observeEvent(input$submitPcData, {
+    saveData(valuesPc$outTable, 'pointCountData', siteName())
+    shinyjs::show("thankyou_msgPc")
   })
+  
   #################################################################################
 #   # Input fields:
 #   
@@ -1207,7 +1208,7 @@ server <- function(input, output, session) {
   valuesNest <- reactiveValues()
   
   valuesNest$outTable <-  drop_read_csv(
-    'nnDataStorage/encounterData.csv',
+    'nnDataStorage/nestData.csv',
     stringsAsFactors = FALSE)
   
   observeEvent(input$submitNest, {
