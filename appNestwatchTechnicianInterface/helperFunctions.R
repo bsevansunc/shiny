@@ -38,13 +38,13 @@ saveData <- function(data, dataName, siteName){
 
 saveData <- function(data, dataName, siteName){
   # Unique file name in order to trace potential over-writes:
-#   submissionTime <- as.character(Sys.time()) %>%
-#     str_replace_all(' ', '_') %>%
-#     str_replace_all(':','-')
-#   randomNumber <- sample(1:1000, 1)
-#   fileNameUnique <- str_c(dataName, siteName,'_',submissionTime,
-#                     '_', randomNumber,'.csv')
-#   filePathUnique <- file.path(tempdir(), fileNameUnique)
+  submissionTime <- as.character(Sys.time()) %>%
+    str_replace_all(' ', '_') %>%
+    str_replace_all(':','-')
+  randomNumber <- sample(1:1000, 1)
+  fileNameUnique <- str_c(dataName, siteName,'_',submissionTime,
+                    '_', randomNumber,'.csv')
+  filePathUnique <- file.path(tempdir(), fileNameUnique)
   # The combined file:
   fileName <- str_c(dataName, '.csv')
   filePath <- file.path(tempdir(), fileName)
@@ -52,7 +52,7 @@ saveData <- function(data, dataName, siteName){
   destinationFolder <- str_c('nnDataStorage/', dataName)
   # Upload file to Dropbox:
   drop_upload(filePath, dest = destinationFolder)
-  # drop_upload(filePathUnique, dest = destinationFolder)
+  drop_upload(filePathUnique, dest = destinationFolder)
 }
 
 #---------------------------------------------------------------------------------*
