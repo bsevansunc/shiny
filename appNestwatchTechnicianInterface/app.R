@@ -426,7 +426,7 @@ ui <- navbarPage(
                    h3("Thanks, your encounter data have been recorded!"),
                    br(),
                    actionButton('newSubmission', 
-                                'Query or submit records from another site',
+                                'Query or submit records for another site',
                                 class = "btn-primary"))
                ),
                br()
@@ -875,7 +875,7 @@ server <- function(input, output, session) {
     valuesEnc <- reactiveValues()
     
     valuesEnc$outTable <-  drop_read_csv(
-              'nnDataStorage/encounterData/encounterData.csv',
+              'nnDataStorage/encounterData.csv',
               stringsAsFactors = FALSE)
     
     observeEvent(input$submitEnc, {
@@ -942,7 +942,8 @@ server <- function(input, output, session) {
     
     observeEvent(input$submitEncData, {
       # Reload data from non-target sites:
-      nonTargetData <- drop_read_csv(pathToFile, stringsAsFactors = FALSE) %>%
+      nonTargetData <- drop_read_csv('nnDataStorage/encounterData.csv',
+                                     stringsAsFactors = FALSE) %>%
         filter(siteEnc != input$siteEnc) %>%
         apply(2, function(x) as.character(x)) %>%
         data.frame(stringsAsFactors = FALSE)
