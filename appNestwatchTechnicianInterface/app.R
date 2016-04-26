@@ -423,8 +423,11 @@ ui <- navbarPage(
                shinyjs::hidden(
                  div(
                    id = "thankyou_msgEnc",
-                   h3("Thanks, your encounter data have been recorded!")
-                 )
+                   h3("Thanks, your encounter data have been recorded!"),
+                   br(),
+                   actionButton('newSubmission', 
+                                'Query or submit records from another site',
+                                class = "btn-primary"))
                ),
                br()
            )),
@@ -939,15 +942,24 @@ server <- function(input, output, session) {
     
     observeEvent(input$submitEncData, {
       # Reload data from non-target sites:
-      nonTargetData <- readFile('encounterData', 'siteEnc != input$siteEnc')
+      nonTargetData <- drop_read_csv(pathToFile, stringsAsFactors = FALSE) %>%
+        filter(siteEnc != input$siteEnc) %>%
+        apply(2, function(x) as.character(x)) %>%
+        data.frame(stringsAsFactors = FALSE)
+#       nonTargetData <- readFile('encounterData', 'siteEnc != input$siteEnc')
       # Read data from target site in form:
       targetData <- valuesEnc$outTable %>%
         filter(siteEnc == input$siteEnc)
-      # Bind old records and new/modified records:
-      dataForSaving <- bind_rows(nonTargetData, targetData)
+      # Bind old records and new/modified records with IF check:
+      if(nrow(targetData) > 0){
+        dataForSaving <- bind_rows(nonTargetData, targetData)
+      } else {
+        dataForSaving <- nonTargetData
+      }
       saveData(dataForSaving, 'encounterData', siteName())
 #       saveData(valuesEnc$outTable, 'encounterData', siteName())
       shinyjs::show("thankyou_msgEnc")
+      # valuesEnc$outTable <- readFile('encounterData')
     })
     
   #-------------------------------------------------------------------------------*
