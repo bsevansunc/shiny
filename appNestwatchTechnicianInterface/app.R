@@ -877,14 +877,17 @@ server <- function(input, output, session) {
     
     observeEvent(input$submitEnc, {
       # I'm calling the table values "df" to shorten the inputs:
-      df <- valuesEnc$outTable
+      df <- valuesEnc$outTable %>% filter(siteEnc == input$siteEnc)
+      # df <- valuesEnc$outTable
       names(df) <-fieldCodesEnc
       # If a row has not been selected, add row:
       if(length(input$responsesEnc_rows_selected) < 1){
         df[nrow(df) + 1,] <- castData(formDataEnc())
         # If a row has been selected replace row:
       } else {
-        df[input$responsesEnc_rows_selected == rownames(df) & df$siteEnc == input$siteEnc,] <- castData(formDataEnc())
+        df[rownames(df)[input$responsesEnc_rows_selected] == rownames(df), ] <- castData(formDataEnc())
+#         df[input$responsesEnc_rows_selected == rownames(df),] <- castData(formDataEnc())
+        # df[input$responsesEnc_rows_selected == rownames(df) & df$siteEnc == input$siteEnc,] <- castData(formDataEnc())
       }
       valuesEnc$outTable <- df
       # After submission, make certain inputs blank:
@@ -911,8 +914,10 @@ server <- function(input, output, session) {
     # Delete a selected row:
     
     observeEvent(input$deleteEnc, {
-      df <- valuesEnc$outTable
+      df <- valuesEnc$outTable %>% filter(siteEnc == input$siteEnc)
+      # df <- valuesEnc$outTable
       if(length(input$responsesEnc_rows_selected) == 1){
+        # df <- df[-rownames(df)[input$responsesEnc_rows_selected] == rownames(df), ]
         df <- df[-input$responsesEnc_rows_selected,]
         createBlankInputs(blankFieldsEnc, session)
         valuesEnc$outTable <- df
@@ -933,13 +938,13 @@ server <- function(input, output, session) {
     # Save data:
     
     observeEvent(input$submitEncData, {
-      dataForSaving <- bind_rows(
-        drop_read_csv(
-        'nnDataStorage/encounterData/encounterData.csv',
-        stringsAsFactors = FALSE),
-        valuesEnc$outTable %>%
-          filter(siteEnc == input$siteEnc)
-      )
+      # Reload data from non-target sites:
+      nonTargetData <- readFile('encounterData', 'siteEnc != input$siteEnc')
+      # Read data from target site in form:
+      targetData <- valuesEnc$outTable %>%
+        filter(siteEnc == input$siteEnc)
+      # Bind old records and new/modified records:
+      dataForSaving <- bind_rows(nonTargetData, targetData)
       saveData(dataForSaving, 'encounterData', siteName())
 #       saveData(valuesEnc$outTable, 'encounterData', siteName())
       shinyjs::show("thankyou_msgEnc")
