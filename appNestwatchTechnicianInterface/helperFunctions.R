@@ -46,16 +46,16 @@ saveData <- function(data, dataName, siteName){
   fileNameUnique <- str_c(dataName, siteName,'_',submissionTime,
                     '_', randomNumber,'.csv')
   filePathUnique <- file.path(tempdir(), fileNameUnique)
+  destinationFolderUnique <- str_c('nnDataStorage/', dataName)
   # The combined file:
   fileName <- str_c(dataName, '.csv')
   filePath <- file.path(tempdir(), fileName)
   write.csv(data, filePath, row.names = FALSE, quote = TRUE)
-  destinationFolder <- str_c('nnDataStorage/', dataName)
   # Upload file to Dropbox:
-  drop_upload(filePath, dest = destinationFolder)
+  drop_upload(filePath, dest = 'nnDataStorage')
   # Upload unique file to Dropbox:
   write.csv(data, filePathUnique, row.names = FALSE, quote = TRUE)
-  drop_upload(filePathUnique, dest = destinationFolder)
+  drop_upload(filePathUnique, dest = destinationFolderUnique)
 }
 
 
