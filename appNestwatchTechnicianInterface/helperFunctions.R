@@ -1,5 +1,6 @@
 # FUNCTIONS
 
+
 #---------------------------------------------------------------------------------*
 # ---- Site list update ----
 #=================================================================================*
@@ -55,6 +56,26 @@ saveData <- function(data, dataName, siteName){
   # Upload unique file to Dropbox:
   write.csv(data, filePathUnique, row.names = FALSE, quote = TRUE)
   drop_upload(filePathUnique, dest = destinationFolder)
+}
+
+
+#---------------------------------------------------------------------------------*
+# ---- Read existing file from dropbox ----
+#=================================================================================*
+
+readFile <- function(dataName, siteFilter = NULL){
+  pathToFile <- str_c('nnDataStorage/', dataName, '/', dataName, '.csv' )
+  fileIn <- drop_read_csv(pathToFile, stringsAsFactors = FALSE) %>%
+    #filter(siteEnc != input$siteEnc) %>%
+    apply(2, function(x) as.character(x)) %>%
+    data.frame(stringsAsFactors = FALSE)
+  if(!is.null(siteFilter)){
+    filterExpression <- str_c('filter(fileIn,', siteFilter, ')')
+    fileOut <- eval(parse(text = filterExpression))
+  } else {
+    fileOut <- fileIn
+  }
+  return(fileOut)
 }
 
 #---------------------------------------------------------------------------------*
