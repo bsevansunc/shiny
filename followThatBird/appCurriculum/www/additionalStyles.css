@@ -1,0 +1,7 @@
+p {
+font-size: 22px;
+}
+
+.shiny-output-error { visibility: hidden; }
+
+.shiny-output-error:before { visibility: hidden; }

@@ -1,0 +1,512 @@
+tagId, region, bandNumber, estDeparture, estArrival,
+nMigrationDays, winterLat,breedingLat, tDistance,
+pathDistance, pathSinuosity, nPoints
+) %>%
+distinct
+colorPalette <- colorFactor(
+palette = rainbow(length(tagIds)),
+domain = gpsTagData$tagId
+)
+makeLines <- function(dataframeIn, colorMatch){
+# Unique IDs:
+birdIDs <- unique(dataframeIn$tagId)
+# List of data frames, one per ID:
+tracksList <- vector('list', length = length(birdIDs))
+for(i in 1:length(tracksList)){
+tracksList[[i]] <- dataframeIn %>%
+filter(tagId == birdIDs[i])
+}
+# List of lines objects (one list item per tagId):
+birdLines <- vector('list', length = length(birdIDs))
+for(i in 1:length(tracksList)){
+coordMat <- tracksList[[i]] %>%
+select(long, lat) %>%
+as.matrix
+birdLines[[i]] <- Lines(Line(coordMat),
+ID = tracksList[[i]] %>%
+select(tagId) %>%
+unique)
+}
+# Combine lines list to spatial lines data frame:
+SpatialLinesDataFrame(SpatialLines(birdLines),
+data = dataframeIn %>%
+select(tagId) %>%
+distinct,
+match.ID = FALSE
+)
+}
+grcaBasemap <- leaflet(data = gpsTagData %>% filter(tagId != 0),
+options = leafletOptions(zoomControl = FALSE)) %>%
+# Background of lines, for visibility:
+addPolylines(
+data = makeLines(gpsTagData),
+weight = 5,
+opacity = .3,
+color = 'black'
+)
+# Add colored lines and points:
+grcaPointLine <- grcaBasemap %>%
+# Lines, colored by tagId:
+addPolylines(
+data = makeLines(gpsTagData),
+weight = 3, dashArray = "5, 5",
+opacity = 1,
+color = ~colorPalette(tagId)
+) %>%
+# Circle markers, colored by tagId:
+addCircleMarkers(~long, ~lat,
+radius = ~4,
+color = 'white',
+fillColor = ~colorPalette(tagId),
+stroke = TRUE,
+popup = ~paste(
+sep = "<br/>",
+paste0('<b style="color:#0000FF">', tagId, '</b>'),
+paste0("<b> Band number: </b>", bandNumber),
+paste0("<b> Date: </b>", date),
+paste0("<b> Longitude: </b>", round(long, 4)),
+paste0("<b> Latitude: </b>", round(lat, 4))
+),
+fillOpacity = 0.9
+)
+grcaPointLine <- grcaBasemap %>%
+# Lines, colored by tagId:
+addPolylines(
+data = makeLines(gpsTagData %>% filter(tagId != 0)),
+weight = 3, dashArray = "5, 5",
+opacity = 1,
+color = ~colorPalette(tagId)
+) %>%
+# Circle markers, colored by tagId:
+addCircleMarkers(~long, ~lat,
+radius = ~4,
+color = 'white',
+fillColor = ~colorPalette(tagId),
+stroke = TRUE,
+popup = ~paste(
+sep = "<br/>",
+paste0('<b style="color:#0000FF">', tagId, '</b>'),
+paste0("<b> Band number: </b>", bandNumber),
+paste0("<b> Date: </b>", date),
+paste0("<b> Longitude: </b>", round(long, 4)),
+paste0("<b> Latitude: </b>", round(lat, 4))
+),
+fillOpacity = 0.9
+)
+grcaPointLine %>%
+addProviderTiles('Esri.NatGeoWorldMap')
+grcaBasemap <- leaflet(data = gpsTagData %>% filter(tagId != 0),
+options = leafletOptions(zoomControl = FALSE)) %>%
+# Background of lines, for visibility:
+addPolylines(
+data = makeLines(gpsTagData %>% filter(tagId != 0)),
+weight = 5,
+opacity = .3,
+color = 'black'
+)
+grcaPointLine <- grcaBasemap %>%
+# Lines, colored by tagId:
+addPolylines(
+data = makeLines(gpsTagData %>% filter(tagId != 0)),
+weight = 3, dashArray = "5, 5",
+opacity = 1,
+color = ~colorPalette(tagId)
+) %>%
+# Circle markers, colored by tagId:
+addCircleMarkers(~long, ~lat,
+radius = ~4,
+color = 'white',
+fillColor = ~colorPalette(tagId),
+stroke = TRUE,
+popup = ~paste(
+sep = "<br/>",
+paste0('<b style="color:#0000FF">', tagId, '</b>'),
+paste0("<b> Band number: </b>", bandNumber),
+paste0("<b> Date: </b>", date),
+paste0("<b> Longitude: </b>", round(long, 4)),
+paste0("<b> Latitude: </b>", round(lat, 4))
+),
+fillOpacity = 0.9
+)
+# Show map, National Geographic background:
+grcaPointLine %>%
+addProviderTiles('Esri.NatGeoWorldMap')
+gTaggingWithRegion <- left_join(
+grcaMigration,
+grcaTagBanding %>%
+select(bandNumber, region),
+by = 'bandNumber'
+)
+colorPaletteRegion <- colorFactor(
+palette = c('#8A2BE2', 'blue', 'yellow', 'red'),
+domain = gTaggingWithRegion$region
+)
+grcaRegionalBasemap <- leaflet(data = gTaggingWithRegion,
+options = leafletOptions(zoomControl = FALSE)) %>%
+# Background of lines, for visibility:
+addPolylines(
+data = makeLines(gTaggingWithRegion),
+weight = 5,
+opacity = .3,
+color = 'black'
+) %>%
+addPolylines(
+data = makeLines(
+gTaggingWithRegion %>%
+filter(region == 'CO')
+),
+weight = 3, dashArray = "5, 5",
+opacity = 1,
+color = '#8A2BE2'
+) %>%
+addPolylines(
+data = makeLines(
+gTaggingWithRegion %>%
+filter(region == 'DC')
+),
+weight = 3, dashArray = "5, 5",
+opacity = 1,
+color = 'blue'
+)  %>%
+addPolylines(
+data = makeLines(
+gTaggingWithRegion %>%
+filter(region == 'MA')
+),
+weight = 3, dashArray = "5, 5",
+opacity = 1,
+color = 'red'
+) %>%
+addPolylines(
+data = makeLines(
+gTaggingWithRegion %>%
+filter(region == 'GA')
+),
+weight = 3, dashArray = "5, 5",
+opacity = 1,
+color = 'yellow'
+) %>%
+addCircleMarkers(~long, ~lat,
+radius = ~3,
+color = 'white',
+fillColor = ~colorPaletteRegion(region),
+stroke = TRUE,
+popup = ~paste(
+sep = "<br/>",
+paste0('<b style="color:#0000FF">', tagId, '</b>'),
+paste0("<b> Band number: </b>", bandNumber),
+paste0("<b> Date: </b>", date),
+paste0("<b> Longitude: </b>", round(long, 4)),
+paste0("<b> Latitude: </b>", round(lat, 4))
+),
+fillOpacity = 1
+)
+colorPaletteRegion <- colorFactor(
+palette = c('#8A2BE2', 'blue', 'yellow', 'red'),
+domain = gTaggingWithRegion$region
+)
+grcaRegionalBasemap <- leaflet(data = gTaggingWithRegion,
+options = leafletOptions(zoomControl = FALSE)) %>%
+# Background of lines, for visibility:
+addPolylines(
+data = makeLines(gTaggingWithRegion),
+weight = 5,
+opacity = .3,
+color = 'black'
+) %>%
+addPolylines(
+data = makeLines(
+gTaggingWithRegion %>%
+filter(region == 'CO')
+),
+weight = 3, dashArray = "5, 5",
+opacity = 1,
+color = '#8A2BE2'
+) %>%
+addPolylines(
+data = makeLines(
+gTaggingWithRegion %>%
+filter(region == 'DC')
+),
+weight = 3, dashArray = "5, 5",
+opacity = 1,
+color = 'blue'
+)  %>%
+addPolylines(
+data = makeLines(
+gTaggingWithRegion %>%
+filter(region == 'MA')
+),
+weight = 3, dashArray = "5, 5",
+opacity = 1,
+color = 'red'
+) %>%
+addPolylines(
+data = makeLines(
+gTaggingWithRegion %>%
+filter(region == 'GA')
+),
+weight = 3, dashArray = "5, 5",
+opacity = 1,
+color = 'yellow'
+) %>%
+addCircleMarkers(~long, ~lat,
+radius = ~3,
+color = 'white',
+fillColor = ~colorPaletteRegion(region),
+stroke = TRUE,
+popup = ~paste(
+sep = "<br/>",
+paste0('<b style="color:#0000FF">', tagId, '</b>'),
+paste0("<b> Band number: </b>", bandNumber),
+paste0("<b> Date: </b>", date),
+paste0("<b> Longitude: </b>", round(long, 4)),
+paste0("<b> Latitude: </b>", round(lat, 4))
+),
+fillOpacity = 1
+)
+# Show map, National Geographic background:
+grcaRegionalBasemap %>%
+addProviderTiles('Esri.NatGeoWorldMap')
+grcaMigration %>%
+group_by(tagId) %>%
+mutate(
+dBreeding = distBreedingKm/max(distBreedingKm)
+) %>%
+ggplot(aes(x = date, y = dBreeding, group = tagId, col = tagId)) +
+geom_line(size = 1) +
+geom_point(size = 4, color = 'black') +
+geom_point(size = 3) +
+theme_bw() +
+scale_color_gradientn(colors = rainbow(4))
+grcaSummary %>%
+filter(nMigrationDays < 75) %>%
+ggplot(aes(x = nMigrationDays, y = tDistance, color = region)) +
+geom_smooth(method = "lm", se = FALSE) +
+geom_point(size = 5, color = 'black') +
+geom_point(size = 3) +
+theme_classic()
+grcaSummary %>%
+filter(nMigrationDays < 75) %>%
+ggplot(aes(x = estDeparture, y = nMigrationDays, color = region)) +
+geom_smooth(method = "lm", se = FALSE) +
+geom_point(size = 5, color = 'black') +
+geom_point(size = 3) +
+theme_classic()
+grcaSummary %>%
+filter(nMigrationDays < 75) %>%
+ggplot(aes(x = estDeparture, y = tDistance, color = region)) +
+geom_smooth(method = "lm", se = FALSE) +
+geom_point(size = 5, color = 'black') +
+geom_point(size = 3) +
+theme_classic()
+grcaSummary %>%
+filter(nMigrationDays < 75) %>%
+ggplot(aes(x = region, y = estDeparture)) +
+geom_boxplot(fill = 'gray90') +
+theme_classic()
+grcaSummary %>%
+filter(nMigrationDays < 75) %>%
+ggplot(aes(x = region, y = nMigrationDays)) +
+geom_boxplot(fill = 'gray90') +
+theme_classic()
+grcaSummary %>%
+filter(nMigrationDays < 75) %>%
+ggplot(aes(x = region, y = tDistance)) +
+geom_boxplot(fill = 'gray90') +
+theme_classic()
+grcaSummary %>%
+filter(nMigrationDays < 75) %>%
+ggplot(aes(x = region, y = winterLat)) +
+geom_boxplot(fill = 'gray90') +
+theme_classic()
+grcaSummary %>%
+filter(nMigrationDays < 75) %>%
+left_join(
+grcaTagBanding %>%
+select(-region),
+by = 'bandNumber') %>%
+filter(wing < 99999) %>%
+ggplot(aes(x = wing, y = tDistance, color = region)) +
+geom_smooth(method = "lm", se = TRUE) +
+geom_point(size = 5, color = 'black') +
+geom_point(size = 3) +
+theme_classic()
+grcaSummary %>%
+filter(nMigrationDays < 75) %>%
+left_join(
+grcaTagBanding %>%
+select(-region),
+by = 'bandNumber') %>%
+filter(wing < 99999) %>%
+ggplot(aes(x = wing, y = tDistance, color = region)) +
+geom_smooth(method = "lm", se = FALSE) +
+geom_point(size = 5, color = 'black') +
+geom_point(size = 3) +
+theme_classic()
+grcaSummary %>%
+filter(nMigrationDays < 75) %>%
+left_join(
+grcaTagBanding %>%
+select(-region),
+by = 'bandNumber') %>%
+filter(wing < 99999) %>%
+ggplot(aes(x = mass, y = tDistance, color = region)) +
+geom_smooth(method = "lm", se = FALSE) +
+geom_point(size = 5, color = 'black') +
+geom_point(size = 3) +
+theme_classic()
+grcaSummary %>%
+filter(nMigrationDays < 75) %>%
+left_join(
+grcaTagBanding %>%
+select(-region),
+by = 'bandNumber') %>%
+filter(wing < 99999) %>%
+ggplot(aes(x = mass/wing, y = tDistance, color = region)) +
+geom_smooth(method = "lm", se = FALSE) +
+geom_point(size = 5, color = 'black') +
+geom_point(size = 3) +
+theme_classic()
+grcaSummary %>%
+filter(nMigrationDays < 75) %>%
+left_join(
+grcaTagBanding %>%
+select(-region),
+by = 'bandNumber') %>%
+filter(mass < 99999) %>%
+ggplot(aes(x = mass, y = tDistance, color = region)) +
+geom_point(size = 3) +
+theme_classic()
+gpsTagData %>%
+left_join(env, by = 'eventId')
+grcaMigration %>%
+left_join(env, by = 'eventId')
+grcaMigration %>%
+left_join(env, by = 'eventId') %>%
+filter(tagId %in% c(1383, 1385, 1391)) %>%
+filter(mStage == 'B'|mStage == 'M') %>%
+ggplot(aes(x = date, y = nightTemp, group = factor(tagId), color = factor(tagId))) +
+geom_point(size = 3) +
+geom_line() +
+theme_classic()
+grcaMigration %>%
+left_join(
+grcaSummary %>%
+select(tagId:region),
+by = 'tagId'
+) %>%
+left_join(env, by = 'eventId') %>%
+filter(mStage == 'B'|mStage == 'M') %>%
+filter(region %in% c('DC', 'MA')) %>%
+ggplot(aes(x = date, y = nightTemp, group = factor(tagId), color = factor(region))) +
+geom_point(size = 3) +
+geom_line() +
+theme_classic()
+grcaMigration %>%
+left_join(grcaSummary %>%
+select(-bandNumber), by = 'tagId') %>%
+left_join(env, by = 'eventId')
+grcaMigration %>%
+left_join(grcaSummary %>%
+select(-bandNumber), by = 'tagId') %>%
+left_join(env, by = 'eventId') %>%
+group_by(tagId) %>%
+filter(mStage == 'B') %>%
+filter(date == max(date) & date > '2016-08-01') %>%
+ggplot(aes(x = uWind10m, y = vWind10m, color = factor(region))) +
+geom_point(size = 3) +
+geom_vline(xintercept=0, linetype = 2) +
+geom_hline(yintercept=0, linetype = 2) +
+theme_classic()
+grcaMigration %>%
+left_join(grcaSummary %>%
+select(-bandNumber), by = 'tagId') %>%
+left_join(env, by = 'eventId') %>%
+left_join(lcLegend, by = 'globCoverLc') %>%
+group_by(tagId) %>%
+filter(mStage == 'B') %>%
+filter(date == max(date) & date > '2016-08-01') %>%
+ggplot(aes(x = factor(lc), y = date)) +
+geom_boxplot(fill = 'gray70') +
+coord_flip() +
+theme_bw()
+env <- read_csv('grcaMigration-Ryder-566073171027321591.csv') %>%
+select(1, 14:18) %>%
+bind_rows(
+read_csv('grcaMigration-Ryder-3217451753114930912.csv') %>%
+select(1, 14:17)
+) %>%
+left_join(
+read_csv('grcaMigration-Ryder-6244935445491619139.csv') %>%
+select(1, 14:27) %>%
+bind_rows(
+read_csv('grcaMigration-Ryder-707658057072842817.csv') %>%
+select(1, 14:23)
+), by = 'event-id') %>%
+transmute(
+eventId = `event-id`,
+globCoverLc = `GlobCover 2009 2009 Land-Cover Classification`,
+evi = `MODIS Land Terra Vegetation Indices 250m 16d Enhanced Vegetation Index`,
+ndvi = `MODIS Land Terra Vegetation Indices 250m 16d NDVI`,
+surfaceVeg = `NCEP NARR SFC Vegetation at Surface`,
+precip = `NCEP NARR SFC Total Precipitation at Surface (Accumulated)`,
+dewPt = `NCEP NARR FLX Dew Point Temperature at 2 m above Ground`,
+evaporation = `NCEP NARR SFC Evaporation at Surface (Accumulated)`,
+nightTemp = `MODIS Land Terra Surface Temp & Emissivity 1km 8d Land Surface Temperature Nighttime`,
+dayTemp = `MODIS Land Terra Surface Temp & Emissivity 1km 8d Land Surface Temperature Daytime`,
+pressure = `NCEP NARR SFC Pressure at Surface`,
+vWind10m = `NCEP NARR FLX V Wind at 10 m above Ground`,
+uWind10m = `NCEP NARR FLX U Wind at 10 m above Ground`,
+vWind30m = `NCEP NARR FLX V Wind at 30 m above Ground`,
+uWind30m = `NCEP NARR FLX U Wind at 30 m above Ground`
+)
+env
+runApp('C:/Users/EvansBr/Desktop/experienceMigration_curriculum/app')
+?year
+lubridate::year('1942-12-01')
+data.frame(
+unit = 1:10, date = Sys.Date()
+)
+data.frame(
+unit = 1:10, date = Sys.Date(), letter = c(rep('a', 5), rep('b', 5)
+)
+data.frame(
+unit = 1:10, date = Sys.Date(), letter = c(rep('a', 5), rep('b', 5)
+)
+)
+c(rep('a', 5), rep('b', 5))
+data.frame(
+unit = 1:10,
+date = Sys.Date(),
+letter = c(rep('a', 5), rep('b', 5))
+)
+df <- data.frame(
+unit = 1:10,
+date = Sys.Date(),
+letter = c(rep('a', 5), rep('b', 5))
+)
+df %>%
+mutate(
+year = year(date)
+)
+df %>%
+mutate(
+year = year(date)
+) %>%
+group_by(letter, year) %>%
+summarize(t = sum(unit))
+runApp('C:/Users/EvansBr/Desktop/experienceMigration_curriculum/tagApp')
+runApp('C:/Users/EvansBr/Desktop/experienceMigration_curriculum/app')
+runApp('C:/Users/EvansBr/Desktop/experienceMigration_curriculum/app')
+setwd('www')
+getwd()
+setwd('C:/Users/EvansBr/Desktop/experienceMigration_curriculum/app')
+setwd('ww')
+setwd('www')
+runApp('C:/Users/EvansBr/Desktop/experienceMigration_curriculum/app')
+getwd()
+list.files()
+runApp('C:/Users/EvansBr/Desktop/experienceMigration_curriculum/app')
+getwd()
+runApp('C:/Users/EvansBr/Desktop/experienceMigration_curriculum/app')
